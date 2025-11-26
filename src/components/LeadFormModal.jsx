@@ -94,6 +94,17 @@ export default function LeadFormModal() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "consultationDateTime") {
+      const date = new Date(value);
+      const day = date.getDay();
+
+      if (day === 0 || day === 6) {
+        alert("Weekends are not available. Please choose a weekday.");
+        return;
+      }
+    }
+
     setFormData((s) => ({ ...s, [name]: value }));
   };
 
