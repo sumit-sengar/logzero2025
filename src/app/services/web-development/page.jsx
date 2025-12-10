@@ -154,7 +154,7 @@ const Services = () => {
       qId: 2,
       question: "How long does it take to build a website?",
       answer:
-        "YThe timeline depends on the project’s complexity, design requirements, and features. Simple websites take less time, while advanced ones require more planning and development.",
+        "The timeline depends on the project’s complexity, design requirements, and features. Simple websites take less time, while advanced ones require more planning and development.",
     },
     {
       qId: 3,

@@ -190,7 +190,7 @@ const LztProvider = ({ children }) => {
       description:
         "Robust data solutions ensuring accuracy, accessibility, and real-time analytics.",
       technologies: ["SQL", "NoSQL", "Hadoop", "Cloud Storage"],
-      linkurl: "/solutions/Data-Management",
+      linkurl: "/solutions/data-management",
       features: [
         "Data Warehousing",
         "Real-time Analytics",
@@ -233,7 +233,7 @@ const LztProvider = ({ children }) => {
       description:
         "Ensuring software quality through thorough testing and quality assurance.",
       technologies: ["Selenium", "Jest", "Cypress", "Postman"],
-      linkurl: "/services/Testing-Service",
+      linkurl: "/services/testing-service",
       features: [
         "Automated Testing",
         "Manual Testing",
@@ -1079,7 +1079,7 @@ const LztProvider = ({ children }) => {
         "Business Intelligence",
         "Data Security",
       ],
-      linkurl: "/solutions/Data-Management",
+      linkurl: "/solutions/data-management",
     },
 
     {
@@ -1310,7 +1310,7 @@ const LztProvider = ({ children }) => {
       title: "Data Management",
       description:
         "Secure, scalable, and reliable data management solutions that help businesses organize and analyze data effectively.",
-      linkurl: "/solutions/Data-Management",
+      linkurl: "/solutions/data-management",
     },
 
     {
@@ -1334,7 +1334,7 @@ const LztProvider = ({ children }) => {
       title: "Testing & QA",
       description:
         "Ensuring software quality through thorough testing and quality assurance.",
-      linkurl: "/services/Testing-Service",
+     linkurl: "/services/testing-service",
     },
   ];
 
@@ -1603,7 +1603,7 @@ const LztProvider = ({ children }) => {
       title: "Software Maintenance & Support",
       description:
         "Ensure your software remains updated, secure, and optimized with our comprehensive maintenance services.",
-      linkurl: "/services/Software-Development",
+      linkurl: "/services/software-development",
     },
   ];
 
@@ -2288,7 +2288,7 @@ const LztProvider = ({ children }) => {
         "Bug Tracking",
         "Performance Testing",
       ],
-      linkurl: "/services/Testing-Service",
+      linkurl: "/services/testing-service",
     },
   ];
 

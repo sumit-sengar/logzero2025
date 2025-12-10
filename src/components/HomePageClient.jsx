@@ -456,7 +456,7 @@ export default function HomePageClient() {
                     />
                     <div className="absolute bottom-4 left-4">
                       <span className="bg-white text-[#111827] font-semibold text-[16px] px-4 py-2 rounded shadow">
-                        automobile
+                        Automobile
                       </span>
                     </div>
                   </div>
@@ -485,7 +485,7 @@ export default function HomePageClient() {
                   />
                   <div className="absolute bottom-4 left-4">
                     <span className="bg-white text-[#111827] font-semibold text-[16px] px-4 py-2 rounded shadow">
-                      media
+                      Media
                     </span>
                   </div>
                 </div>
@@ -603,7 +603,7 @@ export default function HomePageClient() {
 
           <div className="flex justify-center mt-7">
             <a
-              href="About/Portfolio"
+              href="/portfolio"
               className="bluenew textcolor px-7 py-3 rounded-lg text-base font-bold max-w-[338px] flex items-center justify-center hover:brightness-95 transition-transform hover:scale-104"
             >
               Join Our Success Stories

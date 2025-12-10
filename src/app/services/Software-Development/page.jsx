@@ -498,7 +498,7 @@ export default function Mission() {
           <div className="flex justify-center mt-10">
             <GreenButton
               text="Learn More About Our Expertise"
-              linkurl="/About/AboutCompany"
+              linkurl="/about"
               linktarget=""
               MoveRighticon={false}
             />

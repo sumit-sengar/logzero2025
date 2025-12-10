@@ -234,7 +234,7 @@ export default function DeveloperForHire() {
             {/* Right Section */}
             <div className="border border-solid border-[#CBE0FC] bg-[#F0F7FF] rounded-[6px] pt-[20px] pb-[20px] pl-[20px] pr-[20px] flex flex-col gap-2">
               <div className="">
-                <h4 className="text-[#111827] subheading-3 mb-3">
+                <h4 className="text-[#111827]  mb-3">
                   Model Details
                 </h4>
               </div>
@@ -298,7 +298,7 @@ export default function DeveloperForHire() {
             {/* Right Section */}
             <div className="border border-solid border-[#d1fbf3] bg-[#f0fdfa] rounded-[6px] pt-[20px] pb-[20px] pl-[20px] pr-[20px] flex flex-col gap-2">
               <div className="">
-                <h4 className="text-[#111827] subheading-3 mb-3">
+                <h4 className="text-[#111827]  mb-3">
                   Model Details
                 </h4>
               </div>
@@ -359,7 +359,7 @@ export default function DeveloperForHire() {
             {/* Right Section */}
             <div className="border border-solid border-[#f5ecff] bg-[#faf5ff] rounded-[6px] pt-[20px] pb-[20px] pl-[20px] pr-[20px] flex flex-col gap-2">
               <div className="">
-                <h4 className="text-[#111827] subheading-3 mb-3">
+                <h4 className="text-[#111827]  mb-3">
                   Model Details
                 </h4>
               </div>

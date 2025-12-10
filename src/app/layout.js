@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
         <ModalProvider>
           <LztProvider>
             <Header />
-            <main>{children}</main>
+            <main className="mt-[76px]">{children}</main>
             <ScrollToTopButton />
             <Footer />
           </LztProvider>

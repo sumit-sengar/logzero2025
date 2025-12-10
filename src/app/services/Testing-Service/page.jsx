@@ -320,7 +320,7 @@ testing needs"
               </div>
             </div>
 
-            <div className="md:w-[50%] w-full pr-4 mt-4 md:mt-0">
+            <div className="md:w-[50%] w-full  mt-4 md:mt-0">
               <div className="grid gap-4">
                 {/* Bottom 2 Boxes */}
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 h-[465px] sm:h-[365px]">
@@ -334,7 +334,7 @@ testing needs"
                     />
                     <div className="absolute bottom-4 left-4">
                       <span className="bg-white text-[#111827] font-semibold text-[16px] px-4 py-2 rounded shadow">
-                        automobile
+                        Automobile
                       </span>
                     </div>
                   </div>
@@ -365,7 +365,7 @@ testing needs"
                   />
                   <div className="absolute bottom-4 left-4">
                     <span className="bg-white text-[#111827] font-semibold text-[16px] px-4 py-2 rounded shadow">
-                      media
+                      Media
                     </span>
                   </div>
                 </div>

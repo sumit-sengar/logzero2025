@@ -64,22 +64,22 @@ export default function Footer() {
               <div className="flex space-x-4 mt-3 text-xl">
                 <Link
                   href="https://www.google.com/search?sca_esv=c019091b52478373&rlz=1C1ONGR_en&sxsrf=AE3TifNuGL6qIljipNhKMWj9-YwwMAwJlg:1762851169715&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-E08fmkHkhr3qf25clKYpHEKUVOWYYhzObx6QqdIkocQhTpncxHegMmEZA0qoZEnGltvXfWl_96NIomGxH9w3dcAcABMd9ZULuddluYtcaMreOw0cnQT0c8aGRQBkeB8GkuKQy6SQ3yA0N3umSgSfQQEJwb6J0vwVRwjT4oK-snHzs7RZ3riSG_Dw6niHgLaWw4v_mS8%3D&q=LogZero+Technologies+%7C+Web+%26+Mobile+App+Development,+Cloud+Services+%26+Data+Solutions+Reviews&sa=X&ved=2ahUKEwi35oyu3OmQAxWSyzgGHX2KAYIQ0bkNegQIJhAE&cshid=1762851205263191&biw=1366&bih=633&dpr=1"
-                  className=""
+                  className="inline-block transition-transform duration-200 hover:scale-115"
                 >
                   <FaGoogle />
                 </Link>
                 <Link
                   href="https://www.linkedin.com/company/logzero-technologies/"
-                  className=""
+                  className="inline-block transition-transform duration-200 hover:scale-115"
                 >
                   <FaLinkedin />
                 </Link>
-                <Link href="https://x.com/logzerotech" className="">
+                <Link href="https://x.com/logzerotech" className="inline-block transition-transform duration-200 hover:scale-115">
                   <FaXTwitter />
                 </Link>
                 <Link
                   href="https://pinterest.com/logzerotechnologies"
-                  className=""
+                  className="inline-block transition-transform duration-200 hover:scale-115"
                 >
                   <FaPinterest />
                 </Link>
@@ -91,10 +91,10 @@ export default function Footer() {
               <nav aria-label="Footer Navigation">
                 <ul className="space-y-2 subtext">
                   {[
-                    { label: "About Company", href: "/About/AboutCompany" },
-                    { label: "Our Mission", href: "/About/Mission" },
-                    { label: "Clients", href: "/About/Clients" },
-                    { label: "Portfolio", href: "/About/Portfolio" },
+                    { label: "About Company", href: "/about" },
+                    { label: "Our Mission", href: "/about/mission" },
+                    { label: "Clients", href: "/about/clients" },
+                    { label: "Portfolio", href: "/about/portfolio" },
                     {
                       label: "Privacy Policy",
                       href: "https://www.logzerotechnologies.com/privacy-policy/",
@@ -129,7 +129,7 @@ export default function Footer() {
                     },
                     {
                       label: "Technology",
-                      href: "/Technology",
+                      href: "/technology",
                     },
                     {
                       label: "Solutions",
@@ -157,14 +157,14 @@ export default function Footer() {
               </p>
               <p className="mt-8 subtext">
                 <span className="text-[#5BC2A7]">Phone:</span>{" "}
-                <a href="tel:+91 11 40789940" className="text-white">
+                <a href="tel:+91 11 40789940" className="text-white inline-block transition-transform duration-200 hover:scale-105">
                   +91 11 40789940
                 </a>
               </p>
               <span className="text-[#5BC2A7]">Email:</span>{" "}
               <a
                 href="https://mail.google.com/mail/?view=cm&fs=1&to=sales@logzerotechnologies.com"
-                className="text-white  "
+                className="text-white inline-block transition-tranform duration-200 hover:scale-105 "
               >
                 sales@logzerotechnologies.com
               </a>

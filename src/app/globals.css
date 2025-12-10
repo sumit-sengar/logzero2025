@@ -384,6 +384,21 @@ html, body {
 }
 .container {max-width: 1170px;} 
 
+/* Keep React DatePicker inputs full width */
+.datepicker-full {
+  width: 100%;
+  display: block;
+}
+
+.datepicker-full .react-datepicker__input-container,
+.datepicker-full .react-datepicker__input-container input {
+  width: 100%;
+}
+
+.datepicker-full .react-datepicker__input-container input {
+  display: block;
+}
+
 .inverted-radius{
   --r: 20px;
   --s: 30px;

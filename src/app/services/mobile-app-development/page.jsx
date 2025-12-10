@@ -646,7 +646,7 @@ export default function MobileDevelopment() {
           description="Let’s discuss your requirements and create a custom development plan that fits your timeline and budget."
           linkUrl="/contact-us"
           linkText="Schedule Free Consultation"
-          linkUrl2="/About/Portfolio"
+          linkUrl2="/portfolio"
           linkText2="View Our Portfolio"
           ctabtnType="both"
         />
@@ -732,7 +732,7 @@ export default function MobileDevelopment() {
         <CTA
           title="Want to Be Our Next Success Story?"
           description="Let’s discuss how we can help you achieve similar results with your mobile app project."
-          linkUrl="/About/Portfolio"
+          linkUrl="/portfolio"
           ctabtnType="primary"
           linkText="Start Your Success Story"
         />

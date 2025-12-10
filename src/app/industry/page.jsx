@@ -290,7 +290,7 @@ export default function IndustryWeServe() {
           <div className="flex gap-4 mt-12 justify-center">
             <button
               onClick={() => setShowMore(!showMore)}
-              className="flex items-center justify-center gap-2 text-[15px] font-semibold leading-[22px] text-white bg-[var(--bg-green-300)] border border-[var(--bg-green-300)] rounded-[6px] px-[35px] py-[17px] font-finter transition duration-300 ease-in-out hover:bg-[#1E8767] hover:text-white transition-transform hover:scale-104"
+              className="flex items-center justify-center gap-2 text-[15px] font-semibold leading-[22px] text-white bg-[var(--bg-green-300)] border border-[var(--bg-green-300)] rounded-[6px] px-[35px] py-[17px] font-finter transition duration-300 ease-in-out hover:bg-[#1E8767] hover:text-white transition-transform hover:scale-104 cursor-pointer"
             >
               {showMore ? "- Show less" : "+ More Industries"}
             </button>

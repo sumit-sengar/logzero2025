@@ -324,19 +324,19 @@ export default function ContactSection() {
                 <div>
                   <h3 className="subheading-4 mb-4">Our Contacts</h3>
                   <div className="flex flex-col md:flex-row items-start md:items-center gap-3 subtext subtextcolor  ">
-                    <div className="bg-[#3C74ED] p-3 rounded-full">
-                      <Phone className="text-[#f9fbfe]" size={20} />
+                    <div className="bg-[#3C74ED] p-3 rounded-full inline-block transition-transform duration-200 hover:scale-105">
+                      <Phone className="text-[#f9fbfe] " size={20} />
                     </div>
-                    <a href="tel:+911140789940">+91 11 40789940 </a>
+                    <a href="tel:+911140789940" className="inline-block transition-transform duration-200 hover:scale-105">+91 11 40789940 </a>
                   </div>
                   <div className="flex flex-col md:flex-row items-start md:items-center gap-3 subtext subtextcolor py-2">
-                    <div className="bg-[#42B1A5] p-3 rounded-full">
+                    <div className="bg-[#42B1A5] p-3 rounded-full inline-block transition-transform duration-200 hover:scale-105">
                       <Mail className="text-[#ffffff]" size={20} />
                     </div>
                     <div className="flex flex-col min-w-0">
                       <a
                         href="https://mail.google.com/mail/?view=cm&fs=1&to=sales@logzerotechnologies.com"
-                        className="whitespace-normal break-words sm:whitespace-nowrap"
+                        className="whitespace-normal break-words sm:whitespace-nowrap inline-block transition-transform duration-200 hover:scale-105"
                       >
                         sales@logzerotechnologies.com 
                       </a>

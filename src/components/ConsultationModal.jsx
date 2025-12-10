@@ -18,7 +18,7 @@ export default function ConsultationModal() {
       >
         <div className="flex items-center justify-between px-6 sm:px-8 py-4 bluenew text-white rounded-t-2xl ">
           <h3 className="text-xl sm:text-2xl font-semibold ">
-            Schedule Your Free Consultation
+            Schedule Your Free Consultationsdfasfafs
           </h3>
           <button onClick={closeModal} aria-label="Close">
             <X className="w-6 h-6 " />
