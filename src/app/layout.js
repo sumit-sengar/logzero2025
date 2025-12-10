@@ -8,7 +8,6 @@ import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 import { ModalProvider } from "@/context/ModalContext";
 import LeadFormModal from "@/components/LeadFormModal";
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
