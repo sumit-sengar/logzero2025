@@ -185,7 +185,7 @@ const Services = () => {
   const handleChange = (e) => {};
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Service");
+    // console.log("Service");
   };
 
   return (
@@ -568,7 +568,7 @@ const Services = () => {
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
         }}
         onSubmit={(formData) => {
-          console.log("Form submitted:", formData);
+          // console.log("Form submitted:", formData);
         }}
       />
 

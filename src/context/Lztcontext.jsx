@@ -2676,7 +2676,7 @@ const LztProvider = ({ children }) => {
   ];
 
   const handleLoadMore = () => {
-    console.log("Load more clicked!");
+    // console.log("Load more clicked!");
   };
 
   return (

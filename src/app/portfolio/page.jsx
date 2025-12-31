@@ -16,7 +16,7 @@ export default function Portfolio() {
   }, []);
 
   const { blogs } = useContext(Lztallcontext);
-  console.log(blogs);
+  // console.log(blogs);
 
   const faqs = [
     {

@@ -40,13 +40,13 @@ export default function IndustryWeServe() {
     SucessStoryData,
     Banner2,
   } = useContext(Lztallcontext);
-  console.log(
-    CoreServices,
-    Industriesweservepage,
-    MoreIndustriesData,
-    SucessStoryData,
-    Banner2
-  );
+  // console.log(
+  //   CoreServices,
+  //   Industriesweservepage,
+  //   MoreIndustriesData,
+  //   SucessStoryData,
+  //   Banner2
+  // );
 
   const [openIndex, setOpenIndex] = useState(null);
   const toggleFAQ = (index) => {
@@ -445,7 +445,7 @@ export default function IndustryWeServe() {
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
         }}
         onSubmit={(formData) => {
-          console.log("Form submitted:", formData);
+          // console.log("Form submitted:", formData);
         }}
       />
 

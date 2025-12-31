@@ -70,13 +70,13 @@ export default function data() {
     SucessStoryData,
     faq3,
   } = useContext(Lztallcontext);
-  console.log(
-    dataManagment,
-    ComprehensiveDataSolutions,
-    Dataindatamanagment,
-    SucessStoryData,
-    faq3
-  );
+  // console.log(
+  //   dataManagment,
+  //   ComprehensiveDataSolutions,
+  //   Dataindatamanagment,
+  //   SucessStoryData,
+  //   faq3
+  // );
 
   const BgColors = ["bg-[#DBEAFE]", "bg-[#CCFBF1]", "bg-[#F3E8FF]"];
   const BgColors2 = ["bg-[#DBEAFE]"];
@@ -787,7 +787,7 @@ achieve measurable results."
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
         }}
         onSubmit={(formData) => {
-          console.log("Form submitted:", formData);
+          // console.log("Form submitted:", formData);
         }}
       />
     </>

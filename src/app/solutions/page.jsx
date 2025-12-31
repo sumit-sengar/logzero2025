@@ -38,7 +38,7 @@ export default function data() {
 
   const { solutionData, SucessStoryDataSolution, testimonialsOne, faq4 } =
     useContext(Lztallcontext);
-  console.log(solutionData, SucessStoryDataSolution, testimonialsOne, faq4);
+  // console.log(solutionData, SucessStoryDataSolution, testimonialsOne, faq4);
 
   const [openIndex, setOpenIndex] = useState(null);
   const toggleFAQ = (index) => {
@@ -634,7 +634,7 @@ export default function data() {
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
         }}
         onSubmit={(formData) => {
-          console.log("Form submitted:", formData);
+          // console.log("Form submitted:", formData);
         }}
       />
 

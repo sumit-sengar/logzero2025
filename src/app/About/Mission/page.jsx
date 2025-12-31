@@ -67,7 +67,7 @@ export default function Mission() {
 
   const { Purpose, Banner3, Commitment, SucessStoryData } =
     useContext(Lztallcontext);
-  console.log(Purpose, Banner3, Commitment, SucessStoryData);
+  // console.log(Purpose, Banner3, Commitment, SucessStoryData);
 
   return (
     <>
