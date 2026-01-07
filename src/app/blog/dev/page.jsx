@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Code,
   Bolt,
@@ -9,10 +9,29 @@ import {
   CalendarDays,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { InlineGreenButton } from "@/components/InlineGreenButton";
 
+const DEV_POSTS_ENDPOINT =
+  "https://webapi.logzerotechnologies.com/api/posts?type=blog_post&blogCategory=dev";
+const DEFAULT_DEV_POST_IMAGE = "/assets/img/featuredImage2.webp";
+const DEV_POST_LIMIT = 10;
 const popularPostImage = "/assets/img/popularPostImg.webp";
 const devImg = "/assets/img/devImage.webp";
+
+const formatIsoDate = (isoValue) => {
+  if (!isoValue) return "";
+  try {
+    const date = new Date(isoValue);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch (error) {
+    return isoValue;
+  }
+};
 
 const MOCK_POSTS = [
   {
@@ -182,8 +201,38 @@ const CTA_CONFIG = {
   servicesOptions: [],
 };
 
+const getDevPostHref = (post) => {
+  const identifier = post?.id ?? post?.slug ?? "";
+  if (!identifier) return "/blog/blogDetails";
+  return `/blog/blogDetails?id=${encodeURIComponent(identifier)}`;
+};
+
 const Dev = () => {
+  const [devPosts, setDevPosts] = useState([]);
+  const [isLoadingDevPosts, setIsLoadingDevPosts] = useState(true);
+
   const featuredPost = MOCK_POSTS.find((p) => p.isFeatured);
+
+  useEffect(() => {
+    const fetchDevPosts = async () => {
+      setIsLoadingDevPosts(true);
+      try {
+        const response = await fetch(DEV_POSTS_ENDPOINT);
+        if (!response.ok) {
+          throw new Error("Failed to fetch Dev posts");
+        }
+        const result = await response.json();
+        const rows = result?.data?.rows ?? result?.rows ?? [];
+        setDevPosts(rows.slice(0, DEV_POST_LIMIT));
+      } catch (error) {
+        console.error("Failed to load Dev posts", error);
+      } finally {
+        setIsLoadingDevPosts(false);
+      }
+    };
+
+    fetchDevPosts();
+  }, []);
   return (
     <div className="bg-white font-sans">
          {/* transformation obstacles */}
@@ -233,10 +282,12 @@ const Dev = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {SearchOfCategory.map((category) => {
               const IconComponent = category.icon;
+              const slug = category.title.toLowerCase().replace(/\s+/g, "-");
               return (
-                <div
+                <Link
                   key={category.id}
-                  className="flex flex-col items-center p-4 rounded-lg cursor-pointer hover:shadow-lg transition"
+                  href={`/blog/category/${slug}`}
+                  className="flex flex-col items-center p-4 rounded-lg hover:shadow-lg transition"
                   style={{ backgroundColor: category?.color }}
                 >
                   <div
@@ -255,7 +306,7 @@ const Dev = () => {
                   >
                     {category.title}
                   </p>
-                </div>
+                </Link>
               );
             })}
             {SearchOfCategory.length === 0 && <p>No categories available.</p>}
@@ -271,33 +322,33 @@ const Dev = () => {
           <div className="border-b border-[#E5E5E7] mb-8"></div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
-            {PopularPosts.map((post) => (
-              <div key={post.id} className="flex flex-col">
-                <div className="relative">
-                  <img
-                    src={post.imageUrl}
-                    alt={post.title}
-                    className="w-full h-48 object-cover rounded-[4px]"
-                  />
-                  <span className="absolute bottom-4 right-4 px-3 py-2 bg-[#1E8767] text-white text-sm font-medium rounded-lg shadow-md">
-                    {post.category}
-                  </span>
-                </div>
-                <div className="mt-4">
-                  <a href={`/blog/${post.id}`} className="subtext-6">
-                    {post.title}
-                  </a>
-                  <p className="text-sm text-gray-500 mt-2 flex items-center">
-                    <CalendarDays className="w-4 h-4 mr-1 text-[#525D6A]" />
-                    <span className="font-semibold text-xs">{post.date}</span>
-                  </p>
-                </div>
-              </div>
-            ))}
+                {PopularPosts.map((post) => (
+                  <div key={post.id} className="flex flex-col">
+                    <div className="relative">
+                      <img
+                        src={post.imageUrl}
+                        alt={post.title}
+                        className="w-full h-48 object-cover rounded-[4px]"
+                      />
+                      <span className="absolute bottom-4 right-4 px-3 py-2 bg-[#1E8767] text-white text-sm font-medium rounded-lg shadow-md">
+                        {post.category}
+                      </span>
+                    </div>
+                    <div className="mt-4">
+                      <Link href={getDevPostHref(post)} className="subtext-6">
+                        {post.title}
+                      </Link>
+                      <p className="text-sm text-gray-500 mt-2 flex items-center">
+                        <CalendarDays className="w-4 h-4 mr-1 text-[#525D6A]" />
+                        <span className="font-semibold text-xs">{post.date}</span>
+                      </p>
+                    </div>
+                  </div>
+                ))}
           </div>
           <div className="flex justify-center items-center lg:mt-10 mt-6">
             <a
-              href={`/blog/${featuredPost.id}`}
+              href="/blog/dev"
               className=" mt-[16px] text-green-600 font-semibold hover:text-green-700 transition border-green-200 hover:border-green-600 pb-0.5 mt-auto"
             >
               <button className=" flex items-center text-[#1E8767] py-2 px-6 border border[#1E8767] cursor-pointer  hover:bg-[#1E8767] hover:text-white transition">
@@ -306,6 +357,77 @@ const Dev = () => {
             </a>
           </div>
         </section>
+        {/* <section className="mt-16">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="text-2xl font-semibold text-[#2B2D2F]">
+              Dev Blog Posts
+            </h2>
+            {!isLoadingDevPosts && devPosts.length > 0 && (
+              <p className="text-sm text-gray-500">
+                Showing {devPosts.length} posts
+              </p>
+            )}
+          </div>
+          <div className="border-b border-[#E5E5E7] mb-6"></div>
+
+          {isLoadingDevPosts ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="h-64 rounded-[20px] border border-dashed border-[#D1D5DB] bg-gray-50 animate-pulse"
+                />
+              ))}
+            </div>
+          ) : devPosts.length ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {devPosts.map((post) => {
+                const imageSrc =
+                  post.featuredImageBase64 ||
+                  post.featuredImage ||
+                  DEFAULT_DEV_POST_IMAGE;
+                const dateLabel = formatIsoDate(
+                  post.publishedAt || post.createdAt || post.updatedAt
+                );
+                  const detailSlug = post.slug || post.id;
+                return (
+                  <Link
+                    key={post.id}
+                      href={`/blog/blogDetails?id=${encodeURIComponent(detailSlug)}`}
+                    className="group block overflow-hidden rounded-[26px] border border-[#E5E5E7] bg-white shadow-sm transition hover:shadow-lg"
+                  >
+                    <div className="h-56 w-full overflow-hidden bg-gray-100">
+                      <img
+                        src={imageSrc}
+                        alt={post.metaTitle ?? "Dev post image"}
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="space-y-3 p-5 sm:p-6">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-[#1E8767]">
+                        <span>Dev</span>
+                      </div>
+                      <h3 className="text-lg font-semibold text-[#111827]">
+                        {post.metaTitle || post.title}
+                      </h3>
+                      <p className="text-sm leading-6 text-[#4B5563]">
+                        {post.metaDescription || post.summary}
+                      </p>
+                      <div className="flex items-center gap-2 text-sm font-semibold text-[#6B7280]">
+                        <CalendarDays className="w-4 h-4 text-[#6B7280]" />
+                        <span>{dateLabel}</span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-center text-sm text-gray-500 py-6">
+              No Dev posts available right now.
+            </p>
+          )}
+        </section> */}
       </div>
     </div>
   );

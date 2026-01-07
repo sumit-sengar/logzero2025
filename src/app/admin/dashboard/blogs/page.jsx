@@ -134,7 +134,7 @@ export default function BlogDashboard() {
 
       const res = await api.get(`/posts?${params.toString()}`);
       const data = res.data;
-
+      
       if (data?.success && Array.isArray(data?.data?.rows)) {
         setPosts(data.data.rows);
 
@@ -281,6 +281,7 @@ export default function BlogDashboard() {
       {/* --- SIDEBAR FILTERS --- */}
       <aside className="w-full md:w-56 bg-zinc-900 border-r border-zinc-800 p-4 md:p-5 flex-shrink-0 md:h-screen md:sticky md:top-0 overflow-y-auto">
         <div className="flex items-center gap-2 mb-4 text-blue-400">
+
           <Filter size={18} />
           <h2 className="font-semibold text-sm md:text-base !text-blue-400">Filters</h2>
         </div>

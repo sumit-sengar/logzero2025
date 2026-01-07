@@ -6,6 +6,27 @@ import MultiSelect from "../../../../admin/components/MultiSelect";
 import { useRouter } from "next/navigation";
 import api from "../../../../../lib/api";
 
+const formatCreatedAtValue = (value) => {
+  if (!value) return null;
+
+  let formatted = value;
+  if (formatted.includes("T")) {
+    formatted = formatted.replace("T", " ");
+  }
+
+  if (!/\d{2}:\d{2}:\d{2}$/.test(formatted)) {
+    formatted = `${formatted}:00`;
+  }
+
+  return formatted;
+};
+
+const getLocalDatetimeNow = () => {
+  const now = new Date();
+  const pad = (num) => num.toString().padStart(2, "0");
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+};
+
 export default function AddPostPage() {
   const router = useRouter();
   const [filters, setFilters] = useState(null);
@@ -20,6 +41,9 @@ export default function AddPostPage() {
   const formRef = useRef({
     metaTitle: "",
     metaDescription: "",
+    author: "",
+    popular: false,
+    created_at: "",
     type: "blog_post",
     status: "draft",
     blogCategory: "",
@@ -185,6 +209,17 @@ export default function AddPostPage() {
     setDirty(true);
   };
 
+  const handleTogglePopular = () => {
+    setForm((prev) => ({ ...prev, popular: !prev.popular }));
+    setDirty(true);
+  };
+
+  const handleSetCreatedAtNow = () => {
+    const nowValue = getLocalDatetimeNow();
+    setForm((prev) => ({ ...prev, created_at: nowValue }));
+    setDirty(true);
+  };
+
   const buildPayload = useCallback((statusOverride) => {
     const currentForm = formRef.current;
 
@@ -204,12 +239,19 @@ export default function AddPostPage() {
     const payload = {
       metaTitle: currentForm.metaTitle,
       metaDescription: currentForm.metaDescription,
+      author: currentForm.author,
       type: currentForm.type,
       status: statusOverride ?? currentForm.status,
       content: contentBlocks,
       solutionIds: currentForm.solutionIds,
+      popular: currentForm.popular,
       featuredImageBase64: currentForm.featuredImageBase64 || undefined,
     };
+
+    const formattedCreatedAt = formatCreatedAtValue(currentForm.created_at);
+    if (formattedCreatedAt) {
+      payload.created_at = formattedCreatedAt;
+    }
 
     if (currentForm.type === "blog_post") {
       payload.blogCategory = currentForm.blogCategory;
@@ -314,7 +356,7 @@ export default function AddPostPage() {
 
     try {
       const payload = buildPayload();
-
+       
       let res;
       if (draftId) {
         res = await api.put(`/posts/${draftId}`, payload);
@@ -368,6 +410,57 @@ export default function AddPostPage() {
                 rows={2}
                 className="w-full rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
               />
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-end gap-4">
+                <div className="flex-1 min-w-[210px]">
+                  <label className="block text-sm mb-1">Author *</label>
+                  <input
+                    name="author"
+                    value={form.author}
+                    onChange={handleBasicChange}
+                    required
+                    className="w-full rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm mb-1">Popular</label>
+                  <button
+                    type="button"
+                    onClick={handleTogglePopular}
+                    aria-pressed={form.popular}
+                    className={`px-4 py-2 text-sm font-semibold rounded-full transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                      form.popular
+                        ? "bg-emerald-500 text-black"
+                        : "bg-zinc-800 text-gray-200"
+                    }`}
+                  >
+                    {form.popular ? "Popular" : "Mark popular"}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-1 text-sm">
+                <label className="block text-sm mb-1">Created at (optional)</label>
+                <div className="flex flex-wrap gap-3">
+                  <input
+                    type="datetime-local"
+                    name="created_at"
+                    value={form.created_at}
+                    onChange={handleBasicChange}
+                    className="flex-1 rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleSetCreatedAtNow}
+                    className="rounded border border-zinc-700 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-300 transition hover:border-zinc-500"
+                  >
+                    Use current time
+                  </button>
+                </div>
+              </div>
             </div>
 
             <div className="flex gap-4">

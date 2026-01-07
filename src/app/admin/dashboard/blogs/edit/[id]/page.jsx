@@ -6,6 +6,38 @@ import BlogEditor  from "../../../../../admin/components/BlogSimpleEditor"
 import MultiSelect from "../../../../../admin/components/MultiSelect";
 import api from "../../../../../../lib/api";
 
+const formatCreatedAtValue = (value) => {
+  if (!value) return null;
+
+  let formatted = value;
+  if (formatted.includes("T")) {
+    formatted = formatted.replace("T", " ");
+  }
+
+  if (!/\d{2}:\d{2}:\d{2}$/.test(formatted)) {
+    formatted = `${formatted}:00`;
+  }
+
+  return formatted;
+};
+
+const getLocalDatetimeNow = () => {
+  const now = new Date();
+  const pad = (num) => num.toString().padStart(2, "0");
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+};
+
+const adaptCreatedAtForInput = (value) => {
+  if (!value) return "";
+
+  const normalized = value.replace("T", " ").trim();
+  const [date, time] = normalized.split(" ");
+  if (!date || !time) return "";
+  const [hours, minutes] = time.split(":");
+  if (!hours || !minutes) return "";
+  return `${date}T${hours}:${minutes}`;
+};
+
 export default function EditPostPage() {
   const params = useParams();
   const router = useRouter();
@@ -19,6 +51,9 @@ export default function EditPostPage() {
   const [form, setForm] = useState({
     metaTitle: "",
     metaDescription: "",
+    author: "",
+    popular: false,
+    created_at: "",
     type: "blog_post",
     status: "draft",
     blogCategory: "",
@@ -154,9 +189,13 @@ export default function EditPostPage() {
 
         const htmlContent = p.content?.blocks?.[0]?.data?.text ?? "<p></p>";
 
+        const createdAtRaw = p.created_at ?? p.createdAt ?? "";
         setForm({
           metaTitle: p.metaTitle ?? "",
           metaDescription: p.metaDescription ?? "",
+          author: p.author ?? "",
+          popular: p.popular ?? false,
+          created_at: adaptCreatedAtForInput(createdAtRaw),
           type: p.type,
           status: p.status,
           blogCategory: p.blogCategory ?? "",
@@ -203,6 +242,15 @@ export default function EditPostPage() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleTogglePopular = () => {
+    setForm((prev) => ({ ...prev, popular: !prev.popular }));
+  };
+
+  const handleSetCreatedAtNow = () => {
+    const nowValue = getLocalDatetimeNow();
+    setForm((prev) => ({ ...prev, created_at: nowValue }));
+  };
+
   const handleEditorChange = (html) => {
     setForm((prev) => ({ ...prev, editorHtml: html }));
   };
@@ -230,12 +278,19 @@ export default function EditPostPage() {
     const payload = {
       metaTitle: form.metaTitle,
       metaDescription: form.metaDescription,
+      author: form.author,
+      popular: form.popular,
       type: form.type,
       status: form.status,
       content: contentBlocks,
       solutionIds: form.solutionIds,
       featuredImageBase64: form.featuredImageBase64 || null,
     };
+
+    const formattedCreatedAt = formatCreatedAtValue(form.created_at);
+    if (formattedCreatedAt) {
+      payload.created_at = formattedCreatedAt;
+    }
 
     if (form.type === "blog_post") {
       payload.blogCategory = form.blogCategory || null;
@@ -295,6 +350,57 @@ export default function EditPostPage() {
                 rows={2}
                 className="w-full rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
               />
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-end gap-4">
+                <div className="flex-1 min-w-[210px]">
+                  <label className="block text-sm mb-1">Author *</label>
+                  <input
+                    name="author"
+                    value={form.author}
+                    onChange={handleBasicChange}
+                    required
+                    className="w-full rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm mb-1">Popular</label>
+                  <button
+                    type="button"
+                    onClick={handleTogglePopular}
+                    aria-pressed={form.popular}
+                    className={`px-4 py-2 text-sm font-semibold rounded-full transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                      form.popular
+                        ? "bg-emerald-500 text-black"
+                        : "bg-zinc-800 text-gray-200"
+                    }`}
+                  >
+                    {form.popular ? "Popular" : "Mark popular"}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-1 text-sm">
+                <label className="block text-sm mb-1">Created at (optional)</label>
+                <div className="flex flex-wrap gap-3">
+                  <input
+                    type="datetime-local"
+                    name="created_at"
+                    value={form.created_at}
+                    onChange={handleBasicChange}
+                    className="flex-1 rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleSetCreatedAtNow}
+                    className="rounded border border-zinc-700 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-300 transition hover:border-zinc-500"
+                  >
+                    Use current time
+                  </button>
+                </div>
+              </div>
             </div>
 
             <div className="flex gap-4">

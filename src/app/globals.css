@@ -518,6 +518,23 @@ html, body {
   background: #52525b;
 }
 
+/* Active category glow animation */
+.category-glow {
+  animation: categoryGlow 1.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes categoryGlow {
+  0%, 100% {
+    transform: scale(1.01);
+    box-shadow: 0 0 18px rgba(30, 135, 103, 0.28);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 0 26px rgba(30, 135, 103, 0.4);
+  }
+}
+
 
 
 

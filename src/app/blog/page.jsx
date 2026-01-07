@@ -1,151 +1,30 @@
 "use client";
-import React, { useState } from "react";
-import { Code, Bolt, Server, Diamond, FileText,CalendarDays  } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Code, Bolt, Server, Diamond, FileText, CalendarDays } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { MdOutlineArrowRight } from "react-icons/md";
+
 const featuredImage = "/assets/img/featuredImage.webp";
 const popularPostImage = "/assets/img/popularPostImg.webp";
 const ladderImg = "/assets/img/ladderImg.webp";
-const dentalImage1 =
-  "https://placehold.co/100x100/C8E6C9/388E3C?text=Dental+Health";
-const dentalImage2 =
-  "https://placehold.co/100x100/A5D6A7/000000?text=Dental+Wellness";
-
-const MOCK_POSTS = [
-  {
-    id: 1,
-    title: "When Medical Expert Witnesses Change The Course of Litigation",
-    author: "NEHA BHATNAGAR",
-    date: "November 16, 2025",
-    category: "Mobile App Development",
-    summary:
-      "High-Stakes Scenarios Meet Medical Expertise A pedestrian struck by a distracted driver suffers internal injuries so complex the courtroom air...",
-    imageUrl: "/assets/img/featuredImage.webp",
-    isFeatured: true,
-  },
-
-  {
-    id: 2,
-    title:
-      "Enhancing Your Dental Health with Premier Services from St. George Dentists",
-    date: "December 1, 2025",
-    imageUrl: "/assets/img/featuredImage2.webp",
-  },
-  {
-    id: 3,
-    title:
-      "Boost Your Dental Wellness with Top-Notch Care from St. George Dental Experts",
-    date: "December 1, 2025",
-    imageUrl: "/assets/img/featuredImage2.webp",
-  },
-  {
-    id: 4,
-    title:
-      "Boost Your Dental Wellness with Top-notch Care from St. George Dental Experts",
-    date: "December 1, 2025",
-    imageUrl: "/assets/img/featuredImage2.webp",
-  },
-  {
-    id: 5,
-    title:
-      "Boost Your Dental Wellness with Top-notch Care from St. George Dental Experts",
-    date: "December 1, 2025",
-    imageUrl: "/assets/img/featuredImage2.webp",
-  },
-];
+const dentalImage1 = "https://placehold.co/100x100/C8E6C9/388E3C?text=Dental+Health";
+const dentalImage2 = "https://placehold.co/100x100/A5D6A7/000000?text=Dental+Wellness";
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api";
 
 const SearchOfCategory = [
-  {
-    id: 1,
-    title: "Dev",
-    color: "#FFEDEC",
-    iconBg: "#F9E4E3",
-    icon: Code,
-    iconColor: "#7D2F2B",
-  },
-  {
-    id: 2,
-    title: "Digital Solutions",
-    color: "#F7EBFF",
-    icon: Bolt,
-    iconBg: "#ECDDF6",
-    iconColor: "#60387A",
-  },
-  {
-    id: 3,
-    title: "DevOps &Server Management",
-    color: "#ECF1FF",
-    icon: Server,
-    iconBg: "#E0E7FB",
-    iconColor: "#354571",
-  },
-  {
-    id: 4,
-    title: "Design",
-    color: "#D8F9F3",
-    icon: Diamond,
-    iconBg: "#BBE4DD",
-    iconColor: "#256D5B",
-  },
-  {
-    id: 5,
-    title: "Docs",
-    color: "#FFF3CB",
-    icon: FileText,
-    iconBg: "#F9E4E3",
-    iconColor: "#9F8A47",
-  },
+  { id: 1, title: "Dev", color: "#FFEDEC", iconBg: "#F9E4E3", icon: Code, iconColor: "#7D2F2B" },
+  { id: 2, title: "Digital Solutions", color: "#F7EBFF", icon: Bolt, iconBg: "#ECDDF6", iconColor: "#60387A" },
+  { id: 3, title: "DevOps &Server Management", color: "#ECF1FF", icon: Server, iconBg: "#E0E7FB", iconColor: "#354571" },
+  { id: 4, title: "Design", color: "#D8F9F3", icon: Diamond, iconBg: "#BBE4DD", iconColor: "#256D5B" },
+  { id: 5, title: "Docs", color: "#FFF3CB", icon: FileText, iconBg: "#F9E4E3", iconColor: "#9F8A47" },
 ];
 
-const PopularPosts = [
-  {
-    id: 1,
-    category: "Web Development",
-    title:
-      "Boost Your Dental Wellness with Top-notch Care from St. George Dental Experts",
-    date: "October 10, 2025",
-    imageUrl: popularPostImage,
-  },
-  {
-    id: 2,
-    category: "Mobile Development",
-    title:
-      "Boost Your Dental Wellness with Top-notch Care from St. George Dental Experts",
-    date: "October 12, 2025",
-    imageUrl: popularPostImage,
-  },
-  {
-    id: 3,
-    category: "Design",
-    title:
-      "Boost Your Dental Wellness with Top-notch Care from St. George Dental Experts",
-    date: "October 12, 2025",
-    imageUrl: popularPostImage,
-  },
-  {
-    id: 4,
-    category: "Digital Solutions",
-    title:
-      "Boost Your Dental Wellness with Top-notch Care from St. George Dental Experts",
-    date: "October 12, 2025",
-    imageUrl: popularPostImage,
-  },
-];
-
-const CalendarIcon = (props) => (
-  <svg
-    {...props}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 20 20"
-    fill="currentColor"
-  >
-    <path
-      fillRule="evenodd"
-      d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-      clipRule="evenodd"
-    />
-  </svg>
-);
+const getDevPostHref = (post) => {
+  const identifier = post?.id ?? post?.slug ?? "";
+  if (!identifier) return "/blog/blogDetails";
+  return `/blog/blogDetails?id=${encodeURIComponent(identifier)}`;
+};
 
 const ChevronRightIcon = (props) => (
   <svg
@@ -212,7 +91,6 @@ const InfoCircleIcon = (props) => (
 const SmallBlogItem = ({ post, onDropdownToggle, isDropdownOpen }) => {
   const isSpecial = post.title.includes("No-Claim Bonus");
   const Icon = isDropdownOpen ? ChevronDownIcon : ArrowRightIcon;
-  const SpecialIcon = InfoCircleIcon;
 
   return (
     <div className="">
@@ -227,37 +105,26 @@ const SmallBlogItem = ({ post, onDropdownToggle, isDropdownOpen }) => {
             <Icon className="w-8 h-8" />
           </div>
         ) : (
-          <span className="text-blue-500 mr-2 mt-1 text-lg leading-none">
-            &raquo;
-          </span>
+          <span className="text-blue-500 mr-2 mt-1 text-lg leading-none">&raquo;</span>
         )}
-        <a
-          href={`/blog/${post.id}`}
-          className="leading-tight text-[#0D0B0B] hover:text-green-600"
-        >
+        <Link href={getDevPostHref(post)} className="leading-tight text-[#0D0B0B] hover:text-green-600">
           <span className="text-base">{post.title} </span>
-        </a>
+        </Link>
       </div>
       <p className="text-xs text-gray-500 ml-[40px] mt-1 flex items-center">
-        <CalendarDays  className="w-4 h-4 mr-1" />
+        <CalendarDays className="w-4 h-4 mr-1" />
         <span className="text-sm">{post.date} </span>
       </p>
       {isSpecial && isDropdownOpen && (
         <div className="mt-2 ml-6 p-3 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-600 shadow-inner">
-          <h4 className="font-bold mb-1 text-green-700">
-            Restore Your NCB: Quick Info
-          </h4>
+          <h4 className="font-bold mb-1 text-green-700">Restore Your NCB: Quick Info</h4>
           <p>
-            The No-Claim Bonus (NCB) can typically be restored within 90 days of
-            policy renewal. However, if you make a claim, the NCB is reset to
-            zero. You can protect it using an NCB Protect Add-on.
+            The No-Claim Bonus (NCB) can typically be restored within 90 days of policy renewal. However, if you make a
+            claim, the NCB is reset to zero. You can protect it using an NCB Protect Add-on.
           </p>
-          <a
-            href={`/blog/${post.id}`}
-            className="text-blue-500 hover:text-blue-700 mt-2 block font-medium"
-          >
+          <Link href={getDevPostHref(post)} className="text-blue-500 hover:text-blue-700 mt-2 block font-medium">
             View Full Guide →
-          </a>
+          </Link>
         </div>
       )}
     </div>
@@ -267,10 +134,125 @@ const SmallBlogItem = ({ post, onDropdownToggle, isDropdownOpen }) => {
 // Main App Component
 export default function App() {
   const [openDropdownId, setOpenDropdownId] = useState(null);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(2); // sidebar starts from the next batch after the first five
+  const [staticPosts, setStaticPosts] = useState([]);
+  const [sidebarPosts, setSidebarPosts] = useState([]);
+  const [loadingMain, setLoadingMain] = useState(true);
+  const [loadingSidebar, setLoadingSidebar] = useState(true);
+  const [popularPosts, setPopularPosts] = useState([]);
+  const [loadingPopular, setLoadingPopular] = useState(false);
+  const [popularLoadedMore, setPopularLoadedMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [reachedEnd, setReachedEnd] = useState(false);
 
-  const featuredPost = MOCK_POSTS.find((p) => p.isFeatured);
-  const mediumPosts = MOCK_POSTS.filter((p) => !p.isFeatured);
+  useEffect(() => {
+    const fetchInitialPosts = async () => {
+      setLoadingMain(true);
+      try {
+        const res = await fetch(`${baseUrl}/posts?type=blog_post&limit=5&page=1`);
+        const data = await res.json();
+        const rows = data?.data?.rows ?? data?.rows ?? [];
+        setStaticPosts(rows);
+        console.log('Fetched initial posts rows:', rows);
+      } catch (err) {
+        console.error('Error fetching initial posts:', err);
+      } finally {
+        setLoadingMain(false);
+      }
+    };
+
+    fetchInitialPosts();
+  }, []);
+
+  useEffect(() => {
+    const fetchSidebarPosts = async () => {
+      setLoadingSidebar(true);
+      try {
+        const res = await fetch(`${baseUrl}/posts?type=blog_post&limit=5&page=${page}`);
+        const data = await res.json();
+        const rows = data?.data?.rows ?? data?.rows ?? [];
+
+        if (!Array.isArray(rows) || rows.length === 0) {
+          setHasMore(false);
+          setReachedEnd(true);
+          setLoadingSidebar(false);
+          return;
+        }
+
+        setSidebarPosts(rows);
+        setHasMore(rows.length === 5);
+        setReachedEnd(false);
+        console.log('Fetched sidebar posts rows:', rows);
+      } catch (err) {
+        console.error('Error fetching sidebar posts:', err);
+      } finally {
+        setLoadingSidebar(false);
+      }
+    };
+
+    fetchSidebarPosts();
+  }, [page]);
+
+  useEffect(() => {
+    const fetchPopularPosts = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/posts?popular=true&limit=4&page=1`);
+        const data = await res.json();
+        const rows = data?.data?.rows ?? data?.rows ?? [];
+        const firstBatch = Array.isArray(rows) ? rows : [];
+        setPopularPosts(firstBatch);
+        setPopularLoadedMore(false);
+        console.log('Fetched popular posts rows (initial 4):', firstBatch);
+      } catch (err) {
+        console.error('Error fetching popular posts:', err);
+      }
+    };
+
+    fetchPopularPosts();
+  }, []);
+
+  // derive columns: first five are fixed (feature + stacked), sidebar is paginated
+  const featuredPost = staticPosts[0] ?? null;
+  const col2Posts = staticPosts.slice(1, 5);
+  const col3Posts = sidebarPosts || [];
+  const sidebarCount = Array.isArray(sidebarPosts) ? sidebarPosts.length : 0;
+
+  const formatDate = (iso) => {
+    if (!iso) return "";
+    try {
+      const d = new Date(iso);
+      return d.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    } catch (e) {
+      return iso;
+    }
+  };
+
+  const getFeaturedImageSrc = (post) => {
+    if (!post) return featuredImage;
+    // Use base64 if present, otherwise fallback to featuredImage or default
+    return post.featuredImageBase64 || post.featuredImage || featuredImage;
+  };
+
+  const getCol2ImageSrc = (post) => {
+    // prefer a local default image when post has no image
+    return post?.featuredImage || "/assets/img/featuredImage2.webp";
+  };
+
+  const getPopularImageSrc = (post) => {
+    if (!post) return popularPostImage;
+    if (post.featuredImageBase64) return post.featuredImageBase64;
+    if (post.featuredImage) return post.featuredImage;
+    if (post.imageUrl) return post.imageUrl;
+    return popularPostImage;
+  };
+
+  const getPopularTitle = (post) => post?.metaTitle || post?.title || "";
+
+  const hasPopularPosts = Array.isArray(popularPosts) && popularPosts.length > 0;
 
   const specialPost = {
     id: 6,
@@ -291,17 +273,48 @@ export default function App() {
     }
   };
 
-  const handleNextPage = () => setPage(page + 1);
-  const handlePrevPage = () => setPage(page > 1 ? page - 1 : 1);
+  const handleLoadMorePopular = async () => {
+    if (popularLoadedMore || loadingPopular) return;
+    setLoadingPopular(true);
+    try {
+      // Fetch a larger window (first 12) and append everything after the initial 4
+      const res = await fetch(`${baseUrl}/posts?popular=true&limit=12&page=1`);
+      const data = await res.json();
+      const rows = data?.data?.rows ?? data?.rows ?? [];
+      const allRows = Array.isArray(rows) ? rows : [];
+      const nextBatch = allRows.slice(4, 12); // take items after the first four
+      setPopularPosts((prev) => [...prev, ...nextBatch].slice(0, 12));
+      setPopularLoadedMore(true);
+      console.log('Fetched popular posts rows (next up to 8):', nextBatch);
+    } catch (err) {
+      console.error('Error fetching more popular posts:', err);
+    } finally {
+      setLoadingPopular(false);
+    }
+  };
+
+  const canLoadMorePopular = !popularLoadedMore && popularPosts.length > 0 && popularPosts.length < 12;
+
+  const handleNextPage = () => {
+    if (!reachedEnd && sidebarCount === 5) {
+      setPage(page + 1);
+    }
+  };
+  const handlePrevPage = () => {
+    if (!reachedEnd && page > 2 && sidebarCount > 0) {
+      setPage(page - 1);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans">
       <div className="container mx-auto px-4 lg:px-0 py-10">
+        <h2 className="font-semibold !text-[#2B2D2F] !text-[40px] mb-2">Tech Insights & Industry Updates</h2>
         {/* Header and Search */}
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4 md:mb-0">
-            Blogs
-          </h1>
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+          <h3 className="!text-xl font-bold !text-[#1E8767] mb-4 md:mb-0">
+          In-depth insights, tutorials, and expert opinions on modern technology and digital solutions.
+          </h3>
           <div className="relative w-full md:w-64">
             <input
               type="search"
@@ -324,116 +337,172 @@ export default function App() {
               />
             </svg>
           </div>
+          
         </header>
+        <div className="border-b border-[#E5E5E7] mb-4"></div>
 
         {/* Main Content: 3-Column Grid */}
-        <main className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-8">
+        {loadingMain ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-pulse">
+            <div className="space-y-2">
+              <div className="w-full h-48 bg-gray-200 rounded" />
+              <div className="h-4 bg-gray-200 rounded w-3/4 mt-3" />
+              <div className="h-3 bg-gray-200 rounded w-1/2 mt-2" />
+            </div>
+
+            <div className="space-y-2">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex space-x-4 items-center">
+                  <div className="w-24 h-16 bg-gray-200 rounded" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-gray-200 rounded w-3/4" />
+                    <div className="h-3 bg-gray-200 rounded w-1/2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-2">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="h-4 bg-gray-200 rounded w-full" />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <main className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Column 1: Featured Post */}
           <div className="md:col-span-1">
             {featuredPost && (
               <div className=" flex flex-col">
                 <div className="relative">
                   <img
-                    src={featuredPost.imageUrl}
-                    alt={featuredPost.title}
+                    src={getFeaturedImageSrc(featuredPost)}
+                    alt={featuredPost.metaTitle || "Featured"}
                     className="w-full h-48 object-cover rounded rounded-[4px]"
                   />
-                  <span className="absolute bottom-4 right-4 px-3 py-2 bg-[#1E8767] text-white text-sm font-medium rounded-lg shadow-md">
-                    {featuredPost.category}
-                  </span>
+                  {/* <span className="absolute bottom-4 right-4 px-3 py-2 bg-[#1E8767] text-white text-sm font-medium rounded-lg shadow-md">
+                    {featuredPost.blogCategory || ""}
+                  </span> */}
                 </div>
                 <div className="mt-4 flex flex-col flex-grow">
-                  <a href={`/blog/${featuredPost.id}`} className=" subtext-6 ">
-                    {featuredPost.title}
-                  </a>
+                  <Link href={getDevPostHref(featuredPost)} className=" subtext-6 hover:text-green-600">
+                    {featuredPost.metaTitle}
+                  </Link>
                   <p className="text-sm text-gray-500 mb-4 flex items-center mt-2">
                     <span className="font-semibold text-gray-700 mr-2 text-xs">
-                      BY {featuredPost.author}
+                      BY NEHA BHATNAGAR
                     </span>
                     &bull;
-                    <CalendarDays  className="w-4 h-4 mx-1 text-gray-400 " />
+                    <CalendarDays className="w-4 h-4 mx-1 text-gray-400 " />
                     <span className="font-semibold text-gray-700 mr-2 text-xs">
-                      {featuredPost.date}{" "}
+                      {formatDate(featuredPost.createdAt)}
                     </span>
                   </p>
-                  <p className="text-gray-600 mb-6 line-clamp-3">
-                    {featuredPost.summary}
+                  <p className="text-gray-600 mb-6 line-clamp-3 ">
+                    {featuredPost.metaDescription}
                   </p>
 
-                  <a
-                    href={`/blog/${featuredPost.id}`}
+                  <Link
+                    href={getDevPostHref(featuredPost)}
                     className=" mt-[16px] text-green-600 font-semibold hover:text-green-700 transition border-green-200 hover:border-green-600 pb-0.5 mt-auto"
                   >
                     <button className=" flex items-center text-[#1E8767] p-2 border border[#1E8767] cursor-pointer  hover:bg-[#1E8767] hover:text-white transition">
                       Read More <ChevronRightIcon className="ml-2 h-4 w-4" />
                     </button>
-                  </a>
+                  </Link>
                 </div>
               </div>
             )}
           </div>
 
           {/* Column 2: Stacked Medium Posts */}
-          <div className="md:col-span-1 space-y-4">
-            {mediumPosts.map((post) => (
-              <div key={post.id} className="flex space-x-4 bg-white   ">
+          <div className="md:col-span-1 space-y-2">
+            {col2Posts.map((post) => (
+              <div key={post.id} className="flex space-x-4 bg-white">
                 <div className="flex-shrink-0">
                   <img
-                    src={post.imageUrl}
-                    alt={post.title}
+                    src={getCol2ImageSrc(post)}
+                    alt={post.metaTitle}
                     className="object-cover rounded-[2px]"
                   />
                 </div>
                 <div className="flex-grow">
-                  <a
-                    href={`/blog/${post.id}`}
+                  <Link
+                    href={getDevPostHref(post)}
                     className="text-base font-semibold text-[#0D0B0B] hover:text-green-600 transition line-clamp-2 leading-snug"
                   >
-                    {post.title}
-                  </a>
+                    {post.metaTitle}
+                  </Link>
                   <p className="text-xs text-gray-500 mt-1 flex items-center">
-                    <CalendarDays  className="w-4 h-4 mr-1 text-[#525D6A]" />
-                    <span className="text-sm"> {post.date} </span>
+                    <CalendarDays className="w-4 h-4 mr-1 text-[#525D6A]" />
+                    <span className="text-sm"> {formatDate(post.createdAt)} </span>
                   </p>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Column 3: Right Sidebar (Small List) */}
+          {/* Column 3: Right Sidebar (Text List) */}
           <aside className="md:col-span-1  h-fit">
-            <div className="space-y-3">
-              {rightColumnPosts.map((post) => (
-                <SmallBlogItem
-                  key={post.id}
-                  post={post}
-                  onDropdownToggle={handleDropdownToggle}
-                  isDropdownOpen={openDropdownId === 6.1 && post.id === 6.1}
-                />
-              ))}
+            <div className="">
+              {loadingSidebar
+                ? Array.from({ length: 5 }).map((_, i) => (
+                    <div key={i} className="flex items-start text-sm mb-2 animate-pulse">
+                      <div className="text-blue-500 mr-2 mt-1">
+                        <ChevronRightIcon className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-3 bg-gray-200 rounded w-3/4" />
+                        <div className="h-3 bg-gray-200 rounded w-1/2" />
+                      </div>
+                    </div>
+                  ))
+                : col3Posts.map((post) => (
+                    <div key={post.id} className="flex items-start text-sm">
+                      <div className="text-blue-500 mr-2 mt-1">
+                        <ChevronRightIcon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <Link href={getDevPostHref(post)} className="leading-tight text-[#0D0B0B] hover:text-green-600 font-semibold">
+                          <span className="text-base">{post.metaTitle}</span>
+                        </Link>
+                        <p className="text-xs text-gray-500 mt-1 flex items-center">
+                          <CalendarDays className="w-4 h-4 mr-1" />
+                          <span className="text-sm">{formatDate(post.createdAt)}</span>
+                        </p>
+                      </div>
+                    </div>
+                  ))}
             </div>
           </aside>
         </main>
+        )}
 
         {/* Pagination (Dynamic Next/Prev Buttons) */}
-        <div className="flex justify-start items-center mt-12 space-x-4">
+        <div className="flex justify-end items-center  space-x-4">
           <button
             onClick={handlePrevPage}
-            disabled={page === 1}
+            disabled={page <= 2 || sidebarCount === 0 || reachedEnd}
             className="flex items-center px-4 py-2 text-sm font-medium rounded-full transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
-              backgroundColor: page === 1 ? "#e0e0e0" : "#d1fae5",
-              color: page === 1 ? "#757575" : "#059669",
+              backgroundColor: page <= 2 || sidebarCount === 0 || reachedEnd ? "#e0e0e0" : "#d1fae5",
+              color: page <= 2 || sidebarCount === 0 || reachedEnd ? "#757575" : "#059669",
               boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
             }}
           >
             <ChevronRightIcon className="h-4 w-4 mr-2 transform rotate-180" />
             Previous
           </button>
-          <span className="text-sm font-medium text-gray-600">Page {page}</span>
+          <span className="text-sm font-medium text-gray-600">Page {page - 1}</span>
           <button
             onClick={handleNextPage}
+            disabled={sidebarCount < 5 || reachedEnd}
             className="flex items-center px-4 py-2 text-sm font-medium text-white rounded-full transition duration-150 ease-in-out bg-green-600 hover:bg-green-700 shadow-lg hover:shadow-xl"
+            style={{
+              backgroundColor: sidebarCount < 5 || reachedEnd ? "#e0e0e0" : "#16a34a",
+              color: sidebarCount < 5 || reachedEnd ? "#757575" : "#ffffff",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            }}
           >
             Next
             <ChevronRightIcon className="h-4 w-4 ml-2" />
@@ -450,10 +519,12 @@ export default function App() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {SearchOfCategory.map((category) => {
               const IconComponent = category.icon;
+              const slug = category.title.toLowerCase().replace(/\s+/g, "-");
               return (
-                <div
+                <Link
                   key={category.id}
-                  className="flex flex-col items-center p-4 rounded-lg cursor-pointer hover:shadow-lg transition"
+                  href={`/blog/category/${slug}`}
+                  className="flex flex-col items-center p-4 rounded-lg hover:shadow-lg transition"
                   style={{ backgroundColor: category?.color }}
                 >
                   <div
@@ -472,7 +543,7 @@ export default function App() {
                   >
                     {category.title}
                   </p>
-                </div>
+                </Link>
               );
             })}
             {SearchOfCategory.length === 0 && <p>No categories available.</p>}
@@ -488,40 +559,60 @@ export default function App() {
           <div className="border-b border-[#E5E5E7] mb-8"></div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {PopularPosts.map((post) => (
-              <div key={post.id} className="flex flex-col">
+            {hasPopularPosts ? (
+              popularPosts.map((post) => (
+                <div key={post.id ?? post.metaTitle} className="flex flex-col">
+                  <div className="relative">
+                    <img
+                      src={getPopularImageSrc(post)}
+                      alt={getPopularTitle(post)}
+                      className="w-full h-48 object-cover rounded-[4px]"
+                    />
+                    <span className="absolute bottom-4 right-4 px-3 py-2 bg-[#1E8767] text-white text-sm font-medium rounded-lg shadow-md">
+                      {post?.blogCategory || post?.category || ""}
+                    </span>
+                  </div>
+                  <div className="mt-4">
+                    <Link href={getDevPostHref(post)} className="subtext-6 hover:text-green-600">
+                      {getPopularTitle(post)}
+                    </Link>
+                    <p className="text-sm text-gray-500 mt-2 flex items-center">
+                      <CalendarDays  className="w-4 h-4 mr-1 text-[#525D6A]" />
+                      <span className="font-semibold text-xs">{formatDate(post?.createdAt) || post?.date}</span>
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="flex flex-col border border-dashed border-gray-300 rounded-[4px] p-4 bg-gray-50 text-gray-700">
                 <div className="relative">
                   <img
-                    src={post.imageUrl}
-                    alt={post.title}
+                    src={popularPostImage}
+                    alt="Popular posts coming soon"
                     className="w-full h-48 object-cover rounded-[4px]"
                   />
                   <span className="absolute bottom-4 right-4 px-3 py-2 bg-[#1E8767] text-white text-sm font-medium rounded-lg shadow-md">
-                    {post.category}
+                    Popular
                   </span>
                 </div>
                 <div className="mt-4">
-                  <a href={`/blog/${post.id}`} className="subtext-6">
-                    {post.title}
-                  </a>
-                  <p className="text-sm text-gray-500 mt-2 flex items-center">
-                    <CalendarDays  className="w-4 h-4 mr-1 text-[#525D6A]" />
-                    <span className="font-semibold text-xs">{post.date}</span>
-                  </p>
+                  <p className="subtext-6">Popular posts coming soon</p>
+                  <p className="text-sm text-gray-500 mt-2">We are curating top reads. Check back shortly.</p>
                 </div>
               </div>
-            ))}
+            )}
           </div>
-          <div className="flex justify-center items-center lg:mt-10 mt-6">
-            <a
-              href={`/blog/${featuredPost.id}`}
-              className=" mt-[16px] text-green-600 font-semibold hover:text-green-700 transition border-green-200 hover:border-green-600 pb-0.5 mt-auto"
-            >
-              <button className=" flex items-center text-[#1E8767] py-2 px-6 border border[#1E8767] cursor-pointer  hover:bg-[#1E8767] hover:text-white transition">
-                Load More
+          {canLoadMorePopular && (
+            <div className="flex justify-center items-center lg:mt-10 mt-6">
+              <button
+                onClick={handleLoadMorePopular}
+                disabled={loadingPopular}
+                className="flex items-center text-[#1E8767] py-2 px-6 border border-[#1E8767] cursor-pointer hover:bg-[#1E8767] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loadingPopular ? "Loading..." : "Load More"}
               </button>
-            </a>
-          </div>
+            </div>
+          )}
         </section>
 
         {/* transformation obstacles */}
@@ -565,40 +656,60 @@ export default function App() {
           <div className="border-b border-[#E5E5E7] mb-8"></div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {PopularPosts.map((post) => (
-              <div key={post.id} className="flex flex-col">
+                {hasPopularPosts ? (
+                  popularPosts.map((post) => (
+                    <div key={post.id ?? post.metaTitle} className="flex flex-col">
+                      <div className="relative">
+                        <img
+                          src={getPopularImageSrc(post)}
+                          alt={getPopularTitle(post)}
+                          className="w-full h-48 object-cover rounded-[4px]"
+                        />
+                        <span className="absolute bottom-4 right-4 px-3 py-2 bg-[#1E8767] text-white text-sm font-medium rounded-lg shadow-md">
+                          {post?.blogCategory || post?.category || ""}
+                        </span>
+                      </div>
+                      <div className="mt-4">
+                        <Link href={getDevPostHref(post)} className="subtext-6">
+                          {getPopularTitle(post)}
+                        </Link>
+                    <p className="text-sm text-gray-500 mt-2 flex items-center">
+                      <CalendarDays  className="w-4 h-4 mr-1 text-[#525D6A]" />
+                      <span className="font-semibold text-xs">{formatDate(post?.createdAt) || post?.date}</span>
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="flex flex-col border border-dashed border-gray-300 rounded-[4px] p-4 bg-gray-50 text-gray-700">
                 <div className="relative">
                   <img
-                    src={post.imageUrl}
-                    alt={post.title}
+                    src={popularPostImage}
+                    alt="Popular posts coming soon"
                     className="w-full h-48 object-cover rounded-[4px]"
                   />
                   <span className="absolute bottom-4 right-4 px-3 py-2 bg-[#1E8767] text-white text-sm font-medium rounded-lg shadow-md">
-                    {post.category}
+                    Popular
                   </span>
                 </div>
                 <div className="mt-4">
-                  <a href={`/blog/${post.id}`} className="subtext-6">
-                    {post.title}
-                  </a>
-                  <p className="text-sm text-gray-500 mt-2 flex items-center">
-                    <CalendarDays  className="w-4 h-4 mr-1 text-[#525D6A]" />
-                    <span className="font-semibold text-xs">{post.date}</span>
-                  </p>
+                  <p className="subtext-6">Popular posts coming soon</p>
+                  <p className="text-sm text-gray-500 mt-2">We are curating top reads. Check back shortly.</p>
                 </div>
               </div>
-            ))}
+            )}
           </div>
-          <div className="flex justify-center items-center lg:mt-10 mt-6">
-            <a
-              href={`/blog/${featuredPost.id}`}
-              className=" mt-[16px] text-green-600 font-semibold hover:text-green-700 transition border-green-200 hover:border-green-600 pb-0.5 mt-auto"
-            >
-              <button className=" flex items-center text-[#1E8767] py-2 px-6 border border[#1E8767] cursor-pointer  hover:bg-[#1E8767] hover:text-white transition">
-                Load More
+          {canLoadMorePopular && (
+            <div className="flex justify-center items-center lg:mt-10 mt-6">
+              <button
+                onClick={handleLoadMorePopular}
+                disabled={loadingPopular}
+                className="flex items-center text-[#1E8767] py-2 px-6 border border-[#1E8767] cursor-pointer hover:bg-[#1E8767] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loadingPopular ? "Loading..." : "Load More"}
               </button>
-            </a>
-          </div>
+            </div>
+          )}
         </section>
       </div>
     </div>

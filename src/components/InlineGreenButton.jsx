@@ -1,3 +1,5 @@
+"use client";
+
 import { useModal } from "@/context/ModalContext";
 import { MoveRight, Send } from "lucide-react";
 export function InlineGreenButton({
