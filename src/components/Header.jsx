@@ -503,7 +503,7 @@ export default function Header() {
             },
             {
               title: "Blog",
-              link: "/blogs",
+              link: "/blog",
               children: [],
             },
           ].map((item) => (

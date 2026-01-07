@@ -1,5 +1,6 @@
 @import "tailwindcss";
-
+@import "../app/admin/styles/_keyframe-animations.scss";
+@import "../app/admin/styles/_variables.scss";
 
 :root {  
     --font-outfit: "Outfit", sans-serif;
@@ -70,6 +71,14 @@
     --bg-purpal-400: #9A3FEE; 
     --bg-purpal-500: #A855F7; 
     --bg-purpal-600: #6366F1; 
+}
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
 }
 
 /* font-normal → 400
@@ -482,6 +491,50 @@ html, body {
     @apply transition-transform duration-300 ease-in-out hover:scale-110 hover:shadow-lg;
   }
 } */
+
+/* ---- Custom Scrollbar Styling ---- */
+.scrollable-table {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f46 #18181b;
+}
+
+.scrollable-table::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scrollable-table::-webkit-scrollbar-track {
+  background: #18181b;
+  border-radius: 4px;
+}
+
+.scrollable-table::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 4px;
+  border: 2px solid #18181b;
+}
+
+.scrollable-table::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+}
+
+/* Active category glow animation */
+.category-glow {
+  animation: categoryGlow 1.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes categoryGlow {
+  0%, 100% {
+    transform: scale(1.01);
+    box-shadow: 0 0 18px rgba(30, 135, 103, 0.28);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 0 26px rgba(30, 135, 103, 0.4);
+  }
+}
+
 
 
 

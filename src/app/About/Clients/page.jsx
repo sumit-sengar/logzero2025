@@ -12,7 +12,7 @@ export default function client() {
   }, []);
 
   const { testimonialsOne } = useContext(Lztallcontext);
-  console.log(testimonialsOne);
+  // console.log(testimonialsOne);
 
   const faqs = [
     {

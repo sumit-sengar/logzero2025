@@ -109,18 +109,18 @@ export default function UxServices() {
     testimonialsOne,
     SucessStoryData,
   } = useContext(Lztallcontext);
-  console.log(
-    IndustriesWeServe,
-    UxServices,
-    Banner,
-    testimonialsOne,
-    SucessStoryData
-  );
+  // console.log(
+  //   IndustriesWeServe,
+  //   UxServices,
+  //   Banner,
+  //   testimonialsOne,
+  //   SucessStoryData
+  // );
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Replace with your submit logic (API call / form handler)
-    console.log("submit", Object.fromEntries(new FormData(e.target)));
+    // console.log("submit", Object.fromEntries(new FormData(e.target)));
   };
 
   const [openIndex, setOpenIndex] = useState(0); // first one open by default
@@ -322,7 +322,7 @@ export default function UxServices() {
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
         }}
         onSubmit={(formData) => {
-          console.log("Form submitted:", formData);
+          // console.log("Form submitted:", formData);
         }}
       />
 

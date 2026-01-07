@@ -26,7 +26,7 @@ export default function solutions() {
   }, []);
 
   const { data, features3, Banner7 } = useContext(Lztallcontext);
-  console.log(data, features3, Banner7);
+  // console.log(data, features3, Banner7);
 
   const services = [
     "Front-end & UI/UX",
@@ -609,7 +609,7 @@ export default function solutions() {
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
         }}
         onSubmit={(formData) => {
-          console.log("Form submitted:", formData);
+          // console.log("Form submitted:", formData);
         }}
       />
 

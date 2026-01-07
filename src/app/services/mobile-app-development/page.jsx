@@ -285,7 +285,7 @@ export default function MobileDevelopment() {
     testimonialsOne,
     SucessStoryData,
   } = useContext(Lztallcontext);
-  console.log(ChallengesMobileApp, MobileAppDevelopment);
+  // console.log(ChallengesMobileApp, MobileAppDevelopment);
 
   const [openIndex, setOpenIndex] = useState(0);
   const toggleFAQ = (index) => {
@@ -808,7 +808,7 @@ export default function MobileDevelopment() {
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
         }}
         onSubmit={(formData) => {
-          console.log("Form submitted:", formData);
+          // console.log("Form submitted:", formData);
         }}
       />
 

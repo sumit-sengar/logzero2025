@@ -7,9 +7,34 @@ import Trusted from "@/components/Trusted";
 import Head from "./head";
 import FAQSection from "@/components/FAQSection";
 import { useEffect, useState } from "react";
-import Recaptcha from "../../components/Recaptcha"
+import Recaptcha from "../../components/Recaptcha";
+import logger from "@/lib/logger";
+
+const CONTACT_INQUIRY_ENDPOINT =
+  "https://webapi.logzerotechnologies.com/api/v1/inquiry/create";
+
+const maskEmail = (email = "") => {
+  if (!email.includes("@")) {
+    return email || undefined;
+  }
+  const [local, domain] = email.split("@");
+  if (!local) {
+    return `*@${domain}`;
+  }
+  const safeLocal =
+    local.length <= 2 ? `${local[0]}*` : `${local.slice(0, 2)}***`;
+  return `${safeLocal}@${domain}`;
+};
+
+const buildFormLogMeta = (data = {}) => ({
+  name: data.name?.trim() || undefined,
+  email: data.email ? maskEmail(data.email) : undefined,
+  hasPhone: Boolean(data.phone),
+  phoneEnding: data.phone ? data.phone.slice(-2) : undefined,
+  detailLength: data.detail?.length || 0,
+});
 export default function ContactSection() {
- const [recaptchaToken, setRecaptchaToken] = useState(null);  
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -120,40 +145,63 @@ export default function ContactSection() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const submissionMeta = buildFormLogMeta(formData);
+    logger.debug({ submissionMeta }, "Contact form submission triggered");
 
-    // 1. Find the reCAPTCHA response token
-    // The reCAPTCHA widget inserts a hidden input field named 'g-recaptcha-response'
-    const recaptchaTokenField = document.querySelector('[name="g-recaptcha-response"]');
-    const recaptchaToken = recaptchaTokenField ? recaptchaTokenField.value : null;
+    const recaptchaTokenField = document.querySelector(
+      '[name="g-recaptcha-response"]'
+    );
+    const recaptchaTokenValue = recaptchaTokenField
+      ? recaptchaTokenField.value
+      : null;
 
-    if (!recaptchaToken) {
-        alert("Please complete the reCAPTCHA verification.");
-        // Optional: If you are using explicit rendering, you might need to reset/re-render the widget here.
-        return; 
+    if (!recaptchaTokenValue) {
+      logger.warn(
+        { submissionMeta },
+        "Contact form blocked because reCAPTCHA is missing"
+      );
+      alert("Please complete the reCAPTCHA verification.");
+      return;
     }
+
     const payload = {
       full_name: formData.name,
       email: formData.email,
       phone_number: formData.phone,
       message: formData.detail,
-      'g-recaptcha-response': recaptchaToken,
+      "g-recaptcha-response": recaptchaTokenValue,
     };
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
     try {
-      const res = await fetch(
-        "https://webapi.logzerotechnologies.com/api/v1/inquiry/create",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
+      logger.info(
+        { submissionMeta, endpoint: CONTACT_INQUIRY_ENDPOINT },
+        "Contact form submission started"
       );
-      console.log("res", res);
+
+      const res = await fetch(CONTACT_INQUIRY_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+
       const responseData = await res.json();
-      console.log("Submission response:", responseData);
+
       if (res.ok) {
-        console.log( "Submission response:", responseData);
+        logger.info(
+          {
+            submissionMeta,
+            endpoint: CONTACT_INQUIRY_ENDPOINT,
+            status: res.status,
+            responseMessage: responseData?.message,
+          },
+          "Contact form submission succeeded"
+        );
         setFormSucess(true);
         setFormData({
           name: "",
@@ -161,28 +209,54 @@ export default function ContactSection() {
           phone: "",
           detail: "",
         });
-        // 3. BEST PRACTICE: Reset the reCAPTCHA widget after a successful submission
         if (window.grecaptcha) {
           window.grecaptcha.reset();
         }
-      }else{
-
-        alert("Submission failed: " + (responseData.message || "Please try again later."));
+      } else {
+        logger.error(
+          {
+            submissionMeta,
+            endpoint: CONTACT_INQUIRY_ENDPOINT,
+            status: res.status,
+            responseMessage: responseData?.message,
+          },
+          "Contact form submission failed"
+        );
+        alert(
+          "Submission failed: " +
+            (responseData.message || "Please try again later.")
+        );
         setFormData({
           name: "",
           email: "",
           phone: "",
           detail: "",
         });
-         if (window.grecaptcha) {
+        if (window.grecaptcha) {
           window.grecaptcha.reset();
         }
       }
     } catch (error) {
-      console.error("Network error during submission:", error);
-       if (window.grecaptcha) {
-          window.grecaptcha.reset();
-        }
+      if (error.name === "AbortError") {
+        logger.error(
+          { submissionMeta, endpoint: CONTACT_INQUIRY_ENDPOINT },
+          "Contact form submission aborted due to timeout"
+        );
+      } else {
+        logger.error(
+          {
+            submissionMeta,
+            endpoint: CONTACT_INQUIRY_ENDPOINT,
+            error: error.message,
+          },
+          "Network error during contact form submission"
+        );
+      }
+      if (window.grecaptcha) {
+        window.grecaptcha.reset();
+      }
+    } finally {
+      clearTimeout(timeoutId);
     }
   };
 
@@ -269,7 +343,7 @@ export default function ContactSection() {
                           Email Address
                         </label>
                         <input
-                         required
+                          required
                           type="email"
                           name="email"
                           onChange={handleChange}
@@ -293,9 +367,9 @@ export default function ContactSection() {
                         />
                       </div>
                     </div>
-                                  <div className="flex justify-center py-4">
-    <Recaptcha onVerify={setRecaptchaToken} />
-  </div>
+                    <div className="flex justify-center py-4">
+                      <Recaptcha onVerify={setRecaptchaToken} />
+                    </div>
                     <div>
                       <div className="flex justify-center">
                         {/* <GreenButton
@@ -314,7 +388,6 @@ export default function ContactSection() {
                         </button>
                       </div>
                     </div>
-        
                   </form>
                 </div>
               </div>
@@ -327,7 +400,12 @@ export default function ContactSection() {
                     <div className="bg-[#3C74ED] p-3 rounded-full inline-block transition-transform duration-200 hover:scale-105">
                       <Phone className="text-[#f9fbfe] " size={20} />
                     </div>
-                    <a href="tel:+911140789940" className="inline-block transition-transform duration-200 hover:scale-105">+91 11 40789940 </a>
+                    <a
+                      href="tel:+911140789940"
+                      className="inline-block transition-transform duration-200 hover:scale-105"
+                    >
+                      +91 11 40789940{" "}
+                    </a>
                   </div>
                   <div className="flex flex-col md:flex-row items-start md:items-center gap-3 subtext subtextcolor py-2">
                     <div className="bg-[#42B1A5] p-3 rounded-full inline-block transition-transform duration-200 hover:scale-105">

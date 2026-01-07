@@ -55,15 +55,15 @@ export default function Mission() {
     tech,
     faq2,
   } = useContext(Lztallcontext);
-  console.log(
-    Comprehensive,
-    logServices,
-    SucessStoryData,
-    Banner4,
-    techStack,
-    tech,
-    faq2
-  );
+  // console.log(
+  //   Comprehensive,
+  //   logServices,
+  //   SucessStoryData,
+  //   Banner4,
+  //   techStack,
+  //   tech,
+  //   faq2
+  // );
 
   const BgColors = [
     "bgblue",

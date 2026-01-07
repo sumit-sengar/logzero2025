@@ -34,7 +34,7 @@ export default function UI() {
 
   const { UiServices, testimonialsOne, Banner5, ComprehensiveUi } =
     useContext(Lztallcontext);
-  console.log(UiServices, testimonialsOne, Banner5, ComprehensiveUi);
+  // console.log(UiServices, testimonialsOne, Banner5, ComprehensiveUi);
 
   const BgColors2 = [
     "bgblue",
@@ -774,7 +774,7 @@ to create exceptional user experiences."
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
         }}
         onSubmit={(formData) => {
-          console.log("Form submitted:", formData);
+          // console.log("Form submitted:", formData);
         }}
       />
 

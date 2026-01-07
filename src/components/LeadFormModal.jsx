@@ -17,6 +17,11 @@ import { useModal } from "@/context/ModalContext";
 import Recaptcha from "./Recaptcha";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import logger from "@/lib/logger";
+
+const CONTACT_INQUIRY_ENDPOINT = 
+"https://webapi.logzerotechnologies.com/api/v1/consultation/create";
+
 export default function LeadFormModal() {
   const { open, payload, closeModal } = useModal();
   const servicesFromPayload = payload?.servicesOptions || null;
@@ -173,12 +178,20 @@ export default function LeadFormModal() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const submissionMeta = buildFormLogMeta(formData);
+    logger.debug({ submissionMeta }, "Submitting lead form");
+
    // 1. Find the reCAPTCHA response token
     // The reCAPTCHA widget inserts a hidden input field named 'g-recaptcha-response'
     const recaptchaTokenField = document.querySelector('[name="g-recaptcha-response"]');
     const recaptchaToken = recaptchaTokenField ? recaptchaTokenField.value : null;
 
     if (!recaptchaToken) {
+      logger.error(
+        {submissionMeta},
+        "Lead form blocked because reCAPTCHA is missing"
+      )
         alert("Please complete the reCAPTCHA verification.");
         // Optional: If you are using explicit rendering, you might need to reset/re-render the widget here.
         return; 
@@ -195,8 +208,7 @@ export default function LeadFormModal() {
       return;
     }
 
-    const API_URL =
-      "https://webapi.logzerotechnologies.com/api/v1/consultation/create";
+    const API_URL = CONTACT_INQUIRY_ENDPOINT;
 
     const dataToSend = {
       email: formData.Email,
@@ -211,8 +223,17 @@ export default function LeadFormModal() {
       origin: formData.hearAboutUs,
       'g-recaptcha-response': recaptchaToken,
     };
+     const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
 
     try {
+
+       logger.info({
+        submissionMeta,
+        enpoint: CONTACT_INQUIRY_ENDPOINT,
+       },
+        "Sending lead form data to API"
+      )    
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
@@ -224,8 +245,16 @@ export default function LeadFormModal() {
 
       // console.log(response, responseData);
       if (response.ok) {
+        logger.info({
+          submissionMeta,
+          endpoint: CONTACT_INQUIRY_ENDPOINT,
+          status: response.status,
+          responseMessage: responseData.message,
+        },
+        "Lead form submitted successfully"
+        )
         setSubmissionStatus("success");
-        console.log("Lead form submitted successfully!");
+        // console.log("Lead form submitted successfully!");
         closeModal();
         setFormData({
           fullName: "",
@@ -246,6 +275,14 @@ export default function LeadFormModal() {
           window.grecaptcha.reset();
         }
       } else {
+         logger.error({
+          submissionMeta,
+          endpoint: CONTACT_INQUIRY_ENDPOINT,
+          status: response.status,
+          responseMessage: responseData.message,
+         },
+        "Lead form submission failed"
+      );
         setSubmissionStatus("error");
         const serverError =
           responseData.message || responseData.error || "Unknown server error.";
@@ -258,6 +295,22 @@ export default function LeadFormModal() {
         }
       }
     } catch (err) {
+      if(error.name === 'AbortError'){
+               logger.error({
+                submissionMeta,
+                endpoint: CONTACT_INQUIRY_ENDPOINT,
+                error: 'Request timed out',
+               })
+            } else{
+              logger.error(
+                {
+                  submissionMeta,
+                  endpoint: CONTACT_INQUIRY_ENDPOINT,
+                  error: error.message,
+                },
+                "Network error during contact form submission"
+              )
+            } 
       setSubmissionStatus("error");
       setErrorMessage(
         "A network error occurred. Please check your connection."
@@ -269,6 +322,7 @@ export default function LeadFormModal() {
       console.error("Network or fetch error:", err);
     } finally {
       setIsSubmitting(false);
+     clearTimeout(timeoutId);
     }
   };
 

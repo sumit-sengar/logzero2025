@@ -17,7 +17,7 @@ export default function UxServices() {
 
   const { solutions, challenges, testimonialsOne, features2 } =
     useContext(Lztallcontext);
-  console.log(solutions, challenges, testimonialsOne, features2);
+  // console.log(solutions, challenges, testimonialsOne, features2);
 
   const faqs = [
     {

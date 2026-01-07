@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { Mail, Phone, MapPin, Clock, Send } from "lucide-react";
 import PropTypes from "prop-types";
 import Recaptcha from "./Recaptcha";
+import logger from "@/lib/logger";
+
+const CONTACT_INQUIRY_ENDPOINT =
+ "https://webapi.logzerotechnologies.com/api/v1/consultation/create-inquiry";
+
 export default function ContactSection({
   id = "contact",
   heading = "Get In Touch",
@@ -60,12 +65,19 @@ export default function ContactSection({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  // 1. Find the reCAPTCHA response token
+
+    const submissionMeta = buildFormLogMeta(formData);
+    logger.debug({ submissionMeta }, "Submitting contact form");
+ 
     // The reCAPTCHA widget inserts a hidden input field named 'g-recaptcha-response'
     const recaptchaTokenField = document.querySelector('[name="g-recaptcha-response"]');
     const recaptchaToken = recaptchaTokenField ? recaptchaTokenField.value : null;
 
     if (!recaptchaToken) {
+       logger.warn(
+        {submissionMeta},
+        "Contact form blocked because reCAPTCHA is missing"
+       )
         alert("Please complete the reCAPTCHA verification.");
         // Optional: If you are using explicit rendering, you might need to reset/re-render the widget here.
         return; 
@@ -100,9 +112,19 @@ export default function ContactSection({
       project_desc: formData.detail,
       'g-recaptcha-response': recaptchaToken,
     };
+    
+     const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
+
     try {
+
+       logger.info(
+        { submissionMeta, endpoint: CONTACT_INQUIRY_ENDPOINT},
+        "Sending contact form submission"
+       )
+
       const res = await fetch(
-        "https://webapi.logzerotechnologies.com/api/v1/consultation/create-inquiry",
+        CONTACT_INQUIRY_ENDPOINT,
         {
           method: "POST",
           headers: {
@@ -113,7 +135,19 @@ export default function ContactSection({
       );
       const responseData = await res.json();
       if (res.ok) {
-        console.log(responseData);
+          logger.info(
+              {
+                submissionMeta,
+                endpoint: CONTACT_INQUIRY_ENDPOINT,
+                status: res.status,
+                responseMessage: responseData.message,
+              },
+              "Contact form submission successful"
+          )
+              
+          
+
+        // console.log(responseData);
         setFormSucess(true);
         setFormData({
           name: "",
@@ -125,6 +159,16 @@ export default function ContactSection({
           window.grecaptcha.reset();
         }
       }else{
+
+         logger.error(
+          {
+            submissionMeta,
+            endpoint: CONTACT_INQUIRY_ENDPOINT,
+            status: res.status,
+            responseMessage: responseData.message,
+          },
+          "Contact form submission failed"
+         )
         alert(`Form submission failed: ${responseData.message}`);
         if (window.grecaptcha) {
           window.grecaptcha.reset();
@@ -132,10 +176,30 @@ export default function ContactSection({
           
        
     } catch (error) {
+      if(error.name === 'AbortError'){
+         logger.error({
+          submissionMeta,
+          endpoint: CONTACT_INQUIRY_ENDPOINT,
+          error: 'Request timed out',
+         })
+      } else{
+        logger.error(
+          {
+            submissionMeta,
+            endpoint: CONTACT_INQUIRY_ENDPOINT,
+            error: error.message,
+          },
+          "Network error during contact form submission"
+        )
+      }    
+
+
       console.error("Error submitting form:", error);
       if (window.grecaptcha) {
         window.grecaptcha.reset();
       }
+    }finally {
+      clearTimeout(timeoutId);
     }
   };
 

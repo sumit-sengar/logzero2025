@@ -2,6 +2,7 @@
 import { useModal } from "@/context/ModalContext";
 import { X } from "lucide-react";
 
+
 export default function ConsultationModal() {
   const { open, closeModal } = useModal();
 
@@ -18,7 +19,7 @@ export default function ConsultationModal() {
       >
         <div className="flex items-center justify-between px-6 sm:px-8 py-4 bluenew text-white rounded-t-2xl ">
           <h3 className="text-xl sm:text-2xl font-semibold ">
-            Schedule Your Free Consultationsdfasfafs
+            Schedule Your Free Consultations
           </h3>
           <button onClick={closeModal} aria-label="Close">
             <X className="w-6 h-6 " />

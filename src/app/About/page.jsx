@@ -22,7 +22,7 @@ export default function AboutUs() {
 
   const { Credential, values, testimonialsOne, SucessStoryData } =
     useContext(Lztallcontext);
-  console.log(Credential, values, testimonialsOne, SucessStoryData);
+  // console.log(Credential, values, testimonialsOne, SucessStoryData);
 
   const BgColors = [
     "bgblue",
@@ -429,7 +429,7 @@ export default function AboutUs() {
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
         }}
         onSubmit={(formData) => {
-          console.log("Form submitted:", formData);
+          // console.log("Form submitted:", formData);
         }}
       />
 

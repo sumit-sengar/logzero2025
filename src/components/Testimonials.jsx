@@ -19,7 +19,7 @@ export default function FeaturableEmbed({
     let script = document.querySelector(`script[src="${SCRIPT_SRC}"]`);
 
     const initWidget = () => {
-      console.log("Featurable: Attempting to init...");
+      // console.log("Featurable: Attempting to init...");
       try {
         if (window.Featurable && typeof window.Featurable.init === "function") {
           window.Featurable.init();
@@ -34,7 +34,7 @@ export default function FeaturableEmbed({
     };
 
     if (script) {
-      console.log("Featurable: Cleaning stale script to force reload");
+      // console.log("Featurable: Cleaning stale script to force reload");
       script.remove();
     }
 
@@ -44,7 +44,7 @@ export default function FeaturableEmbed({
     newScript.async = true;
 
     newScript.onload = () => {
-      console.log("Featurable: Script loaded from source");
+      // console.log("Featurable: Script loaded from source");
       setTimeout(initWidget, 200);
     };
 

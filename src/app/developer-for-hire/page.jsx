@@ -100,7 +100,7 @@ export default function DeveloperForHire() {
     SucessStoryData,
     BenefitsLogzerotechnologies,
   } = useContext(Lztallcontext);
-  console.log(WhyHireDevelopers, MobileAppDevelopment);
+  // console.log(WhyHireDevelopers, MobileAppDevelopment);
 
   return (
     <>
@@ -708,7 +708,7 @@ with our expert developers."
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
         }}
         onSubmit={(formData) => {
-          console.log("Form submitted:", formData);
+          // console.log("Form submitted:", formData);
         }}
       />
 

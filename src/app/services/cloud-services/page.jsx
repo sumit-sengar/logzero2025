@@ -203,12 +203,12 @@ export default function CloudServices() {
     testimonialsOne,
     CloudMigrationSteps,
   } = useContext(Lztallcontext);
-  console.log(TrustedPartnerinCloud, MobileAppDevelopment);
+  // console.log(TrustedPartnerinCloud, MobileAppDevelopment);
 
   const handleChange = (e) => {};
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Service");
+    // console.log("Service");
   };
 
   return (
@@ -766,7 +766,7 @@ export default function CloudServices() {
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
         }}
         onSubmit={(formData) => {
-          console.log("Form submitted:", formData);
+          // console.log("Form submitted:", formData);
         }}
       />
 

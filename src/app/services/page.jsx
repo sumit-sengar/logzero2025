@@ -25,13 +25,13 @@ export default function Service() {
     SucessStoryData,
     testimonialsOne,
   } = useContext(Lztallcontext);
-  console.log(
-    Servicesmain,
-    Banner6,
-    IndustriesWeServe2,
-    SucessStoryData,
-    testimonialsOne
-  );
+  // console.log(
+  //   Servicesmain,
+  //   Banner6,
+  //   IndustriesWeServe2,
+  //   SucessStoryData,
+  //   testimonialsOne
+  // );
 
   const BgColors = [
     "bgblue",
@@ -570,7 +570,7 @@ export default function Service() {
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
         }}
         onSubmit={(formData) => {
-          console.log("Form submitted:", formData);
+          // console.log("Form submitted:", formData);
         }}
       />
     </>

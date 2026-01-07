@@ -24,7 +24,7 @@ export default function Global() {
   }, []);
 
   const { services, features, industries } = useContext(Lztallcontext);
-  console.log(services);
+  // console.log(services);
 
   const BgColors = [
     "bgred-100",
@@ -466,7 +466,7 @@ export default function Global() {
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
         }}
         onSubmit={(formData) => {
-          console.log("Form submitted:", formData);
+          // console.log("Form submitted:", formData);
         }}
       />
 
