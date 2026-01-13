@@ -3,12 +3,14 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "../../../lib/api";
+import { Eye, EyeOff } from "lucide-react";
 
 function Login() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -70,14 +72,28 @@ function Login() {
             <label className="block text-sm font-medium text-white">
               Password
             </label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-2 block w-full rounded-md bg-zinc-800/50 px-3 py-2 text-white placeholder-gray-500 border border-zinc-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-              placeholder="Enter your password"
-            />
+            <div className="relative mt-2">
+              <input
+                type={isPasswordVisible ? "text" : "password"}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="block w-full rounded-md bg-zinc-800/50 pr-10 px-3 py-2 text-white placeholder-gray-500 border border-zinc-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                onClick={() => setIsPasswordVisible((prev) => !prev)}
+                aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 curson-pointer transition-colors"
+              >
+                {isPasswordVisible ? (
+                  <EyeOff size={18} />
+                ) : (
+                  <Eye size={18} />
+                )}
+              </button>
+            </div>
           </div>
 
           {/* ERROR */}

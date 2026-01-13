@@ -198,6 +198,11 @@ a{
 .bgsecondary{background: var(--bg-secondary);}
 
 .bgblue0{background: var(--bg-blue-50)}
+
+.search-input::-webkit-search-cancel-button,
+.search-input::-ms-clear {
+  cursor: pointer;
+}
 .bgblue1{background: var(--bg-blue-100)}
 .bgblue2{background: var(--bg-blue-200)}
 .bgblue3{background: var(--bg-blue-300)}
