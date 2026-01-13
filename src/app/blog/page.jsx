@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Code, Bolt, Server, Diamond, FileText, CalendarDays } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -133,6 +134,8 @@ const SmallBlogItem = ({ post, onDropdownToggle, isDropdownOpen }) => {
 
 // Main App Component
 export default function App() {
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState("");
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const [page, setPage] = useState(2); // sidebar starts from the next batch after the first five
   const [staticPosts, setStaticPosts] = useState([]);
@@ -144,6 +147,15 @@ export default function App() {
   const [popularLoadedMore, setPopularLoadedMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [reachedEnd, setReachedEnd] = useState(false);
+  const [youMayLikePosts, setYouMayLikePosts] = useState([]);
+  const [loadingYouMayLike, setLoadingYouMayLike] = useState(false);
+  const [canLoadMoreYouMayLike, setCanLoadMoreYouMayLike] = useState(true);
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter" && searchTerm.trim()) {
+      router.push(`/blog/searchResult?q=${searchTerm.trim()}`);
+    }
+  };
 
   useEffect(() => {
     const fetchInitialPosts = async () => {
@@ -162,6 +174,25 @@ export default function App() {
     };
 
     fetchInitialPosts();
+  }, []);
+
+  useEffect(() => {
+    const fetchYouMayLikePosts = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/posts/blogs?limit=4&page=1`);
+        const data = await res.json();
+        const rows = data?.data ?? [];
+        const initialBatch = Array.isArray(rows) ? rows : [];
+        setYouMayLikePosts(initialBatch);
+        if (initialBatch.length < 4) {
+          setCanLoadMoreYouMayLike(false);
+        }
+      } catch (err) {
+        console.error('Error fetching "You May Also Like" posts:', err);
+      }
+    };
+
+    fetchYouMayLikePosts();
   }, []);
 
   useEffect(() => {
@@ -253,6 +284,7 @@ export default function App() {
   const getPopularTitle = (post) => post?.metaTitle || post?.title || "";
 
   const hasPopularPosts = Array.isArray(popularPosts) && popularPosts.length > 0;
+  const hasYouMayLikePosts = Array.isArray(youMayLikePosts) && youMayLikePosts.length > 0;
 
   const specialPost = {
     id: 6,
@@ -270,6 +302,23 @@ export default function App() {
   const handleDropdownToggle = (id) => {
     if (id === 6.1) {
       setOpenDropdownId(openDropdownId === id ? null : id);
+    }
+  };
+
+  const handleLoadMoreYouMayLike = async () => {
+    if (loadingYouMayLike) return;
+    setLoadingYouMayLike(true);
+    try {
+      const res = await fetch(`${baseUrl}/posts/blogs?limit=12&page=1`);
+      const data = await res.json();
+      const rows = data?.data ?? [];
+      const allRows = Array.isArray(rows) ? rows : [];
+      setYouMayLikePosts(allRows);
+      setCanLoadMoreYouMayLike(false); // Hide button after loading more
+    } catch (err) {
+      console.error('Error fetching more "You May Also Like" posts:', err);
+    } finally {
+      setLoadingYouMayLike(false);
     }
   };
 
@@ -319,7 +368,10 @@ export default function App() {
             <input
               type="search"
               placeholder="Search..."
-              className="w-full py-2 pl-4 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleSearch}
+              className="search-input w-full py-2 pl-4 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm"
             />
             {/* Search Icon */}
             <svg
@@ -369,7 +421,7 @@ export default function App() {
             </div>
           </div>
         ) : (
-          <main className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Column 1: Featured Post */}
           <div className="md:col-span-1">
             {featuredPost && (
@@ -479,11 +531,11 @@ export default function App() {
         )}
 
         {/* Pagination (Dynamic Next/Prev Buttons) */}
-        <div className="flex justify-end items-center  space-x-4">
+        <div className="flex justify-center md:justify-start lg:justify-end items-center  space-x-4 mt-4">
           <button
             onClick={handlePrevPage}
             disabled={page <= 2 || sidebarCount === 0 || reachedEnd}
-            className="flex items-center px-4 py-2 text-sm font-medium rounded-full transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center px-4 py-2 cursor-pointer text-sm font-medium rounded-full transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               backgroundColor: page <= 2 || sidebarCount === 0 || reachedEnd ? "#e0e0e0" : "#d1fae5",
               color: page <= 2 || sidebarCount === 0 || reachedEnd ? "#757575" : "#059669",
@@ -497,7 +549,7 @@ export default function App() {
           <button
             onClick={handleNextPage}
             disabled={sidebarCount < 5 || reachedEnd}
-            className="flex items-center px-4 py-2 text-sm font-medium text-white rounded-full transition duration-150 ease-in-out bg-green-600 hover:bg-green-700 shadow-lg hover:shadow-xl"
+            className="flex items-center cursor-pointer px-4 py-2 text-sm font-medium text-white rounded-full transition duration-150 ease-in-out bg-green-600 hover:bg-green-700 shadow-lg hover:shadow-xl"
             style={{
               backgroundColor: sidebarCount < 5 || reachedEnd ? "#e0e0e0" : "#16a34a",
               color: sidebarCount < 5 || reachedEnd ? "#757575" : "#ffffff",
@@ -656,8 +708,8 @@ export default function App() {
           <div className="border-b border-[#E5E5E7] mb-8"></div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {hasPopularPosts ? (
-                  popularPosts.map((post) => (
+                {hasYouMayLikePosts ? (
+                  youMayLikePosts.map((post) => (
                     <div key={post.id ?? post.metaTitle} className="flex flex-col">
                       <div className="relative">
                         <img
@@ -689,7 +741,7 @@ export default function App() {
                     className="w-full h-48 object-cover rounded-[4px]"
                   />
                   <span className="absolute bottom-4 right-4 px-3 py-2 bg-[#1E8767] text-white text-sm font-medium rounded-lg shadow-md">
-                    Popular
+                    Demo Post
                   </span>
                 </div>
                 <div className="mt-4">
@@ -699,14 +751,14 @@ export default function App() {
               </div>
             )}
           </div>
-          {canLoadMorePopular && (
+          {canLoadMoreYouMayLike && (
             <div className="flex justify-center items-center lg:mt-10 mt-6">
               <button
-                onClick={handleLoadMorePopular}
-                disabled={loadingPopular}
+                onClick={handleLoadMoreYouMayLike}
+                disabled={loadingYouMayLike}
                 className="flex items-center text-[#1E8767] py-2 px-6 border border-[#1E8767] cursor-pointer hover:bg-[#1E8767] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loadingPopular ? "Loading..." : "Load More"}
+                {loadingYouMayLike ? "Loading..." : "Load More"}
               </button>
             </div>
           )}

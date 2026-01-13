@@ -283,7 +283,7 @@ export default function BlogDashboard() {
         <div className="flex items-center gap-2 mb-4 text-blue-400">
 
           <Filter size={18} />
-          <h2 className="font-semibold text-sm md:text-base !text-blue-400">Filters</h2>
+          <h2 className="font-semibold text-sm md:!text-xl !text-blue-400">Filters</h2>
         </div>
 
         <div className="space-y-4">
@@ -456,7 +456,7 @@ export default function BlogDashboard() {
                   {posts.map((post) => (
                     <tr key={post.id} className="hover:bg-zinc-800/40 text-xs md:text-sm">
                       <td className="px-2 md:px-4 py-2 md:py-3">
-                        <div className="flex items-center gap-2 md:gap-3 min-w-[180px] md:min-w-[240px]">
+                        <div className="flex items-center gap-2 md:gap-3 w-[220px] md:w-[300px]">
                           <div className="h-8 w-10 md:h-10 md:w-14 rounded overflow-hidden border border-zinc-800 bg-zinc-950 flex-shrink-0">
                             {(post.featuredImageBase64 || post.featuredImage) ? (
                               <img
@@ -471,15 +471,15 @@ export default function BlogDashboard() {
                             )}
                           </div>
 
-                          <div className="min-w-0">
+                          <div className="min-w-0 space-y-0.5">
                             <div
-                              className="font-semibold text-gray-100 truncate text-xs md:text-sm"
+                              className="font-semibold text-gray-100 line-clamp-1 text-xs md:text-sm"
                               title={post.metaTitle}
                             >
                               {post.metaTitle}
                             </div>
                             <div
-                              className="text-xs text-zinc-400 truncate hidden md:block"
+                              className="text-xs text-zinc-400 line-clamp-1 md:line-clamp-2 hidden md:block"
                               title={post.metaDescription}
                             >
                               {post.metaDescription || "No description"}

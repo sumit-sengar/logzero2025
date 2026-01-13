@@ -36,6 +36,7 @@ export default function AddPostPage() {
   const [dirty, setDirty] = useState(false);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const autosaveTimerRef = useRef(null);
+  const createdAtInputRef = useRef(null);
 
   // ✅ Use ref to avoid stale closures
   const formRef = useRef({
@@ -218,6 +219,20 @@ export default function AddPostPage() {
     const nowValue = getLocalDatetimeNow();
     setForm((prev) => ({ ...prev, created_at: nowValue }));
     setDirty(true);
+  };
+
+  const handleOpenCreatedAtPicker = () => {
+    try {
+      createdAtInputRef.current?.showPicker?.();
+    } catch (err) {
+      // ignore if the browser doesn't support showPicker
+    }
+  };
+
+  const handleClearCreatedAt = () => {
+    setForm((prev) => ({ ...prev, created_at: "" }));
+    setDirty(true);
+    createdAtInputRef.current?.focus?.();
   };
 
   const buildPayload = useCallback((statusOverride) => {
@@ -450,6 +465,10 @@ export default function AddPostPage() {
                     name="created_at"
                     value={form.created_at}
                     onChange={handleBasicChange}
+                    onFocus={handleOpenCreatedAtPicker}
+                    onClick={handleOpenCreatedAtPicker}
+                    ref={createdAtInputRef}
+                    step="60"
                     className="flex-1 rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
                   />
                   <button
@@ -458,6 +477,14 @@ export default function AddPostPage() {
                     className="rounded border border-zinc-700 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-300 transition hover:border-zinc-500"
                   >
                     Use current time
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleClearCreatedAt}
+                    aria-label="Clear created at"
+                    className="rounded border border-zinc-700 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-300 transition hover:border-zinc-500"
+                  >
+                    Clear
                   </button>
                 </div>
               </div>
