@@ -545,7 +545,7 @@ export default function Header() {
             },
             {
               title: "Blog",
-              link: "/",
+              link: "/blog",
               children: [],
             },
           ].map((item) => (

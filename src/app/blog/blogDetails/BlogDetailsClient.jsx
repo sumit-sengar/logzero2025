@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const baseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -26,9 +26,11 @@ const formatIsoDate = (isoValue) => {
 
 export default function BlogDetailsClient() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [backTarget, setBackTarget] = useState("/blog");
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -66,18 +68,25 @@ export default function BlogDetailsClient() {
     fetchPost();
   }, [searchParams]);
 
+  
+
   const imageSrc =
     post?.featuredImageBase64?.trim() || post?.featuredImage || DEFAULT_DETAILS_IMAGE;
-  const description = post?.metaDescription || post?.summary || "Details coming soon.";
   const dateLabel = post?.publishedAt || post?.createdAt || post?.updatedAt;
   const formattedDate = formatIsoDate(dateLabel);
+  const contentBlocks = Array.isArray(post?.content?.blocks)
+    ? post.content.blocks.filter((block) => block?.data?.text)
+    : [];
+
+ 
 
   return (
     <div className="bg-white min-h-screen">
       <div className="container mx-auto px-4 py-10">
         <div className="max-w-3xl mx-auto">
           <Link
-            href="/blog"
+            href={backTarget}
+            onClick={() => router.back()}
             className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-[#1E8767]"
           >
             <span aria-hidden className="text-base">&lt;</span>
@@ -112,10 +121,19 @@ export default function BlogDetailsClient() {
                   <CalendarDays className="h-5 w-5" />
                   <span>{formattedDate}</span>
                 </div>
-                <h1 className="!text-xl md:!text-2xl lg:!text-3xl !leading-[1.5]  font-semibold !mb-4">
-                  {post.metaTitle || post.title}
-                </h1>
-                <p className="text-lg leading-7 text-[#4B5563]">{description}</p>
+                {contentBlocks.length > 0 ? (
+                  <div className="space-y-4 text-base leading-7 text-[#1F1F1F]">
+                    {contentBlocks.map((block, idx) => (
+                      <div
+                        key={block?.id ?? idx}
+                        className="[&_*]:max-w-full"
+                        dangerouslySetInnerHTML={{ __html: block.data.text }}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-lg leading-7 text-[#4B5563]">Details coming soon.</p>
+                )}
               </div>
             </article>
           )}

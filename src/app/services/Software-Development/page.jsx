@@ -306,7 +306,8 @@ export default function Mission() {
       {/* Trusted partner section */}
       <section className="py-16 px-6">
         <div className="container mx-auto ">
-          <h2 className="text-center mb-12">
+
+          <h2 className="text-center mb-12 heading-underline">
             LogZero Technologies: Your Trusted Software Development Partner
           </h2>
 
@@ -381,6 +382,7 @@ export default function Mission() {
             </div>
           </div>
         </div>
+
       </section>
 
       {/* Comprehensive Software Development Services  */}
@@ -644,7 +646,8 @@ export default function Mission() {
           <SuccessStory
             title="Case Studies"
             subtitle="Real projects, real results. See how we’ve helped businesses transform their ideas into successful mobile applications that drive growth and user engagement."
-            caseStudies={SucessStoryData}
+              caseStudies={SucessStoryData}
+              portfolioCategorySlug="software-development"
           />
           {/* <div className="flex justify-center mt-10">
             <GreenButton

@@ -723,6 +723,7 @@ export default function MobileDevelopment() {
             title="Our Success Story"
             subtitle="Real projects, real results. See how we’ve helped businesses transform their ideas into successful mobile applications that drive growth and user engagement."
             caseStudies={MobileappSucessStoryData}
+            portfolioCategorySlug="mobile-development"
           />
         </div>
       </section>

@@ -165,7 +165,7 @@ export default function App() {
         const data = await res.json();
         const rows = data?.data?.rows ?? data?.rows ?? [];
         setStaticPosts(rows);
-        console.log('Fetched initial posts rows:', rows);
+        // console.log('Fetched initial posts rows:', rows);
       } catch (err) {
         console.error('Error fetching initial posts:', err);
       } finally {
@@ -213,7 +213,7 @@ export default function App() {
         setSidebarPosts(rows);
         setHasMore(rows.length === 5);
         setReachedEnd(false);
-        console.log('Fetched sidebar posts rows:', rows);
+        // console.log('Fetched sidebar posts rows:', rows);
       } catch (err) {
         console.error('Error fetching sidebar posts:', err);
       } finally {
@@ -233,7 +233,7 @@ export default function App() {
         const firstBatch = Array.isArray(rows) ? rows : [];
         setPopularPosts(firstBatch);
         setPopularLoadedMore(false);
-        console.log('Fetched popular posts rows (initial 4):', firstBatch);
+     
       } catch (err) {
         console.error('Error fetching popular posts:', err);
       }
@@ -334,7 +334,7 @@ export default function App() {
       const nextBatch = allRows.slice(4, 12); // take items after the first four
       setPopularPosts((prev) => [...prev, ...nextBatch].slice(0, 12));
       setPopularLoadedMore(true);
-      console.log('Fetched popular posts rows (next up to 8):', nextBatch);
+     
     } catch (err) {
       console.error('Error fetching more popular posts:', err);
     } finally {

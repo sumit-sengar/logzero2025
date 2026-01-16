@@ -495,6 +495,7 @@ const Services = () => {
             title="Our Success Story"
             subtitle="Real projects, real results. See how we’ve helped businesses transform their ideas into successful mobile applications that drive growth and user engagement."
             caseStudies={SucessStoryDataWeb}
+            portfolioCategorySlug="web-development"
           />
         </div>
       </section>

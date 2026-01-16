@@ -274,7 +274,30 @@ a{
 .shadow8 {box-shadow: -4px 0px 0px 0px #E33B32;}
 .shadow9 {box-shadow: 0px 8px 10px -6px #1018280F;}
 
+/*Styling for Heading Underline on hover start */
+/* :where(h1, h2, h3, h4, h5, h6),
+:where(h1, h2, h3, h4, h5, h6).heading-underline {
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.25em;
+  transition: text-decoration-color 0.25s ease;
+}
 
+:where(h1, h2, h3, h4, h5, h6):hover,
+:where(h1, h2, h3, h4, h5, h6).heading-underline:hover {
+  text-decoration-color: #4b5563;
+} */
+/* Styling for Heading Underline on hover End */
+
+@media (prefers-reduced-motion: reduce) {
+  :where(h1, h2, h3, h4, h5, h6),
+  :where(h1, h2, h3, h4, h5, h6).heading-underline,
+  :where(h1, h2, h3, h4, h5, h6):hover,
+  :where(h1, h2, h3, h4, h5, h6).heading-underline:hover {
+    transition: none;
+  }
+}
 
 .border0px{border: 0px solid #E6E8E999;}
 .border1px{border: 1px solid #E6E8E999;}

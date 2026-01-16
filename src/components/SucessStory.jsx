@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useMemo, useState } from "react";
 import {
   Award,
   ChevronRight,
@@ -7,9 +8,60 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import CaseStudyImage from "./CaseStudyImage";
 import CounterNo from "./CounterNo";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://webapi.logzerotechnologies.com/api";
+
+const CATEGORY_ID_BY_SLUG = {
+  "software-development": 1,
+  "mobile-development": 2,
+  "web-development": 3,
+  ui: 4,
+  ux: 5,
+  qa: 7,
+  devops: 8,
+  "server-management": 9,
+  "global-partner": 10,
+};
+
+const normalizeCaseStudy = (study = {}, fallbackImage) => {
+  // Prefer API technologies (objects or strings); fallback to an empty list for clean UI handling.
+  const technologies = Array.isArray(study.technologies)
+    ? study.technologies
+        .map((t) => {
+          if (typeof t === "string") return t.trim();
+          if (t && typeof t === "object") return String(t.name || t.slug || "").trim();
+          return "";
+        })
+        .filter(Boolean)
+    : [];
+
+  // Prefer id-based blog details route; fall back to slug as query if id missing.
+  const linkFromSlugOrId = study.id
+    ? `/blog/blogDetails?id=${encodeURIComponent(study.id)}`
+    : study.slug
+    ? `/blog/blogDetails?id=${encodeURIComponent(study.slug)}`
+    : "#";
+
+  return {
+    id: study.id ?? study.slug ?? study.title ?? Math.random(),
+    title: study.metaTitle || study.title || "Case Study",
+    subtitle: study.metaDescription || study.subtitle || study.blogCategory || "",
+    challenge: study.challenges || study.challenge || "",
+    solution: study.solution || "",
+    Resultstext: study.result || study.results || study.Resultstext || "",
+    technologies,
+    image: study.image || study.featuredImage || fallbackImage,
+    featuredImageBase64: study.featuredImageBase64,
+    width: study.width || 564,
+    height: study.height || 383,
+    link: study.link || linkFromSlugOrId,
+  };
+};
 
 export default function SuccessStory({
   title,
@@ -17,31 +69,124 @@ export default function SuccessStory({
   Resultstext,
   link,
   caseStudies = [],
+  portfolioCategoryId,
+  portfolioCategorySlug,
+  fallbackImage = "/assets/img/health-tracker.png",
 }) {
+  const [fetchedStudies, setFetchedStudies] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const resolvedCategoryId = useMemo(() => {
+    if (portfolioCategoryId) return portfolioCategoryId;
+    if (!portfolioCategorySlug) return null;
+    return CATEGORY_ID_BY_SLUG[portfolioCategorySlug] || null;
+  }, [portfolioCategoryId, portfolioCategorySlug]);
+
+  const normalizedProvided = useMemo(
+    () => caseStudies.map((study) => normalizeCaseStudy(study, fallbackImage)),
+    [caseStudies, fallbackImage]
+  );
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const fetchCaseStudies = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const params = new URLSearchParams();
+        if (resolvedCategoryId) {
+          params.set("portfolioCategoryIds", String(resolvedCategoryId));
+        }
+
+        const url = params.toString()
+          ? `${API_BASE_URL}/posts/case-study?${params.toString()}`
+          : `${API_BASE_URL}/posts/case-study`;
+
+        // Case studies API: backend already filters type/status; category is optional for general listings
+        const response = await fetch(url, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to load case studies (${response.status})`);
+        }
+
+        const payload = await response.json();
+      
+        const rows = Array.isArray(payload?.data)
+          ? payload.data
+          : Array.isArray(payload?.data?.rows)
+          ? payload.data.rows
+          : Array.isArray(payload?.rows)
+          ? payload.rows
+          : [];
+
+        const firstTwo = rows.slice(0, 2);
+
+        if (!Array.isArray(firstTwo) || firstTwo.length === 0) {
+          setFetchedStudies([]);
+          return;
+        }
+
+        const normalized = firstTwo.map((item) => normalizeCaseStudy(item, fallbackImage));
+        
+        setFetchedStudies(normalized);
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.error("Case studies load error", err);
+          setError(err.message || "Unable to load case studies");
+          setFetchedStudies([]);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCaseStudies();
+
+    return () => controller.abort();
+  }, [resolvedCategoryId, fallbackImage]);
+
+  const displayStudies = fetchedStudies.length > 0 ? fetchedStudies : normalizedProvided;
+
   return (
     <>
       {/* Title + Subtitle */}
       <div className="text-center  mb-12">
         <h2 className="mb-5 !text-[32px] !font-bold">{title}</h2>
         <p className="max-w-full md:max-w-[65%] mx-auto">{subtitle}</p>
+        {loading && (
+          <span className="sr-only" aria-live="polite">
+            Loading case studies...
+          </span>
+        )}
+        {error && (
+          <span className="sr-only" aria-live="polite">
+            {error}
+          </span>
+        )}
       </div>
 
       {/* Case Studies */}
-      {caseStudies.map((study, index) => (
+      {displayStudies.map((study, index) => (
         <div
-          key={index}
+          key={study.id || index}
           className={`flex flex-col-reverse md:flex-row items-center gap-10 ${
-            index === caseStudies.length - 1 ? "mb-0" : "mb-16"
+            index === displayStudies.length - 1 ? "mb-0" : "mb-16"
           } ${index % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
         >
           {/* Image */}
           <div className="w-full md:w-[50%] max-w-[564px]">
-            <Image
+            <CaseStudyImage
               src={study.image}
+              base64={study.featuredImageBase64}
               alt={study.title}
               width={study.width}
               height={study.height}
               className="rounded-[10px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] w-full h-auto object-cover transition-transform duration-300 ease-in-out hover:translate-y-[-5px]"
+              fallback={fallbackImage}
             />
           </div>
 
@@ -119,23 +264,29 @@ export default function SuccessStory({
             {/* Technologies */}
             <div className="mt-8">
               <p className="subheading-2 text-gray-800">Technologies Used</p>
-              <div className="flex flex-wrap gap-2 mt-5">
-                {study.technologies.map((tech, i) => (
-                  <span
-                    key={i}
-                    className="py-[6px] px-[14px] border rounded-full text-[13px] whitespace-nowrap"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
+              {study.technologies.length > 0 ? (
+                <div className="flex flex-wrap gap-2 mt-5">
+                  {study.technologies.map((tech, i) => (
+                    <span
+                      key={i}
+                      className="py-[6px] px-[14px] border rounded-full text-[13px] whitespace-nowrap"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-2 text-sm text-gray-600">
+                  <span aria-hidden>•</span>
+                  <span>Technologies will be added soon</span>
+                </div>
+              )}
             </div>
 
             {/* Link */}
             <div className="mt-8">
               <Link
-                href={study.link}
-                target="_blank"
+                href={study.id || study.slug ? `/blog/blogDetails?id=${encodeURIComponent(study.id || study.slug)}` : study.link || "#"}
                 className="subheading-3 textbluenew inline-flex items-center gap-1 transition-transform duration-300 ease-in-out hover:translate-x-[5px] hover:!text-[#1F1F1F]"
               >
                 Read Full Case Study <ChevronRight size={18} />

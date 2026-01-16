@@ -328,8 +328,7 @@ export default function EditPostPage() {
       payload.industryIds = form.industryIds;
     }
 
-    console.log("Submitting payload:", payload);
-    console.log("post time", form.created_at);
+ 
 
     try {
       const res = await api.put(`/posts/${id}`, payload);
