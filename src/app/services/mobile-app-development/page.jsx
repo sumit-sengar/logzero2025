@@ -394,7 +394,7 @@ export default function MobileDevelopment() {
           <div className="grid grid-cols-5 gap-8 text-center text-blue px-2">
             {/* Step 1 */}
             <div className="flex flex-col items-center">
-              <div className="text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
+              <div className="!pl-[30px] text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
                 <div className="w-11 h-11 p-2 bgblue7 flex items-center justify-center rounded-full">
                   <Search size={22} className="text-white" />
                 </div>
@@ -406,7 +406,7 @@ export default function MobileDevelopment() {
 
             {/* Step 2 */}
             <div className="flex flex-col items-center">
-              <div className="text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
+              <div className="pl-[15px] text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
                 <div className="w-11 h-11 p-2 bgblue7 flex items-center justify-center rounded-full">
                   <Box size={22} className="text-white" />
                 </div>
@@ -418,7 +418,7 @@ export default function MobileDevelopment() {
 
             {/* Step 3 */}
             <div className="flex flex-col items-center">
-              <div className="text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
+              <div className="pl-[5px] text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
                 <div className="w-11 h-11 p-2 bgblue7 flex items-center justify-center rounded-full">
                   <ShieldEllipsis size={22} className="text-white" />
                 </div>
@@ -428,7 +428,7 @@ export default function MobileDevelopment() {
 
             {/* Step 4 */}
             <div className="flex flex-col items-center">
-              <div className="text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
+              <div className="pr-[5px] text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
                 <div className="w-11 h-11 p-2 bgblue7 flex items-center justify-center rounded-full">
                   <FileScan size={22} className="text-white" />
                 </div>
@@ -438,7 +438,7 @@ export default function MobileDevelopment() {
 
             {/* Step 5 */}
             <div className="flex flex-col items-center">
-              <div className="text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
+              <div className="pr-[16px]  text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
                 <div className="w-11 h-11 p-2 bgblue7 flex items-center justify-center rounded-full">
                   <Headset size={22} className="text-white" />
                 </div>
@@ -646,7 +646,7 @@ export default function MobileDevelopment() {
           description="Let’s discuss your requirements and create a custom development plan that fits your timeline and budget."
           linkUrl="/contact-us"
           linkText="Schedule Free Consultation"
-          linkUrl2="/portfolio"
+          linkUrl2="/case-studies"
           linkText2="View Our Portfolio"
           ctabtnType="both"
         />
@@ -733,7 +733,7 @@ export default function MobileDevelopment() {
         <CTA
           title="Want to Be Our Next Success Story?"
           description="Let’s discuss how we can help you achieve similar results with your mobile app project."
-          linkUrl="/portfolio"
+          linkUrl="/case-studies"
           ctabtnType="primary"
           linkText="Start Your Success Story"
         />

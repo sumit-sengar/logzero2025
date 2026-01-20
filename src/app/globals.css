@@ -456,6 +456,8 @@ html, body {
 }
 
 
+
+
  @media screen and (max-width: 1199px) {
   /*  */
   h1 {@apply text-[40px] font-semibold leading-[48px];}

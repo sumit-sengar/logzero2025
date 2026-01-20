@@ -549,7 +549,7 @@ export default function HomePageClient() {
                     <item.icon size={24} className="text-white" />
                   </div>
 
-                  <h2 className="!text-white !font-Sumana">
+                  <p className="!text-white !font-Sumana !text-[2rem] !font-semibold">
                     {item.countEnd ? (
                       <CountUp
                         end={item.countEnd}
@@ -563,7 +563,7 @@ export default function HomePageClient() {
                     ) : (
                       item.big
                     )}
-                  </h2>
+                  </p>
 
                   <h4 className="!text-white">{item.title}</h4>
                   <p className="mt-2 text-white subtext"> {item.text} </p>
@@ -579,7 +579,7 @@ export default function HomePageClient() {
                 className="bg-[#163B31] border border-white/10 rounded-lg p-5 gap-3 hover:bg-[#1f4d40] transition-transform hover:scale-104"
               >
                 <div className="flex flex-col gap-3">
-                  <h2 className="!text-white !font-Sumana">
+                 <p className="!text-white !font-Sumana !text-[2rem] !font-semibold">
                     {item.countEnd ? (
                       <CountUp
                         end={item.countEnd}
@@ -593,7 +593,7 @@ export default function HomePageClient() {
                     ) : (
                       item.big
                     )}
-                  </h2>
+                  </p>
 
                   <h4 className="!text-white"> {item.title} </h4>
                   <p className="text-white subtext"> {item.text} </p>
@@ -604,7 +604,7 @@ export default function HomePageClient() {
 
           <div className="flex justify-center mt-7">
             <a
-              href="/portfolio"
+              href="/case-studies"
               className="bluenew textcolor px-7 py-3 rounded-lg text-base font-bold max-w-[338px] flex items-center justify-center hover:brightness-95 transition-transform hover:scale-104"
             >
               Join Our Success Stories

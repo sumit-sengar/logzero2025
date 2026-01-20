@@ -261,12 +261,12 @@ import { usePathname, useRouter } from "next/navigation";
 const navItems = [
   {
     title: "About",
-    link: "/about",
+    link: "/about-us",
     children: [
       // { title: "About Company", link: "/About/AboutCompany" },
-      { title: "Clients", link: "/about/clients" },
-      { title: "Mission", link: "/about/mission" },
-      { title: "Portfolio", link: "/portfolio" },
+      { title: "Clients", link: "/about-us/clients" },
+      { title: "Mission", link: "/about-us/mission" },
+      { title: "Portfolio", link: "/case-studies" },
       {
         title: "Privacy  Policy",
         link: "https://www.logzerotechnologies.com/privacy-policy/",
@@ -277,7 +277,7 @@ const navItems = [
     title: "Services",
     link: "/services",
     children: [
-      { title: "Software-Development", link: "/services/software-development" },
+      { title: "Software-Development", link: "/services/custom-software-development" },
       { title: "Web Development", link: "/services/web-development" },
       {
         title: "Mobile App Development",

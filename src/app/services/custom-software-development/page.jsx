@@ -500,7 +500,7 @@ export default function Mission() {
           <div className="flex justify-center mt-10">
             <GreenButton
               text="Learn More About Our Expertise"
-              linkurl="/about"
+              linkurl="/about-us"
               linktarget=""
               MoveRighticon={false}
             />
@@ -690,9 +690,9 @@ export default function Mission() {
                   </div>
 
                   <div className="text-center">
-                    <h2 className="!text-white">
+                    <p className="!text-white !font-Sumana !text-[2rem] !font-semibold">
                       <CounterValue value={p.title} />
-                    </h2>
+                    </p>
 
                     <p className="mt-3 subheading-3 !text-white !font-normal ">
                       {p.desc}
