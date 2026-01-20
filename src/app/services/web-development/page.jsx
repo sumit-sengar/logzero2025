@@ -281,7 +281,7 @@ const Services = () => {
           <div className="grid grid-cols-5 gap-8 text-center text-blue px-2">
             {/* Step 1 */}
             <div className="flex flex-col items-center">
-              <div className="text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
+              <div className="!pl-[30px] text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
                 <div className="w-11 h-11 p-2 bgblue7 flex items-center justify-center rounded-full">
                   <Search size={22} className="text-white" />
                 </div>
@@ -293,7 +293,7 @@ const Services = () => {
 
             {/* Step 2 */}
             <div className="flex flex-col items-center">
-              <div className="text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
+              <div className="pl-[15px] text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
                 <div className="w-11 h-11 p-2 bgblue7 flex items-center justify-center rounded-full">
                   <Component size={22} className="text-white" />
                 </div>
@@ -305,7 +305,7 @@ const Services = () => {
 
             {/* Step 3 */}
             <div className="flex flex-col items-center">
-              <div className="text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
+              <div className="pl-[5px] text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
                 <div className="w-11 h-11 p-2 bgblue7 flex items-center justify-center rounded-full">
                   <Code size={22} className="text-white" />
                 </div>
@@ -317,7 +317,7 @@ const Services = () => {
 
             {/* Step 4 */}
             <div className="flex flex-col items-center">
-              <div className="text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
+              <div className="pr-[5px] text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
                 <div className="w-11 h-11 p-2 bgblue7 flex items-center justify-center rounded-full">
                   <TestTube size={22} className="text-white" />
                 </div>
@@ -329,7 +329,7 @@ const Services = () => {
 
             {/* Step 5 */}
             <div className="flex flex-col items-center">
-              <div className="text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
+              <div className="pr-[16px] text-teal-500 w-28 h-28 flex items-center justify-center flex-col gap-2">
                 <div className="w-11 h-11 p-2 bgblue7 flex items-center justify-center rounded-full">
                   <Rocket size={22} className="text-white" />
                 </div>

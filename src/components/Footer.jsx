@@ -93,10 +93,10 @@ export default function Footer() {
               <nav aria-label="Footer Navigation">
                 <ul className="space-y-2 subtext">
                   {[
-                    { label: "About Company", href: "/about" },
-                    { label: "Our Mission", href: "/about/mission" },
-                    { label: "Clients", href: "/about/clients" },
-                    { label: "Portfolio", href: "/about/portfolio" },
+                    { label: "About Company", href: "/about-us" },
+                    { label: "Our Mission", href: "/about-us/mission" },
+                    { label: "Clients", href: "/about-us/clients" },
+                    { label: "Portfolio", href: "/about-us/case-studies" },
                     {
                       label: "Privacy Policy",
                       href: "https://www.logzerotechnologies.com/privacy-policy/",

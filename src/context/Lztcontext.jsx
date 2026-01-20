@@ -1607,7 +1607,7 @@ const LztProvider = ({ children }) => {
       title: "Software Maintenance & Support",
       description:
         "Ensure your software remains updated, secure, and optimized with our comprehensive maintenance services.",
-      linkurl: "/services/software-development",
+      linkurl: "/services/custom-software-development",
     },
   ];
 

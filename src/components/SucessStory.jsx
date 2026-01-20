@@ -68,7 +68,6 @@ export default function SuccessStory({
   subtitle,
   Resultstext,
   link,
-  caseStudies = [],
   portfolioCategoryId,
   portfolioCategorySlug,
   fallbackImage = "/assets/img/health-tracker.png",
@@ -82,11 +81,6 @@ export default function SuccessStory({
     if (!portfolioCategorySlug) return null;
     return CATEGORY_ID_BY_SLUG[portfolioCategorySlug] || null;
   }, [portfolioCategoryId, portfolioCategorySlug]);
-
-  const normalizedProvided = useMemo(
-    () => caseStudies.map((study) => normalizeCaseStudy(study, fallbackImage)),
-    [caseStudies, fallbackImage]
-  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -149,28 +143,39 @@ export default function SuccessStory({
     return () => controller.abort();
   }, [resolvedCategoryId, fallbackImage]);
 
-  const displayStudies = fetchedStudies.length > 0 ? fetchedStudies : normalizedProvided;
+  const displayStudies = fetchedStudies;
+  const isEmpty = !displayStudies || displayStudies.length === 0;
 
   return (
     <>
       {/* Title + Subtitle */}
-      <div className="text-center  mb-12">
-        <h2 className="mb-5 !text-[32px] !font-bold">{title}</h2>
-        <p className="max-w-full md:max-w-[65%] mx-auto">{subtitle}</p>
-        {loading && (
-          <span className="sr-only" aria-live="polite">
-            Loading case studies...
-          </span>
-        )}
-        {error && (
-          <span className="sr-only" aria-live="polite">
-            {error}
-          </span>
-        )}
-      </div>
+      {!isEmpty && (
+        <div className="text-center  mb-12">
+          <h2 className="mb-5 !text-[32px] !font-bold">{title}</h2>
+          <p className="max-w-full md:max-w-[65%] mx-auto">{subtitle}</p>
+          {loading && (
+            <span className="sr-only" aria-live="polite">
+              Loading case studies...
+            </span>
+          )}
+          {error && (
+            <span className="sr-only" aria-live="polite">
+              {error}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Empty state */}
+      {isEmpty && (
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center text-gray-700 bg-gray-50">
+          <p className="subheading-2 mb-1">Case studies are on the way</p>
+          <p className="subtext">We’re preparing fresh success stories for this service. Check back soon.</p>
+        </div>
+      )}
 
       {/* Case Studies */}
-      {displayStudies.map((study, index) => (
+      {!isEmpty && displayStudies.map((study, index) => (
         <div
           key={study.id || index}
           className={`flex flex-col-reverse md:flex-row items-center gap-10 ${

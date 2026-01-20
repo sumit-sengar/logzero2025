@@ -357,7 +357,7 @@ export default function CloudServices() {
               <div className="w-full mt-4 text-center">
                 <WhiteButton
                   text="Learn More About Our Expertise"
-                  linkurl="/about"
+                  linkurl="-us"
                   linktarget=""
                   MoveRighticon={false}
                 />
