@@ -1,7 +1,6 @@
 "use client";
-import { useContext, React, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import HeroSection from "@/components/HeroSection";
 import { Lztallcontext } from "@/context/Lztcontext";
 import CardContainer from "@/components/CardContainer";
@@ -21,7 +20,7 @@ import {
   MapPin,
 } from "lucide-react";
 
-export default function data() {
+export default function DataManagementPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

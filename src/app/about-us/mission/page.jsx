@@ -191,7 +191,7 @@ export default function Mission() {
                   </div>
 
                   <div className="text-center">
-                    <h2 className="!text-white">
+                    <p className="!text-white !font-bold !text-3xl">
                       <CountUp
                         end={p.Novalue}
                         duration={2}
@@ -201,7 +201,7 @@ export default function Mission() {
                         scrollSpyDelay={300}
                       />
                       {p.indicator && <span>{p.indicator}</span>}
-                    </h2>
+                    </p>
 
                     <p className="mt-3 subheading-3 !text-white !font-normal ">
                       {p.label}

@@ -546,7 +546,7 @@ export default function BlogDashboard() {
                             onClick={() =>
                               router.push(`/admin/dashboard/blogs/${post.id}`)
                             }
-                            className="p-1.5 md:p-2 rounded bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 transition-colors group relative"
+                            className="p-1.5 md:p-2 rounded bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 transition-colors group relative cursor-pointer"
                           >
                             <Eye size={14} className="md:w-4 md:h-4" />
                             <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-zinc-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">View Details</span>
@@ -556,7 +556,7 @@ export default function BlogDashboard() {
                             onClick={() =>
                               router.push(`/admin/dashboard/blogs/edit/${post.id}`)
                             }
-                            className="p-1.5 md:p-2 rounded bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 transition-colors group relative"
+                            className="p-1.5 md:p-2 rounded bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 transition-colors group relative cursor-pointer"
                           >
                             <Edit size={14} className="md:w-4 md:h-4" />
                             <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-zinc-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">Edit Post</span>
@@ -564,7 +564,7 @@ export default function BlogDashboard() {
 
                           <button
                             onClick={() => deletePost(post.id)}
-                            className="p-1.5 md:p-2 rounded bg-red-900/20 border border-red-900/40 text-red-300 hover:bg-red-900/40 transition-colors group relative"
+                            className="p-1.5 md:p-2 rounded bg-red-900/20 border border-red-900/40 text-red-300 hover:bg-red-900/40 transition-colors group relative cursor-pointer"
                           >
                             <Trash2 size={14} className="md:w-4 md:h-4" />
                             <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-red-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">Delete Post</span>

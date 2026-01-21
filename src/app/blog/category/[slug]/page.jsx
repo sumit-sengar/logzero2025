@@ -24,7 +24,8 @@ const SearchOfCategory = [
 
 async function fetchCategoryRows(slug, page = 1) {
 	try {
-		const url = `https://webapi.logzerotechnologies.com/api/posts?type=blog_post&blogCategory=${encodeURIComponent(slug)}${page && page > 1 ? `&page=${page}` : ""}`;
+		const base = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api").replace(/\/$/, "");
+		const url = `${base}/posts?type=blog_post&blogCategory=${encodeURIComponent(slug)}${page && page > 1 ? `&page=${page}` : ""}`;
 		const res = await fetch(url, { cache: "no-store" });
 		const json = await res.json();
 		const rows = json?.data?.rows ?? json?.rows ?? [];

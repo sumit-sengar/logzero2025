@@ -210,10 +210,10 @@ export default function Page() {
             <div className="flex justify-end gap-4 ">
                <button
                type="button"
-              onClick={() => router.push("/admin/dashboard/metaList")}
+              onClick={() => router.push("/admin/dashboard/blogs")}
               className="flex-1 md:flex-none flex items-center justify-center gap-2 border border-blue-500/60 bg-blue-500/10 hover:bg-blue-500/20 text-blue-100 px-3 md:px-4 py-2 text-sm md:text-base rounded-md transition-colors hover:bg-zinc-800 whitespace-nowrap cursor-pointer"
             >
-              Meta List
+              Back
             </button>
               <button
                 type="submit"

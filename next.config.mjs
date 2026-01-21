@@ -15,11 +15,6 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/solutions/Data-Management',
-        destination: '/solutions/data-management',
-        permanent: true,
-      },
-      {
         source: '/services/software-development',
         destination: '/services/custom-software-development',
         permanent: true,
