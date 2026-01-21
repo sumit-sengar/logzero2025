@@ -12,8 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { InlineGreenButton } from "@/components/InlineGreenButton";
 
-const DEV_POSTS_ENDPOINT =
-  "https://webapi.logzerotechnologies.com/api/posts?type=blog_post&blogCategory=dev";
+const DEV_POSTS_ENDPOINT = `${(process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api").replace(/\/$/, "")}/posts?type=blog_post&blogCategory=dev`;
 const DEFAULT_DEV_POST_IMAGE = "/assets/img/featuredImage2.webp";
 const DEV_POST_LIMIT = 10;
 const popularPostImage = "/assets/img/popularPostImg.webp";

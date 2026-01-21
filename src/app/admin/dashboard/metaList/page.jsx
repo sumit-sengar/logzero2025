@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Loader2, Pencil, RefreshCcw, Trash2 } from 'lucide-react'
+import { ArrowLeft, Loader2, Pencil, RefreshCcw, Trash2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '@/lib/api'
 
-const API_URL =
-  'https://webapi.logzerotechnologies.com/api/categories/categoriesDetail'
+const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL || ''}/categories/categoriesDetail`
 
 const Page = () => {
   const router = useRouter()
@@ -115,15 +115,23 @@ const Page = () => {
   return (
     <div className="min-h-screen bg-black text-gray-100">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10">
+        <div className='flex justify-start '>
+          <Link
+              href="/admin/dashboard/blogs"
+              className="inline-flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm font-medium text-white transition hover:border-neutral-700 hover:bg-neutral-800"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span>Back to Blogs</span>
+            </Link>
+        </div>
+        
         <header className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-sm uppercase tracking-[0.16em] text-gray-400">
-              Dashboard - SEO Meta
-            </p>
+          <div className="flex items-start gap-3">
+            
             <h1 className="text-2xl font-semibold !text-white">Categories Meta</h1>
-            <p className="text-sm text-gray-400">
+            {/* <p className="text-sm text-gray-400">
               Showing meta title, description, and custom slug with quick actions.
-            </p>
+            </p> */}
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
