@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import GreenButton from "@/components/GreenButton";
 import Trusted from "@/components/Trusted";
-import Head from "./head";
+// import Head from "./head";
 import FAQSection from "@/components/FAQSection";
 import { useEffect, useState } from "react";
 import Recaptcha from "../../components/Recaptcha";
@@ -261,7 +261,7 @@ export default function ContactSection() {
 
   return (
     <>
-      <Head> </Head>
+      {/* <Head> </Head> */}
       <section className="pt-16 px-6 bg-[#F2F9F7DB]/86">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.5fr_1.2fr] gap-4 ">
