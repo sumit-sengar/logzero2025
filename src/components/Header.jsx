@@ -261,12 +261,12 @@ import { usePathname, useRouter } from "next/navigation";
 const navItems = [
   {
     title: "About",
-    link: "/about",
+    link: "/about-us",
     children: [
       // { title: "About Company", link: "/About/AboutCompany" },
-      { title: "Clients", link: "/about/clients" },
-      { title: "Mission", link: "/about/mission" },
-      { title: "Portfolio", link: "/portfolio" },
+      { title: "Clients", link: "/about-us/clients" },
+      { title: "Mission", link: "/about-us/mission" },
+      { title: "Portfolio", link: "/case-studies" },
       {
         title: "Privacy  Policy",
         link: "https://www.logzerotechnologies.com/privacy-policy/",
@@ -277,7 +277,7 @@ const navItems = [
     title: "Services",
     link: "/services",
     children: [
-      { title: "Software-Development", link: "/services/software-development" },
+      { title: "Software-Development", link: "/services/custom-software-development" },
       { title: "Web Development", link: "/services/web-development" },
       {
         title: "Mobile App Development",
@@ -302,6 +302,7 @@ const navItems = [
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const closeTimerRef = useRef(null);
 
   // --- Sticky Header State ---
   const [isVisible, setIsVisible] = useState(true);
@@ -314,6 +315,30 @@ export default function Header() {
   const isParentActive = (children) =>
     children?.some((child) => pathname.startsWith(child.link));
 
+  const clearCloseTimer = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  };
+
+  const handleToggleDropdown = (title) => {
+    setActiveDropdown((prev) => (prev === title ? null : title));
+  };
+
+  const handleOpenDropdown = (title) => {
+    clearCloseTimer();
+    setActiveDropdown(title);
+  };
+
+  const scheduleCloseDropdown = () => {
+    clearCloseTimer();
+    closeTimerRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+      closeTimerRef.current = null;
+    }, 120);
+  };
+
   useEffect(() => {
     const handleRouteChange = () => setIsMenuOpen(false);
     if (router?.events) {
@@ -323,6 +348,15 @@ export default function Header() {
       setIsMenuOpen(false);
     }
   }, [router, pathname]);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -411,7 +445,12 @@ export default function Header() {
 
           {/* Dropdowns with parent link */}
           {navItems.map((item) => (
-            <div key={item.title} className="relative group lg:static">
+            <div
+              key={item.title}
+              className="relative"
+              onMouseEnter={() => handleOpenDropdown(item.title)}
+              onMouseLeave={scheduleCloseDropdown}
+            >
               <Link
                 href={item.link}
                 className="peer flex items-center gap-1 py-2 border-b-2 border-transparent hover:text-[#5BC2A7] hover:border-[#5BC2A7]"
@@ -421,9 +460,7 @@ export default function Header() {
                   <button
                     onClick={(e) => {
                       e.preventDefault();
-                      setActiveDropdown(
-                        activeDropdown === item.title ? null : item.title
-                      );
+                      handleToggleDropdown(item.title);
                     }}
                     className="focus:outline-none"
                     aria-label="Toggle submenu"
@@ -466,9 +503,14 @@ export default function Header() {
 
               {/* Desktop Dropdown */}
               <div
-                className="hidden lg:block lg:absolute lg:min-w-[250px] bg-white shadow-lg
-                          opacity-0 invisible group-hover:opacity-100 group-hover:visible
-                          transform group-hover:translate-y-2 transition-all duration-200 z-50"
+                className={`hidden lg:block lg:absolute lg:top-full lg:left-0 lg:min-w-[250px] bg-white shadow-lg z-50 transition-all duration-200
+                          ${
+                            activeDropdown === item.title
+                              ? "opacity-100 visible translate-y-2"
+                              : "opacity-0 invisible translate-y-0 pointer-events-none"
+                          }`}
+                onMouseEnter={() => handleOpenDropdown(item.title)}
+                onMouseLeave={scheduleCloseDropdown}
               >
                 {item.children.map((child) => (
                   <Link

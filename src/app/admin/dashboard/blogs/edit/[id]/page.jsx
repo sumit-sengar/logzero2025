@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import BlogEditor  from "../../../../../admin/components/BlogSimpleEditor"
 import MultiSelect from "../../../../../admin/components/MultiSelect";
@@ -9,16 +9,19 @@ import api from "../../../../../../lib/api";
 const formatCreatedAtValue = (value) => {
   if (!value) return null;
 
-  let formatted = value;
-  if (formatted.includes("T")) {
-    formatted = formatted.replace("T", " ");
+  let normalized = value;
+  if (!normalized.includes("T") && normalized.includes(" ")) {
+    normalized = normalized.replace(" ", "T");
   }
 
-  if (!/\d{2}:\d{2}:\d{2}$/.test(formatted)) {
-    formatted = `${formatted}:00`;
+  if (!/\d{2}:\d{2}:\d{2}$/.test(normalized)) {
+    normalized = `${normalized}:00`;
   }
 
-  return formatted;
+  const parsed = new Date(normalized);
+  if (Number.isNaN(parsed.getTime())) return null;
+
+  return parsed.toISOString();
 };
 
 const getLocalDatetimeNow = () => {
@@ -47,13 +50,13 @@ export default function EditPostPage() {
   const [filters, setFilters] = useState(null);
   const [loading, setLoading] = useState(true);
   const [initialPost, setInitialPost] = useState(null);
+  const createdAtInputRef = useRef(null);
 
   const [form, setForm] = useState({
     metaTitle: "",
     metaDescription: "",
     author: "",
     popular: false,
-    created_at: "",
     type: "blog_post",
     status: "draft",
     blogCategory: "",
@@ -251,6 +254,19 @@ export default function EditPostPage() {
     setForm((prev) => ({ ...prev, created_at: nowValue }));
   };
 
+  const handleOpenCreatedAtPicker = () => {
+    try {
+      createdAtInputRef.current?.showPicker?.();
+    } catch (err) {
+      // ignore unsupported
+    }
+  };
+
+  const handleClearCreatedAt = () => {
+    setForm((prev) => ({ ...prev, created_at: "" }));
+    createdAtInputRef.current?.focus?.();
+  };
+
   const handleEditorChange = (html) => {
     setForm((prev) => ({ ...prev, editorHtml: html }));
   };
@@ -290,6 +306,7 @@ export default function EditPostPage() {
     const formattedCreatedAt = formatCreatedAtValue(form.created_at);
     if (formattedCreatedAt) {
       payload.created_at = formattedCreatedAt;
+      payload.createdAt = formattedCreatedAt; // some endpoints expect camelCase
     }
 
     if (form.type === "blog_post") {
@@ -310,6 +327,8 @@ export default function EditPostPage() {
       payload.technologyIds = form.technologyIds;
       payload.industryIds = form.industryIds;
     }
+
+ 
 
     try {
       const res = await api.put(`/posts/${id}`, payload);
@@ -366,12 +385,12 @@ export default function EditPostPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm mb-1">Popular</label>
+                  <label className="block text-sm mb-1r">Popular</label>
                   <button
                     type="button"
                     onClick={handleTogglePopular}
                     aria-pressed={form.popular}
-                    className={`px-4 py-2 text-sm font-semibold rounded-full transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                    className={`px-4 py-2 text-sm cursor-pointer font-semibold rounded-full transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
                       form.popular
                         ? "bg-emerald-500 text-black"
                         : "bg-zinc-800 text-gray-200"
@@ -390,14 +409,26 @@ export default function EditPostPage() {
                     name="created_at"
                     value={form.created_at}
                     onChange={handleBasicChange}
+                    onFocus={handleOpenCreatedAtPicker}
+                    onClick={handleOpenCreatedAtPicker}
+                    ref={createdAtInputRef}
+                    step="60"
                     className="flex-1 rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
                   />
                   <button
                     type="button"
                     onClick={handleSetCreatedAtNow}
-                    className="rounded border border-zinc-700 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-300 transition hover:border-zinc-500"
+                    className="rounded border border-zinc-700 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-300 transition hover:border-zinc-500 cursor-pointer"
                   >
                     Use current time
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleClearCreatedAt}
+                    aria-label="Clear created at"
+                    className="rounded border border-zinc-700 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-300 transition hover:border-zinc-500 cursor-pointer"
+                  >
+                    Clear
                   </button>
                 </div>
               </div>
@@ -527,7 +558,7 @@ export default function EditPostPage() {
 
           {form.type === "case_study" && (
             <div className="space-y-5 p-5 bg-zinc-900/50 rounded-lg border border-zinc-800">
-              <h2 className="text-lg font-medium text-gray-300 border-b border-zinc-800 pb-2">
+              <h2 className="text-lg font-medium !text-white border-b border-zinc-800 pb-2">
                 Case Study Specifics
               </h2>
 
@@ -569,7 +600,7 @@ export default function EditPostPage() {
           <div className="flex justify-end pt-4">
             <button
               type="submit"
-              className="rounded bg-blue-600 px-8 py-3 text-sm font-medium text-white hover:bg-blue-500"
+              className="rounded cursor-pointer bg-blue-600 px-8 py-3 text-sm font-medium text-white hover:bg-blue-500"
             >
               Update
             </button>

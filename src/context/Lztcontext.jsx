@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import Image from "next/image";
 import CountUp from "react-countup";
 import {
@@ -138,12 +138,12 @@ import Docker from "../../public/assets/img/docker.webp";
 import Js from "../../public/assets/img/js.webp";
 import Ts from "../../public/assets/img/ts.webp";
 import React from "../../public/assets/img/react.webp";
-import ETL from "../../public/assets/img/Data Integration & ETL Services.webp";
-import MDM from "../../public/assets/img/Master Data Management (MDM).webp";
-import Management from "../../public/assets/img/Data Quality Management.webp";
-import Migration from "../../public/assets/img/Cloud Data Migration Services.webp";
-import Governance from "../../public/assets/img/Data Governance & Compliance.webp";
-import Analytics from "../../public/assets/img/Big Data & Analytics Support.webp";
+import ETL from "../../public/assets/img/data_managemet_one.webp";
+import MDM from "../../public/assets/img/data_managemet_two.webp";
+import Management from "../../public/assets/img/data_managemet_three.webp";
+import Migration from "../../public/assets/img/migration.webp";
+import Governance from "../../public/assets/img/data_managemet_four.webp";
+import Analytics from "../../public/assets/img/data_managemet_five.webp";
 import Design from "../../public/assets/img/Designs-Tailored.webp";
 import Collaborative from "../../public/assets/img/Collaborative-Approach.webp";
 import End from "../../public/assets/img/End-To-End.webp";
@@ -151,6 +151,10 @@ import End from "../../public/assets/img/End-To-End.webp";
 import Manufacturing from "../../public/assets/img/Manufacturing.jpg";
 
 export const Lztallcontext = createContext({});
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://webapi.logzerotechnologies.com/api";
 
 const LztProvider = ({ children }) => {
   const OurServicesList = [
@@ -1603,7 +1607,7 @@ const LztProvider = ({ children }) => {
       title: "Software Maintenance & Support",
       description:
         "Ensure your software remains updated, secure, and optimized with our comprehensive maintenance services.",
-      linkurl: "/services/software-development",
+      linkurl: "/services/custom-software-development",
     },
   ];
 
@@ -2647,33 +2651,107 @@ const LztProvider = ({ children }) => {
     },
   ];
 
-  const blogs = [
+  const defaultCaseStudies = [
     {
-      title: "ADPKD Urination-Tracking App for Tolvaptan Patients",
-      image: "/assets/img/ADPKD-Urination-Tracking.webp",
+      id: 1,
+      slug: "adpkd-urination-tracking",
+      metaTitle: "ADPKD Urination-Tracking App for Tolvaptan Patients",
+      metaDescription:
+        "A Tolvaptan patient tracker that captures urination cycles and shares updates with clinicians for better care.",
+      featuredImage: "/assets/img/ADPKD-Urination-Tracking.webp",
       link: "https://www.logzerotechnologies.com/case-studies/improving-patient-experience-adpkd-treatment-urination-tracking-app/",
-      category: "Healthcare",
+      blogCategory: "Healthcare",
+      publishedAt: "2024-12-01T00:00:00.000Z",
+      author: "LogZero",
     },
     {
-      title: "Always On: The IT Overhaul That Made Emax India Unbreakable",
-      image: "/assets/img/E-max-india.webp",
+      id: 2,
+      slug: "emax-unbreakable-it-overhaul",
+      metaTitle: "Always On: The IT Overhaul That Made Emax India Unbreakable",
+      metaDescription:
+        "Reimagined Emax India's IT stack so the retail business could stay responsive even during peak demand.",
+      featuredImage: "/assets/img/E-max-india.webp",
       link: "https://www.logzerotechnologies.com/blog/it-consultancy-and-web-management-for-emax-india/",
-      category: "Professional Services",
+      blogCategory: "Professional Services",
+      publishedAt: "2024-10-15T00:00:00.000Z",
+      author: "LogZero",
     },
     {
-      title: "From Slow to Slick: Emax India’s Game-Changing Web Revamp",
-      image: "/assets/img/e-max-web-revamp.webp",
+      id: 3,
+      slug: "emax-web-revamp",
+      metaTitle: "From Slow to Slick: Emax India’s Game-Changing Web Revamp",
+      metaDescription:
+        "Faster pages, modern visuals, and a bespoke CMS gave Emax India a fresh website that actually converts.",
+      featuredImage: "/assets/img/e-max-web-revamp.webp",
       link: "https://www.logzerotechnologies.com/blog/it-consultancy-and-web-management-for-emax-india/",
-      category: "Professional Services",
+      blogCategory: "Professional Services",
+      publishedAt: "2024-09-05T00:00:00.000Z",
+      author: "LogZero",
     },
     {
-      title:
+      id: 4,
+      slug: "interiorchowk-marketplace",
+      metaTitle:
         "Enhancing Home Interiors with InteriorChowk’s All-in-One Marketplace",
-      image: "/assets/img/interior-chowk.webp",
+      metaDescription:
+        "Delivered a marketplace platform so InteriorChowk could showcase vendors, bookings, and customization in a single app.",
+      featuredImage: "/assets/img/interior-chowk.webp",
       link: "https://www.logzerotechnologies.com/case-studies/enhancing-home-interior-projects-with-interiorchowks-comprehensive-marketplace/",
-      category: "Professional Services",
+      blogCategory: "Professional Services",
+      publishedAt: "2024-07-20T00:00:00.000Z",
+      author: "LogZero",
     },
   ];
+
+  const [blogs, setBlogs] = useState(defaultCaseStudies);
+  const [caseStudiesLoaded, setCaseStudiesLoaded] = useState(false);
+  const [caseStudiesError, setCaseStudiesError] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let isActive = true;
+
+    const fetchCaseStudies = async () => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/posts?type=case_study`,
+          { signal: controller.signal }
+        );
+        const data = await response.json();
+        const rows = data?.data?.rows ?? data?.rows ?? [];
+        if (!isActive) return;
+        if (Array.isArray(rows) && rows.length > 0) {
+          const normalized = rows.map((caseStudy) => ({
+            ...caseStudy,
+            metaTitle: caseStudy?.metaTitle || caseStudy?.title || "",
+            metaDescription: caseStudy?.metaDescription || "",
+            author: caseStudy?.author || "LOGZERO",
+          }));
+          setBlogs(normalized);
+          setCaseStudiesError(false);
+        } else {
+          setBlogs([]);
+        }
+      } catch (error) {
+        if (error.name !== "AbortError" && isActive) {
+          console.error("Error fetching case studies:", error);
+          setBlogs([]);
+          setCaseStudiesError(true);
+        }
+      } finally {
+        if (isActive) {
+          setCaseStudiesLoaded(true);
+        }
+      }
+    };
+
+    fetchCaseStudies();
+
+    return () => {
+      isActive = false;
+      controller.abort();
+    };
+  }, []);
 
   const handleLoadMore = () => {
     // console.log("Load more clicked!");
@@ -2738,6 +2816,8 @@ const LztProvider = ({ children }) => {
         SucessStoryDataSolution,
         SucessStoryDataWeb,
         blogs,
+        caseStudiesLoaded,
+        caseStudiesError,
 
         // handleLogoutClick,
       }}

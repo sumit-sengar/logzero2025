@@ -4,8 +4,7 @@ import PropTypes from "prop-types";
 import Recaptcha from "./Recaptcha";
 import logger from "@/lib/logger";
 
-const CONTACT_INQUIRY_ENDPOINT =
- "https://webapi.logzerotechnologies.com/api/v1/consultation/create-inquiry";
+const CONTACT_INQUIRY_ENDPOINT = `${(process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api").replace(/\/$/, "")}/v1/consultation/create-inquiry`;
 
 export default function ContactSection({
   id = "contact",

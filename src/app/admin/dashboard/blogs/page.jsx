@@ -283,7 +283,7 @@ export default function BlogDashboard() {
         <div className="flex items-center gap-2 mb-4 text-blue-400">
 
           <Filter size={18} />
-          <h2 className="font-semibold text-sm md:text-base !text-blue-400">Filters</h2>
+          <h2 className="font-semibold text-sm md:!text-xl !text-blue-400">Filters</h2>
         </div>
 
         <div className="space-y-4">
@@ -401,15 +401,29 @@ export default function BlogDashboard() {
 
           <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
             <button
+              onClick={() => router.push("/admin/dashboard/metaList")}
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 border border-blue-500/60 bg-blue-500/10 hover:bg-blue-500/20 text-blue-100 px-3 md:px-4 py-2 text-sm md:text-base rounded-md transition-colors hover:bg-zinc-800 whitespace-nowrap cursor-pointer"
+            >
+              <Layers size={16} /> Meta List
+            </button>
+
+            <button
+              onClick={() => router.push("/admin/dashboard/createMeta")}
+              className="flex-1 md:flex-none cursor-pointer flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-3 md:px-4 py-2 text-sm md:text-base rounded-md transition-colors whitespace-nowrap"
+            >
+              <Plus size={16} /> Create Meta
+            </button>
+
+            <button
               onClick={() => router.push("/admin/dashboard/blogs/add")}
-              className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-3 md:px-4 py-2 text-sm md:text-base rounded-md transition-colors whitespace-nowrap"
+              className="flex-1 md:flex-none cursor-pointer flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-3 md:px-4 py-2 text-sm md:text-base rounded-md transition-colors whitespace-nowrap"
             >
               <Plus size={16} /> Create New
             </button>
 
             <button
               onClick={handleLogout}
-              className="flex-1 md:flex-none flex items-center justify-center gap-2 rounded-md border border-zinc-800 bg-zinc-950 px-3 md:px-4 py-2 text-xs md:text-sm text-gray-200 hover:bg-zinc-800 whitespace-nowrap"
+              className="flex-1 md:flex-none cursor-pointer flex items-center justify-center gap-2 rounded-md border border-zinc-800 bg-zinc-950 px-3 md:px-4 py-2 text-xs md:text-sm text-gray-200 hover:bg-zinc-800 whitespace-nowrap"
             >
               Logout
             </button>
@@ -456,7 +470,7 @@ export default function BlogDashboard() {
                   {posts.map((post) => (
                     <tr key={post.id} className="hover:bg-zinc-800/40 text-xs md:text-sm">
                       <td className="px-2 md:px-4 py-2 md:py-3">
-                        <div className="flex items-center gap-2 md:gap-3 min-w-[180px] md:min-w-[240px]">
+                        <div className="flex items-center gap-2 md:gap-3 w-[220px] md:w-[300px]">
                           <div className="h-8 w-10 md:h-10 md:w-14 rounded overflow-hidden border border-zinc-800 bg-zinc-950 flex-shrink-0">
                             {(post.featuredImageBase64 || post.featuredImage) ? (
                               <img
@@ -471,15 +485,15 @@ export default function BlogDashboard() {
                             )}
                           </div>
 
-                          <div className="min-w-0">
+                          <div className="min-w-0 space-y-0.5">
                             <div
-                              className="font-semibold text-gray-100 truncate text-xs md:text-sm"
+                              className="font-semibold text-gray-100 line-clamp-1 text-xs md:text-sm"
                               title={post.metaTitle}
                             >
                               {post.metaTitle}
                             </div>
                             <div
-                              className="text-xs text-zinc-400 truncate hidden md:block"
+                              className="text-xs text-zinc-400 line-clamp-1 md:line-clamp-2 hidden md:block"
                               title={post.metaDescription}
                             >
                               {post.metaDescription || "No description"}
@@ -532,7 +546,7 @@ export default function BlogDashboard() {
                             onClick={() =>
                               router.push(`/admin/dashboard/blogs/${post.id}`)
                             }
-                            className="p-1.5 md:p-2 rounded bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 transition-colors group relative"
+                            className="p-1.5 md:p-2 rounded bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 transition-colors group relative cursor-pointer"
                           >
                             <Eye size={14} className="md:w-4 md:h-4" />
                             <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-zinc-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">View Details</span>
@@ -542,7 +556,7 @@ export default function BlogDashboard() {
                             onClick={() =>
                               router.push(`/admin/dashboard/blogs/edit/${post.id}`)
                             }
-                            className="p-1.5 md:p-2 rounded bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 transition-colors group relative"
+                            className="p-1.5 md:p-2 rounded bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 transition-colors group relative cursor-pointer"
                           >
                             <Edit size={14} className="md:w-4 md:h-4" />
                             <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-zinc-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">Edit Post</span>
@@ -550,7 +564,7 @@ export default function BlogDashboard() {
 
                           <button
                             onClick={() => deletePost(post.id)}
-                            className="p-1.5 md:p-2 rounded bg-red-900/20 border border-red-900/40 text-red-300 hover:bg-red-900/40 transition-colors group relative"
+                            className="p-1.5 md:p-2 rounded bg-red-900/20 border border-red-900/40 text-red-300 hover:bg-red-900/40 transition-colors group relative cursor-pointer"
                           >
                             <Trash2 size={14} className="md:w-4 md:h-4" />
                             <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-red-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">Delete Post</span>

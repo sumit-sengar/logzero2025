@@ -135,7 +135,13 @@ export default function HeroSection({
 
         {/* RIGHT IMAGE */}
         <div className="relative w-full h-64 sm:h-80 md:h-[562px]">
-          <Image src={bannerimage} alt="Hero" fill className="object-cover" />
+          <Image
+            src={bannerimage}
+            alt="Hero"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 50vw"
+            className="object-cover"
+          />
         </div>
       </div>
     </section>

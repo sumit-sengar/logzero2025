@@ -1,30 +1,66 @@
 import React from "react";
-import {
-	Code,
-	Bolt,
-	Server,
-	Diamond,
-	FileText,
-	CalendarDays,
-} from "lucide-react";
+import { Code, Bolt, Server, Diamond, FileText, CalendarDays } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { InlineGreenButton } from "@/components/InlineGreenButton";
 import CategoryPostsClient from "@/components/CategoryPostsClient";
+
+export const revalidate = 0;
+
+const normalizeSlug = (value = "") =>
+	value
+		.toLowerCase()
+		.replace(/&/g, "and")
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/^-+|-+$/g, "") || "category";
+
+const formatDisplaySlug = (value = "") =>
+	value
+		.replace(/-/g, " ")
+		.replace(/\b\w/g, (c) => c.toUpperCase()) || "This Category";
+
+async function fetchCategoryMeta(slug) {
+	const base = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api").replace(/\/$/, "");
+	const url = `${base}/categories/categoriesDetail`;
+
+	try {
+		const res = await fetch(url, { cache: "no-store" });
+		if (!res.ok) throw new Error("meta fetch failed");
+		const json = await res.json();
+		const match = json?.data?.find((item) => normalizeSlug(item?.customSlug) === slug) ?? {};
+		return {
+			title: match.metaTitle || `Blog | ${formatDisplaySlug(slug)}`,
+			description: match.metaDescription || "Explore our latest insights and updates.",
+		};
+	} catch (error) {
+		return {
+			title: `Blog | ${formatDisplaySlug(slug)}`,
+			description: "Explore our latest insights and updates.",
+		};
+	}
+}
 
 const devImg = "/assets/img/devImage.webp";
 
 const SearchOfCategory = [
 	{ id: 1, title: "Dev", color: "#FFEDEC", iconBg: "#F9E4E3", icon: Code, iconColor: "#7D2F2B" },
 	{ id: 2, title: "Digital Solutions", color: "#F7EBFF", icon: Bolt, iconBg: "#ECDDF6", iconColor: "#60387A" },
-	{ id: 3, title: "DevOps &Server Management", color: "#ECF1FF", icon: Server, iconBg: "#E0E7FB", iconColor: "#354571" },
+	{ id: 3, title: "DevOps", color: "#ECF1FF", icon: Server, iconBg: "#E0E7FB", iconColor: "#354571" },
 	{ id: 4, title: "Design", color: "#D8F9F3", icon: Diamond, iconBg: "#BBE4DD", iconColor: "#256D5B" },
 	{ id: 5, title: "Docs", color: "#FFF3CB", icon: FileText, iconBg: "#F9E4E3", iconColor: "#9F8A47" },
 ];
 
+export async function generateMetadata({ params }) {
+	const slugParam = params?.slug || "";
+	const slug = normalizeSlug(slugParam);
+	const meta = await fetchCategoryMeta(slug);
+	return meta;
+}
+
 async function fetchCategoryRows(slug, page = 1) {
 	try {
-		const url = `https://webapi.logzerotechnologies.com/api/posts?type=blog_post&blogCategory=${encodeURIComponent(slug)}${page && page > 1 ? `&page=${page}` : ""}`;
+		const base = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api").replace(/\/$/, "");
+		const url = `${base}/posts?type=blog_post&blogCategory=${encodeURIComponent(slug)}${page && page > 1 ? `&page=${page}` : ""}`;
 		const res = await fetch(url, { cache: "no-store" });
 		const json = await res.json();
 		const rows = json?.data?.rows ?? json?.rows ?? [];
@@ -38,15 +74,13 @@ async function fetchCategoryRows(slug, page = 1) {
 
 export default async function CategoryPage(props) {
 	const { params } = props;
-	// `searchParams` may be an async object in Next.js App Router; await it before reading properties.
-	const searchParams = await props.searchParams;
-	const slug = params?.slug || "";
+	const searchParams = props.searchParams || {};
+	const slugParam = params?.slug || "";
+	const slug = normalizeSlug(slugParam);
 	const page = Number(searchParams?.page ?? 1);
-	const displaySlug = slug ? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "This Category";
+	const displaySlug = formatDisplaySlug(slugParam || slug);
 
 	const rows = await fetchCategoryRows(slug, page);
-
-	const featured = rows[0] ?? null;
 	const listRows = rows.slice(0, 9);
 
 	return (
@@ -55,9 +89,9 @@ export default async function CategoryPage(props) {
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
 					<div className="gap-6 pt-[30px] pb-[30px] pl-6 xl:pl-[80px] lg:pl-[50px] md:pl-8 pr-6 lg:pr-[30px] md:pr-[0px]">
 						<h2 className=" lg:!text-[48px] md:!leading-[2rem] lg:!leading-[3rem] font-semibold text-[#1F1F1F]">
-							{slug ? `${slug.charAt(0).toUpperCase() + slug.slice(1)} Insights & Best Practices` : "Category"}
+							{slug ? `${displaySlug} Insights & Best Practices` : "Category"}
 						</h2>
-						<p className="lg:text-xl text-[#111827] mt-2">{`Latest posts for ${slug || "this category"}.`}</p>
+						<p className="lg:text-xl text-[#111827] mt-2">{`Latest posts for ${displaySlug || "this category"}.`}</p>
 						<div className="inline-block">
 							<InlineGreenButton text="Schedule Consultation" linkurl="/contact-us" linktarget="_self" MoveRighticon services={[]} />
 						</div>
@@ -76,7 +110,7 @@ export default async function CategoryPage(props) {
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
 						{SearchOfCategory.map((category) => {
 							const IconComponent = category.icon;
-							const slugLink = category.title.toLowerCase().replace(/\s+/g, "-");
+							const slugLink = normalizeSlug(category.title);
 							const isActive = slug === slugLink;
 							return (
 								<Link
