@@ -137,7 +137,7 @@ h6 {
 }
 
 p {
-  @apply mb-[10px] text-[18px] leading-[26px] font-normal;
+  @apply   leading-[26px] font-normal;
 }
 
 
