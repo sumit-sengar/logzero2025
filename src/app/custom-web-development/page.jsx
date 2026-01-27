@@ -86,6 +86,7 @@ const cards = [
     },
 ];
 
+
 const processData = [
     {
         title: "Discovery & Requirement Gathering",
@@ -219,7 +220,7 @@ export default function CustomWebDevelopment() {
 
 
             {/* Who we are */}
-            <section className="py-4 px-4 md:py-16 ">
+            <section className=" py-4 px-4 md:py-16 ">
                 <div className="container mx-auto">
                     <h2 className="flex flex-col mx-auto text-center">Who We Are: Your Web Development Partners</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">

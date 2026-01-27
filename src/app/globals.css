@@ -566,6 +566,33 @@ html, body {
 }
 
 
+@keyframes scroll-ltr {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes scroll-rtl {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.scroll-ltr {
+  animation: scroll-ltr 55s linear infinite;
+}
+
+.scroll-rtl {
+  animation: scroll-rtl 55s linear infinite;
+}
+
+
 
 
 
