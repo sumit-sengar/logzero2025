@@ -441,28 +441,25 @@ export default function Global() {
         subheading="Whether you're looking to transform your business with technology or simply have a question, we're here to help. Reach out today and let's discuss how we can support your growth."
         contactCardTitle="Get in Touch"
         contactText=""
-        phone={{
-          label: "Phone Number",
-          number: "+91 11 40789940",
-          href: "tel:+91 11 40789940",
+         phone={{
+          label: "Expert Developer",
+          number: "Skilled professionals with proven track records",
+          
         }}
         email={{
-          label: "Email",
-          address: "sales@logzerotechnologies.com",
+          label: "Quick Turnaround",
+          address: "Start your project within 24-48 hours",
         }}
         emailComposeMode="gmail"
         address={{
-          label: "Address",
-          lines: [
-            "Pegasus Tower, A-10, 8th Floor Sector-68,Gautam Buddha Nagar, Noida, Uttar Pradesh, 201301,",
-          ],
-          mapLink: "https://maps.app.goo.gl/f1tAeRmdHf2wWoMD6",
+          label: "Competitive Rates",
+          lines: ["Quality development at affordable prices"],
         }}
-        businessHours={[
-          { day: "Monday–Friday", text: "24x7 Open" },
-          { day: "Saturday", text: "Closed" },
-          { day: "Sunday", text: "Closed" },
-        ]}
+        contactDetails={{
+          need: "Need immediate Help?",
+          urgent: "Mail us directly for urgent requirements",
+          email: "sales@logzerotechnologies.com",
+        }}
         form={{
           respondText:
             "🔒Your information is secure and will only be used to contact you about your inquiry.",

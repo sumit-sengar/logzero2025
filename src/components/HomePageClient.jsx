@@ -579,7 +579,7 @@ export default function HomePageClient() {
                 className="bg-[#163B31] border border-white/10 rounded-lg p-5 gap-3 hover:bg-[#1f4d40] transition-transform hover:scale-104"
               >
                 <div className="flex flex-col gap-3">
-                 <p className="!text-white !font-Sumana !text-[2rem] !font-semibold">
+                  <p className="!text-white !font-Sumana !text-[2rem] !font-semibold">
                     {item.countEnd ? (
                       <CountUp
                         end={item.countEnd}
@@ -616,30 +616,32 @@ export default function HomePageClient() {
       <ContactUsForm
         heading="Get In Touch"
         subheading="Ready to transform your  idea into reality? Let’s discuss your project and see how we can help you achieve your goals."
-        contactCardTitle="Let’s Start a Conversation"
-        contactText="We’re here to answer your questions and discuss how we can bring your  vision to life. Reach out to us through any of the following channels."
+        contactCardTitle="Why choose LogZerotechnologies?"
+        contactText=""
         phone={{
-          label: "Phone Number",
-          number: "+91 11 40789940",
-          href: "tel:+91 11 40789940",
+          label: "Expert Developer",
+          number: "Skilled professionals with proven track records",
+          
         }}
         email={{
-          label: "Email",
-          address: "sales@logzerotechnologies.com",
+          label: "Quick Turnaround",
+          address: "Start your project within 24-48 hours",
         }}
         emailComposeMode="gmail"
         address={{
-          label: "Address",
-          lines: [
-            "Pegasus Tower, A-10, 8th Floor Sector-68,Gautam Buddha Nagar, Noida, Uttar Pradesh, 201301,",
-          ],
-          mapLink: "https://maps.app.goo.gl/f1tAeRmdHf2wWoMD6",
+          label: "Competitive Rates",
+          lines: ["Quality development at affordable prices"],
         }}
-        businessHours={[
-          { day: "Monday–Friday", text: "24x7 Open" },
-          { day: "Saturday", text: "Closed" },
-          { day: "Sunday", text: "Closed" },
-        ]}
+        contactDetails={{
+          need: "Need immediate Help?",
+          urgent: "Mail us directly for urgent requirements",
+          email: "sales@logzerotechnologies.com",
+        }}
+        // businessHours={[
+        //   { day: "Monday–Friday", text: "24x7 Open" },
+        //   { day: "Saturday", text: "Closed" },
+        //   { day: "Sunday", text: "Closed" },
+        // ]}
         form={{
           respondText:
             "🔒Your information is secure and will only be used to contact you about your inquiry.",
