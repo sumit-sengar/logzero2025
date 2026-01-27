@@ -9,7 +9,7 @@ import { Users, TrendingUp, Star } from "lucide-react";
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
-
+import ContactUsForm from "@/components/ContactUsForm";
 
 
 
@@ -173,11 +173,31 @@ const technologies2 = [
 ];
 
 const faqData = [
-    { question: "What is custom web app development?", answer: "" },
-    { question: "How is a custom web app different from a template-based website?", answer: "" },
-    { question: "Why should I choose LogZero Technologies?", answer: "" },
-    { question: "Do you offer custom ecommerce web development?", answer: "" },
-    { question: "How long does custom web app development take?", answer: "" },
+    {
+        question: "What is custom web app development?",
+        answer:
+            "Custom web app development is the process of building web-based software tailored to a business’s specific requirements, workflows, and users. Unlike ready-made tools, it delivers better scalability, security, and flexibility.",
+    },
+    {
+        question: "How is a custom web app different from a template-based website?",
+        answer:
+            "A custom web application is designed from scratch around your exact needs, while template sites rely on pre-built layouts and limited features. Custom builds give you higher performance, deeper integrations, and long-term scalability.",
+    },
+    {
+        question: "Why should I choose LogZero Technologies?",
+        answer:
+            "We architect solutions around your goals, user experience, and growth plans—delivering secure, scalable, fully tailored applications with end-to-end support.",
+    },
+    {
+        question: "Do you offer custom ecommerce web development?",
+        answer:
+            "Yes. We build secure, high-performing ecommerce platforms tailored to your products, customers, and regional markets.",
+    },
+    {
+        question: "How long does custom web app development take?",
+        answer:
+            "Timelines depend on complexity, features, and integrations; most projects span from a few weeks to several months, following a structured build and testing process.",
+    },
 ];
 
 export default function CustomWebDevelopment() {
@@ -282,7 +302,7 @@ export default function CustomWebDevelopment() {
                         {cards.map((item, index) => (
                             <div
                                 key={index}
-                                className="flex flex-col px-5 py-[22px] border border-[#E5E7EB] rounded-md bg-white gap-6"
+                                className="flex flex-col px-5 py-[22px] border border-[#E5E7EB] rounded-md bg-white gap-6 tranform transition-transform duration-300 hover:scale-105 cursor-pointer"
                             >
                                 <Image
                                     src={item.icon}
@@ -305,7 +325,7 @@ export default function CustomWebDevelopment() {
                             </div>
                         ))}
                     </div>
-                    <button className="flex font-[var(--font-inter)] font-semibold text-white text-[15px] bg-[#1E8767] rounded-md px-6 py-4 text-center mt-8 md:mt-12 mx-auto">
+                    <button className="flex font-[var(--font-inter)] font-semibold text-white text-[15px] bg-[#1E8767] rounded-md px-6 py-4 text-center mt-8 md:mt-12 mx-auto cursor-pointer">
                         Let’s Build Your Custom Web App
                     </button>
                 </div>
@@ -343,7 +363,7 @@ export default function CustomWebDevelopment() {
                                     className="grid grid-cols-1 md:grid-cols-2 gap-4"
                                 >
                                     {/* TEXT */}
-                                    <div className={`flex flex-col border border-[#E6E6E6] rounded-md p-5 bg-white
+                                    <div className={`flex flex-col border border-[#E6E6E6] rounded-md p-5 bg-white tranform transition-tranform duration-300 hover:scale-105 cursor-pointer
                                             ${isReverse ? "md:order-2" : "md:order-1"}`}
                                     >
                                         <div className="w-12 h-12 bg-[#CCFBF1] rounded-xl flex items-center justify-center">
@@ -366,7 +386,7 @@ export default function CustomWebDevelopment() {
 
                                     {/* IMAGE */}
                                     <div
-                                        className={`relative w-full h-[220px]  sm:h-[310px] lg:h-[262px] rounded-md overflow-hidden
+                                        className={`relative w-full h-[220px]  sm:h-[310px] lg:h-[262px] rounded-md overflow-hidden transform transition-transform duration-300 hover:scale-105 cursor-pointer
                                         ${isReverse ? "md:order-1" : "md:order-2"}`}
                                     >
                                         <Image
@@ -383,7 +403,7 @@ export default function CustomWebDevelopment() {
                     </div>
 
 
-                    <button className="flex font-[var(--font-inter)] font-semibold text-white text-[15px] bg-[#1E8767] rounded-md px-6 py-4 text-center mt-6  md:mt-12 mx-auto">
+                    <button className="flex font-[var(--font-inter)] font-semibold text-white text-[15px] bg-[#1E8767] rounded-md px-6 py-4 text-center mt-6  md:mt-12 mx-auto cursor-pointer">
                         Get Started Today
                     </button>
 
@@ -548,6 +568,7 @@ export default function CustomWebDevelopment() {
                                 width={564}
                                 height={384}
                                 className="rounded-lg"
+                                alt="Case study image"
                             />
                         </div>
 
@@ -708,6 +729,7 @@ export default function CustomWebDevelopment() {
                                 width={564}
                                 height={384}
                                 className="rounded-lg"
+                                alt="Case study image"
                             />
                         </div>
 
@@ -716,7 +738,7 @@ export default function CustomWebDevelopment() {
 
                     <div className="text-center mt-6 md:mt-12">
                         <div className="inline-block">
-                            <button className="text-white py-4 px-6 bg-[#1E8767] rounded-md">
+                            <button className="text-white py-4 px-6 bg-[#1E8767] rounded-md cursor-pointer hover:bg-[#166c52] transition-colors duration-300">
                                 Explore Our Latest Case Studies
                             </button>
                         </div>
@@ -775,160 +797,41 @@ export default function CustomWebDevelopment() {
 
             {/* Tell Us About Your Project */}
 
-            <section className="px-4 ">
-                <div className="container mx-auto py-4 md:py-16">
-                    <div className="flex flex-col gap-3">
-                        <h2 className="mx-auto text-center">Tell Us About Your Project</h2>
-                        <p className="max-w-[55%] mx-auto text-center text-[18px]">
-                            Use the form below to specify the type of web application services you need,
-                            and our team will get back to you with a tailored solution.
-                        </p>
-                    </div>
-                    <div className="grid grir-cols-1 md:grid-cols-2 lg:grid-cols-2 mt-4 md:mt-8 gap-4">
-                        <div className="bg-white rounded-xl border border-[#E5E7EB] p-4 md:p-6 shadow-sm w-full ">
-                            <form className="flex flex-col gap-5">
-
-                                {/* Full Name */}
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-[15px] font-medium text-[#323539]">
-                                        Full Name
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="Your Full Name"
-                                        className="w-full  rounded-md border border-[#E5E5E7] p-3 text-[15px] focus:outline-none focus:ring-2 focus:ring-[#1E8767]"
-                                    />
-                                </div>
-
-                                {/* Email */}
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-[15px] font-medium text-[#323539]">
-                                        Email Address
-                                    </label>
-                                    <input
-                                        type="email"
-                                        placeholder="Your@email.com"
-                                        className="w-full rounded-md border border-[#E5E7EB] p-3 text-[15px] focus:outline-none focus:ring-2 focus:ring-[#1E8767]"
-                                    />
-                                </div>
-
-                                {/* Phone */}
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-[15px] font-medium text-[#323539]">
-                                        Phone Number
-                                    </label>
-                                    <input
-                                        type="tel"
-                                        placeholder="+91-95759 38484"
-                                        className="w-full  rounded-md border border-[#E5E7EB] p-3  text-[15px] focus:outline-none focus:ring-2 focus:ring-[#1E8767]"
-                                    />
-                                </div>
-
-                                {/* Project Details */}
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-[15px] font-medium text-[#111827]">
-                                        Project Details
-                                    </label>
-                                    <textarea
-                                        rows="4"
-                                        placeholder="Tell us about your project and requirements..."
-                                        className="w-full rounded-md border border-[#E5E7EB] px-4 py-3 text-[15px] resize-none focus:outline-none focus:ring-2 focus:ring-[#1E8767]"
-                                    />
-                                </div>
-
-                                {/* Button */}
-                                <button
-                                    type="submit"
-                                    className="mt-2 flex items-center justify-center gap-2 py-[13px] bg-[#1E8767] text-white text-[15px] font-semibold rounded-md hover:bg-[#176b52] transition"
-                                >
-                                    Send Message
-                                </button>
-
-                                <p className="mt-1 text-center text-[16px] text-[#323539]">
-                                    We typically respond within 24 hours during business days.
-                                </p>
-
-                            </form>
-                        </div>
+           {/* form */}
+                 <ContactUsForm
+                   heading="Let's Discuss Your Project"
+                   subheading="Fill out the form below and we'll get back to you within 24 hours with a customized solution for your development needs."
+                   contactCardTitle="Why choose LogZerotechnologies?"
+                   contactText=""
+                    phone={{
+                     label: "Expert Developer",
+                     number: "Skilled professionals with proven track records",
+                     
+                   }}
+                   email={{
+                     label: "Quick Turnaround",
+                     address: "Start your project within 24-48 hours",
+                   }}
+                   emailComposeMode="gmail"
+                   address={{
+                     label: "Competitive Rates",
+                     lines: ["Quality development at affordable prices"],
+                   }}
+                   contactDetails={{
+                     need: "Need immediate Help?",
+                     urgent: "Mail us directly for urgent requirements",
+                     email: "sales@logzerotechnologies.com",
+                   }}
+                   form={{
+                     respondText:
+                       "🔒Your information is secure and will only be used to contact you about your inquiry.",
+                   }}
+                   onSubmit={(formData) => {
+                     // console.log("Form submitted:", formData);
+                   }}
+                 />
 
 
-                        <div className="bg-white rounded-xl border border-[#E5E7EB] p-4 md:p-6 shadow-sm w-full ">
-
-                            {/* Heading */}
-                            <h2 className="text-[24px] font-semibold text-[#111827] ">
-                                Why choose <br /> LogZerotechnologies?
-                            </h2>
-
-                            {/* Expert Developer */}
-                            <div className="flex items-start gap-4 mt-4 md:mt-8">
-                                <div>
-                                  <div className="w-[56px] h-[56px] rounded-full bg-[#3C74ED] flex items-center justify-center">
-                                    <Phone className="w-6 h-6 text-white" />
-                                    </div>  
-                                </div>
-                                
-                                <div>
-                                    <h4 className="font-semibold text-[16px]">Expert Developer</h4>
-                                    <p className="text-[16px] text-[#6B7280]">
-                                        Skilled professionals with proven track records
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Quick Turnaround */}
-                            <div className="flex items-start gap-4 mt-4 md:mt-8">
-                                <div>
-                                    <div className="w-[56px] h-[56px] rounded-full bg-[#14B8A6] flex items-center justify-center">
-                                        <Mail className="w-6 h-6 text-white" />
-                                    </div>
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-[16px]">Quick Turnaround</h4>
-                                    <p className="text-[16px] text-[#6B7280]">
-                                        Start your project within 24–48 hours
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Competitive Rates */}
-                            <div className="flex items-start gap-4 mt-4 md:mt-8">
-                                <div>
-                                    <div className="w-[56px] h-[56px] rounded-full bg-[#22C55E] flex items-center justify-center">
-                                        <MapPin className="w-6 h-6 text-white" />
-                                    </div>
-                                 </div>
-                                <div>
-                                    <h4 className="font-semibold text-[16px]">Competitive Rates</h4>
-                                    <p className="text-[16px] text-[#6B7280]">
-                                        Quality development at affordable prices
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Divider */}
-                            <div className=" border-[#E5E7EB] mt-4 md:mt-[41px] ">
-                                <h3 className="font-semibold text-[20px] ">
-                                    Need immediate Help?
-                                </h3>
-                                <p className="text-[18px] text-[#6B7280] mt-3">
-                                    Mail us directly for urgent requirements
-                                </p>
-                                <div className="mt-3">
-                                    <a
-                                        href="mailto:sales@logzerotechnologies.com"
-                                        className="text-[18px] font-medium text-[#252525]"
-                                    >
-                                        sales@logzerotechnologies.com
-                                    </a>
-                                    </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            
         </div>
     );
 }

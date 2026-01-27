@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import api from "../../../../lib/api";
+import api from "@/lib/api";
 
 export default function Page() {
   const { id } = useParams();
