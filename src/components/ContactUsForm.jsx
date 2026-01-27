@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Mail, Phone, MapPin, Clock, Send } from "lucide-react";
+import Image from "next/image";
 import PropTypes from "prop-types";
 import Recaptcha from "./Recaptcha";
 import logger from "@/lib/logger";
-
+// import connectImage from "../../public/assets/img/connectwithus.webp";
+import connectImage from "../../public/assets/img/connectwithus.png";
+// const CONTACT_INQUIRY_ENDPOINT = `${(process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api").replace(/\/$/, "")}/v1/consultation/create-inquiry`;
 const CONTACT_INQUIRY_ENDPOINT = `${(process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api").replace(/\/$/, "")}/v1/consultation/create-inquiry`;
 
 export default function ContactSection({
@@ -12,29 +15,31 @@ export default function ContactSection({
   subheading = `Ready to transform your mobile app idea into reality? Let’s\ndiscuss your project and see how we can help you achieve your\ngoals.`,
   contactCardTitle = "Let’s Start a Conversation",
   contactText = `We’re here to answer your questions and discuss how we can bring\nyour mobile app vision to life. Reach out to us through any of\nthe following channels.`,
+  
   phone = {
     label: "Phone Number",
     number: "+91 11 40789940",
-    href: "tel:+911140789940",
+    href: "tel:+91 11 40789940",
   },
   email = {
     label: "Email",
     address: "sales@logzerotechnologies.com",
-    mode: "mailto",
   },
+
   address = {
     label: "Address",
     lines: [
-      "Pegasus Tower, A-10, 8th Floor, Sector-68,",
-      "Gautam Buddha Nagar, Noida, Uttar Pradesh, 201301",
+      "Pegasus Tower, A-10, 8th Floor Sector-68,Gautam Buddha Nagar, Noida, Uttar Pradesh, 201301,",
     ],
     mapLink: "https://maps.app.goo.gl/f1tAeRmdHf2wWoMD6",
   },
-  businessHours = [
-    { day: "Monday–Friday", text: "24x7 Open" },
-    { day: "Saturday", text: "Closed" },
-    { day: "Sunday", text: "Closed" },
-  ],
+
+  contactDetails = {
+    need: "Need immediate Help?",
+    urgent: "Mail us directly for urgent requirements",
+    email: "sales@logzerotechnologies.com",
+  },
+
   form = {
     respondText: "We typically respond within 24 hours during business days.",
   },
@@ -44,7 +49,7 @@ export default function ContactSection({
   const emailHref =
     emailComposeMode === "gmail"
       ? `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
-          email.address
+          email.address,
         )}`
       : `mailto:${email.address}`;
 
@@ -56,7 +61,7 @@ export default function ContactSection({
   });
   const [formSuccess, setFormSucess] = useState(false);
   const [formErrors, setFormErrors] = useState({});
-  const [recaptchaToken, setRecaptchaToken] = useState(null);  
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -67,19 +72,23 @@ export default function ContactSection({
 
     const submissionMeta = buildFormLogMeta(formData);
     logger.debug({ submissionMeta }, "Submitting contact form");
- 
+
     // The reCAPTCHA widget inserts a hidden input field named 'g-recaptcha-response'
-    const recaptchaTokenField = document.querySelector('[name="g-recaptcha-response"]');
-    const recaptchaToken = recaptchaTokenField ? recaptchaTokenField.value : null;
+    const recaptchaTokenField = document.querySelector(
+      '[name="g-recaptcha-response"]',
+    );
+    const recaptchaToken = recaptchaTokenField
+      ? recaptchaTokenField.value
+      : null;
 
     if (!recaptchaToken) {
-       logger.warn(
-        {submissionMeta},
-        "Contact form blocked because reCAPTCHA is missing"
-       )
-        alert("Please complete the reCAPTCHA verification.");
-        // Optional: If you are using explicit rendering, you might need to reset/re-render the widget here.
-        return; 
+      logger.warn(
+        { submissionMeta },
+        "Contact form blocked because reCAPTCHA is missing",
+      );
+      alert("Please complete the reCAPTCHA verification.");
+      // Optional: If you are using explicit rendering, you might need to reset/re-render the widget here.
+      return;
     }
     const errors = {};
 
@@ -109,42 +118,36 @@ export default function ContactSection({
       email: formData.email,
       phone_number: formData.phone,
       project_desc: formData.detail,
-      'g-recaptcha-response': recaptchaToken,
+      "g-recaptcha-response": recaptchaToken,
     };
-    
-     const controller = new AbortController();
+
+    const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
 
     try {
-
-       logger.info(
-        { submissionMeta, endpoint: CONTACT_INQUIRY_ENDPOINT},
-        "Sending contact form submission"
-       )
-
-      const res = await fetch(
-        CONTACT_INQUIRY_ENDPOINT,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
+      logger.info(
+        { submissionMeta, endpoint: CONTACT_INQUIRY_ENDPOINT },
+        "Sending contact form submission",
       );
+
+      const res = await fetch(CONTACT_INQUIRY_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
       const responseData = await res.json();
       if (res.ok) {
-          logger.info(
-              {
-                submissionMeta,
-                endpoint: CONTACT_INQUIRY_ENDPOINT,
-                status: res.status,
-                responseMessage: responseData.message,
-              },
-              "Contact form submission successful"
-          )
-              
-          
+        logger.info(
+          {
+            submissionMeta,
+            endpoint: CONTACT_INQUIRY_ENDPOINT,
+            status: res.status,
+            responseMessage: responseData.message,
+          },
+          "Contact form submission successful",
+        );
 
         // console.log(responseData);
         setFormSucess(true);
@@ -157,47 +160,44 @@ export default function ContactSection({
         if (window.grecaptcha) {
           window.grecaptcha.reset();
         }
-      }else{
-
-         logger.error(
+      } else {
+        logger.error(
           {
             submissionMeta,
             endpoint: CONTACT_INQUIRY_ENDPOINT,
             status: res.status,
             responseMessage: responseData.message,
           },
-          "Contact form submission failed"
-         )
+          "Contact form submission failed",
+        );
         alert(`Form submission failed: ${responseData.message}`);
         if (window.grecaptcha) {
           window.grecaptcha.reset();
-        }}
-          
-       
+        }
+      }
     } catch (error) {
-      if(error.name === 'AbortError'){
-         logger.error({
+      if (error.name === "AbortError") {
+        logger.error({
           submissionMeta,
           endpoint: CONTACT_INQUIRY_ENDPOINT,
-          error: 'Request timed out',
-         })
-      } else{
+          error: "Request timed out",
+        });
+      } else {
         logger.error(
           {
             submissionMeta,
             endpoint: CONTACT_INQUIRY_ENDPOINT,
             error: error.message,
           },
-          "Network error during contact form submission"
-        )
-      }    
-
+          "Network error during contact form submission",
+        );
+      }
 
       console.error("Error submitting form:", error);
       if (window.grecaptcha) {
         window.grecaptcha.reset();
       }
-    }finally {
+    } finally {
       clearTimeout(timeoutId);
     }
   };
@@ -215,7 +215,15 @@ export default function ContactSection({
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           <div className="rounded-xl bg-white p-6 border border-[#E6E8E999] shadow-[0px_19px_25px_-5px_rgba(16,24,40,0.05)]">
             <h3 className="mb-6 !text-[24px]">{contactCardTitle}</h3>
-            <p className="whitespace-pre-line">{contactText}</p>
+            <div className="mb-6">
+              <Image
+                src={connectImage}
+                alt="Connect with us"
+                className="w-full h-auto rounded-lg"
+                priority
+              />
+            </div>
+            {/* <p className="whitespace-pre-line">{contactText}</p> */}
 
             <ul className="space-y-5 pt-5">
               <li className="flex flex-col lg:flex-row items-start gap-4 p-2">
@@ -223,10 +231,10 @@ export default function ContactSection({
                   <Phone size={24} className="text-white" />
                 </div>
                 <div className="min-w-0">
-                  <p className="subheading-2">{phone.label}</p>
-                  <a href={phone.href} className="subtextcolor">
+                  <p className="subheading-2 mb-2 mb-2">{phone.label}</p>
+                  <p className="subtextcolor text-[#525D6A] text-lg">
                     {phone.number}
-                  </a>
+                  </p>
                 </div>
               </li>
 
@@ -235,22 +243,11 @@ export default function ContactSection({
                   <Mail size={24} className="text-white" />
                 </div>
                 <div className="min-w-0">
-                  <p className="subheading-2">{email.label}</p>
+                  <p className="subheading-2 mb-2">{email.label}</p>
                   <div className="space-y-0.5">
-                    <a
-                      href={emailHref}
-                      className="subtextcolor  break-words "
-                      target={
-                        emailComposeMode === "gmail" ? "_blank" : undefined
-                      }
-                      rel={
-                        emailComposeMode === "gmail"
-                          ? "noopener noreferrer"
-                          : undefined
-                      }
-                    >
+                    <p className="subtextcolor  break-words text-[#525D6A] text-lg">
                       {email.address}
-                    </a>
+                    </p>
                   </div>
                 </div>
               </li>
@@ -260,13 +257,8 @@ export default function ContactSection({
                   <MapPin size={24} className="text-white" />
                 </div>
                 <div className="min-w-0">
-                  <p className="subheading-2">{address.label}</p>
-                  <a
-                    href={address.mapLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="subtext subtextcolor text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-300"
-                  >
+                  <p className="subheading-2 mb-2">{address.label}</p>
+                  <p className="subtextcolor  break-words text-[#525D6A] text-lg ">
                     <p>
                       {address.lines.map((line, i) => (
                         <React.Fragment key={i}>
@@ -275,16 +267,18 @@ export default function ContactSection({
                         </React.Fragment>
                       ))}
                     </p>
-                  </a>
+                  </p>
                 </div>
               </li>
 
-              <li className="flex flex-col lg:flex-row items-start gap-4 p-2">
+              {/* <li className="flex flex-col lg:flex-row items-start gap-4 p-2">
                 <div className="w-14 h-14 p-3 bgorange-200 flex items-center justify-center rounded-full">
                   <Clock size={24} className="text-white" />
                 </div>
+
+
                 <div className="min-w-0">
-                  <p className="subheading-2">Business Hours</p>
+                  <p className="subheading-2 mb-2">Business Hours</p>
                   <div className="subtext subtextcolor">
                     {businessHours.map((h, idx) => (
                       <p key={idx} className="subtext subtextcolor !mb-0">
@@ -292,9 +286,26 @@ export default function ContactSection({
                       </p>
                     ))}
                   </div>
+
                 </div>
-              </li>
+                
+              </li> */}
             </ul>
+
+            {contactDetails && (
+              <div className="mt-6 p-4">
+                <p className="!font-semibold !text-[#111827] !text-lg ">
+                  {contactDetails.need}
+                </p>
+                <p className=" text-[#525D6A] my-2">{contactDetails.urgent}</p>
+                <a
+                  href={`mailto:${contactDetails.email}`}
+                  className="text-base text-[#252525] font-medium underline hover:text-[#5BC2A7]"
+                >
+                  {contactDetails.email}
+                </a>
+              </div>
+            )}
           </div>
 
           <div className="rounded-xl bg-white p-6 border border-[#E6E8E999] shadow-[0px_19px_25px_-5px_rgba(16,24,40,0.05)]">
@@ -384,9 +395,9 @@ export default function ContactSection({
                   </p>
                 )}
               </div>
-                                       <div className="flex justify-center py-4">
-    <Recaptcha onVerify={setRecaptchaToken} />
-  </div>
+              <div className="flex justify-center py-4">
+                <Recaptcha onVerify={setRecaptchaToken} />
+              </div>
 
               <div className="space-y-3">
                 <button
@@ -429,7 +440,7 @@ ContactSection.propTypes = {
     mapLink: PropTypes.string,
   }),
   businessHours: PropTypes.arrayOf(
-    PropTypes.shape({ day: PropTypes.string, text: PropTypes.string })
+    PropTypes.shape({ day: PropTypes.string, text: PropTypes.string }),
   ),
   form: PropTypes.object,
   emailComposeMode: PropTypes.oneOf(["mailto", "gmail"]),

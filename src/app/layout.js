@@ -1,18 +1,43 @@
-// src/app/layout.js
-"use client";
-
-import { usePathname } from "next/navigation";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import ScrollToTopButton from "@/components/ScrollToTopButton";
 import Providers from "./providers";
 import Script from "next/script";
+import ClientLayout from "@/components/ClientLayout";
+
+export const metadata = {
+  metadataBase: new URL("https://logzerotechnologies.com"),
+  title: {
+    default: "LogZero Technologies",
+    template: "%s | LogZero Technologies",
+  },
+  description: "Welcome to LogZero – delivering scalable digital solutions.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "LogZero Technologies",
+    description: "Welcome to LogZero – delivering scalable digital solutions.",
+    url: "https://logzerotechnologies.com",
+    siteName: "LogZero Technologies",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "/assets/img/Image_tags.webp",
+        width: 1200,
+        height: 600,
+        alt: "LogZero Technologies",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "LogZero Technologies",
+    description: "Welcome to LogZero – delivering scalable digital solutions.",
+    images: ["/assets/img/Image_tags.webp"],
+  },
+};
 
 export default function RootLayout({ children }) {
-  const pathname = usePathname();
-  const isAdminRoute = pathname.startsWith("/admin");
-
   return (
     <html lang="en">
       <head>
@@ -41,10 +66,7 @@ export default function RootLayout({ children }) {
           />
         </noscript>
         <Providers>
-          {!isAdminRoute && <Header />}
-          <main className={!isAdminRoute ? "mt-[76px]" : ""}>{children}</main>
-          {!isAdminRoute && <ScrollToTopButton />}
-          {!isAdminRoute && <Footer />}
+          <ClientLayout>{children}</ClientLayout>
         </Providers>
       </body>
     </html>
