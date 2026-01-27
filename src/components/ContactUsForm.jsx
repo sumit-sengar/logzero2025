@@ -15,7 +15,7 @@ export default function ContactSection({
   subheading = `Ready to transform your mobile app idea into reality? Let’s\ndiscuss your project and see how we can help you achieve your\ngoals.`,
   contactCardTitle = "Let’s Start a Conversation",
   contactText = `We’re here to answer your questions and discuss how we can bring\nyour mobile app vision to life. Reach out to us through any of\nthe following channels.`,
-  
+
   phone = {
     label: "Phone Number",
     number: "+91 11 40789940",
@@ -259,14 +259,12 @@ export default function ContactSection({
                 <div className="min-w-0">
                   <p className="subheading-2 mb-2">{address.label}</p>
                   <p className="subtextcolor  break-words text-[#525D6A] text-lg ">
-                    <p>
-                      {address.lines.map((line, i) => (
-                        <React.Fragment key={i}>
-                          {line}
-                          {i !== address.lines.length - 1 && <br />}
-                        </React.Fragment>
-                      ))}
-                    </p>
+                    {address.lines.map((line, i) => (
+                      <React.Fragment key={i}>
+                        {line}
+                        {i !== address.lines.length - 1 && <br />}
+                      </React.Fragment>
+                    ))}
                   </p>
                 </div>
               </li>
