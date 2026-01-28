@@ -18,6 +18,7 @@ import CardContainerBorder from "@/components/CardContainerBorder";
 
 import FAQSection from "@/components/FAQSection";
 import ContactUsForm from "@/components/ContactUsForm";
+import ScrollingLogosSection from "@/components/ScrollingLogosSection";
 
 export default function Global() {
   useEffect(() => {
@@ -272,6 +273,15 @@ export default function Global() {
           />
         </div>
       </section>
+
+      {/* Scrolling Logos Section */}
+     
+        <ScrollingLogosSection
+            title="Build Smarter Digital Experiences with Expert Web Technologies"
+            description="We build smart, engaging digital experiences using modern web technologies—
+            delivering high-performance websites and web apps that drive real results."
+        />
+     
 
       {/* CTA */}
       <section className="px-6 pt-16">

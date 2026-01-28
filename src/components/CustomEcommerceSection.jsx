@@ -614,8 +614,6 @@ const CustomEcommercePage = () => {
 
 
             {/* Tell Us About Your Project */}
-
-
             <section className="px-4 bg-[#F2F7FC]">
                 <div className="container mx-auto py-4 md:py-16">
                     <div className="flex flex-col gap-3">
