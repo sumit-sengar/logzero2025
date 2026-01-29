@@ -10,6 +10,7 @@ import Trusted from "@/components/Trusted";
 import CardContainer from "@/components/CardContainer";
 import WhyChooseUs from "@/components/WhyChooseUS";
 import FAQSection from "@/components/FAQSection";
+import ScrollingLogosSection from "@/components/ScrollingLogosSection";
 import {
   FolderSync,
   Users,
@@ -38,6 +39,7 @@ import CounterNo from "@/components/CounterNo";
 import SuccessStory from "@/components/SucessStory";
 
 import ContactUsForm from "@/components/ContactUsForm";
+
 
 const BgColors = [
   "bgblue5",
@@ -673,6 +675,15 @@ with our expert developers."
             caseStudies={SucessStoryData}
           />
         </div>
+      </section>
+
+      {/* Scrolling Logos Section */}
+      <section>
+        <ScrollingLogosSection
+            title="Build Smarter Digital Experiences with Expert Web Technologies"
+            description="We build smart, engaging digital experiences using modern web technologies—
+            delivering high-performance websites and web apps that drive real results."
+        />
       </section>
 
       {/* form */}

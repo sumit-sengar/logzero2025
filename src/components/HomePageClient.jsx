@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useContext, useRef, useState } from "react";
 import { Lztallcontext } from "@/context/Lztcontext";
 import FAQSection from "@/components/FAQSection";
+import ScrollingLogosSection from "@/components/ScrollingLogosSection";
 import {
   Eye,
   Target,
@@ -525,6 +526,17 @@ export default function HomePageClient() {
           />
         </div>
       </section>
+
+
+    {/* Scrolling Logos Section */}
+    
+      <ScrollingLogosSection
+          title="Build Smarter Digital Experiences with Expert Web Technologies"
+          description="We build smart, engaging digital experiences using modern web technologies—delivering high-performance websites 
+                  and web apps that drive real results."
+      />
+   
+                
 
       <section className="bgsecondary py-16 px-6">
         <div className="container mx-auto">

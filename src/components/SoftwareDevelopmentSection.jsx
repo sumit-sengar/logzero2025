@@ -14,6 +14,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+import ScrollingLogosSection from "@/components/ScrollingLogosSection";
 
 import ContactUsForm from "@/components/ContactUsForm";
 import {
@@ -659,6 +660,18 @@ export default function Mission() {
           </div> */}
         </div>
       </section>
+
+      {/* Scrolling Logos Section */}
+          
+                  <ScrollingLogosSection
+                      title="Build Smarter Digital Experiences with Expert Web Technologies"
+                      description="We build smart, engaging digital experiences using modern web technologies—
+                      delivering high-performance websites and web apps that drive real results."
+                  />
+                
+     
+    
+
       {/* Our Impact Across All Projects */}
       <section className="bgsecondary py-16 px-6">
         <div className="container mx-auto ">

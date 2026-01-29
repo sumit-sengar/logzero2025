@@ -11,6 +11,7 @@ import Testimonials from "@/components/Testimonials";
 
 import FAQSection from "@/components/FAQSection";
 import ContactUsForm from "@/components/ContactUsForm";
+import ScrollingLogosSection from "./ScrollingLogosSection";
 
 import CardContainerBorder from "@/components/CardContainerBorder";
 import {
@@ -500,6 +501,15 @@ const Services = () => {
         </div>
       </section>
 
+      {/* Scrolling Logos Section */}
+
+     
+        <ScrollingLogosSection
+            title="Build Smarter Digital Experiences with Expert Web Technologies"
+            description="We build smart, engaging digital experiences using modern web technologies—delivering high-performance websites 
+            and web apps that drive real results."
+        />
+    
       <CTB stats={statsData} />
 
       {/* Why Choose Us */}

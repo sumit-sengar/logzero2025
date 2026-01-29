@@ -8,6 +8,7 @@ import Link from "next/link";
 import SuccessStory from "@/components/SucessStory";
 import { Phone, Mail, MapPin, Send, Target, Users, Zap } from "lucide-react";
 import FAQSection from "@/components/FAQSection";
+import ScrollingLogosSection from "./ScrollingLogosSection";
 import ContactUsForm from "@/components/ContactUsForm";
 
 const BgColors2 = [
@@ -362,6 +363,16 @@ export default function IndustryWeServe() {
           />
         </div>
       </section>
+
+
+      {/* Scrolling Logos Section */}
+      
+        <ScrollingLogosSection
+            title="Build Smarter Digital Experiences with Expert Web Technologies"
+            description="We build smart, engaging digital experiences using modern web technologies—
+            delivering high-performance websites and web apps that drive real results."
+        />
+      
 
       {/* Banner Section  */}
       <section className="bgsecondary py-16 px-6">
