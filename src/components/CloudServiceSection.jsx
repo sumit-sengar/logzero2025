@@ -737,7 +737,7 @@ export default function CloudServices() {
       <ContactUsForm
         heading="Ready to Take Your Business to the Cloud?"
         subheading="Contact us today to get started with LogZero Technologies’ cloud services. Our experts will guide through every step of the process, from planning to implementation, and beyond."
-        contactCardTitle="Why choose LogZerotechnologies?"
+        contactCardTitle="Why Choose LogZero Technologies?"
         contactText=""
          phone={{
           label: "Expert Developer",

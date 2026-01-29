@@ -245,7 +245,7 @@ const CustomEcommercePage = () => {
               return (
                 <div
                   key={index}
-                  className="border border-[#EAEAEA] rounded-[10px] px-[20px] py-[30px] text-center bg-white transform transition-transform duration-300 hover:scale-105 cursor-pointer" 
+                  className="border border-[#EAEAEA] rounded-[10px] px-[20px] py-[30px] text-center bg-white transform transition-transform duration-300 hover:scale-105" 
                 >
                   <div
                     className={`mx-auto flex h-12 w-12 items-center justify-center rounded-[6px] ${item.bgColor}`}
@@ -285,7 +285,7 @@ const CustomEcommercePage = () => {
             {services.map((item, index) => (
               <div
                 key={index}
-                className="rounded-[8px] border border-[#EAEAEA] bg-white overflow-hidden shadow-[0_4px_0px_rgba(0,0,0,0.08)] transform transition-transform duration-300 hover:scale-105 cursor-pointer"
+                className="rounded-[8px] border border-[#EAEAEA] bg-white overflow-hidden shadow-[0_4px_0px_rgba(0,0,0,0.08)] transform transition-transform duration-300 hover:scale-105"
               >
                 {/* Image */}
                 <img
@@ -603,7 +603,7 @@ const CustomEcommercePage = () => {
       <ContactUsForm
         heading="Let's Discuss Your Project"
         subheading="Fill out the form below and we'll get back to you within 24 hours with a customized solution for your development needs."
-        contactCardTitle="Why choose LogZerotechnologies?"
+        contactCardTitle="Why Choose LogZero Technologies?"
         contactText=""
         phone={{
           label: "Expert Developer",

@@ -269,7 +269,7 @@ const navItems = [
       { title: "Portfolio", link: "/case-studies" },
       {
         title: "Privacy  Policy",
-        link: "https://www.logzerotechnologies.com/privacy-policy/",
+        link: "/privacy-policy",
       },
     ],
   },

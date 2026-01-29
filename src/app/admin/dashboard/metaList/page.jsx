@@ -29,20 +29,16 @@ const Page = () => {
       setError('')
 
       try {
-        const response = await fetch(API_URL, { signal: controller.signal })
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`)
-        }
-
-        const json = await response.json()
-        if (!json?.success || !Array.isArray(json?.data)) {
+        const { data } = await api.get(API_URL, { signal: controller.signal })
+        if (!data?.success || !Array.isArray(data?.data)) {
           throw new Error('Unexpected response shape from categories API')
         }
 
-        setItems(json.data)
+        setItems(data.data)
       } catch (err) {
-        if (err.name === 'AbortError') return
-        setError(err?.message || 'Unable to load category meta data')
+        if (err.name === 'CanceledError' || err.name === 'AbortError' || err.code === 'ERR_CANCELED') return
+        const apiMessage = err?.response?.data?.message || err?.message
+        setError(apiMessage || 'Unable to load category meta data')
       } finally {
         setIsLoading(false)
       }

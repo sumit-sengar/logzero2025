@@ -3,11 +3,9 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { CalendarDays, User } from "lucide-react";
+import api from "@/lib/api";
 
 const featuredImage = "/assets/img/featuredImage.webp";
-const baseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://webapi.logzerotechnologies.com/api";
 const defaultSearchImage = "/assets/img/featuredImage2.webp";
 
 const getSearchResultImageSrc = (post) => {
@@ -79,10 +77,9 @@ const SearchResultClient = () => {
     const fetchResults = async () => {
       setSearchLoading(true);
       try {
-        const res = await fetch(
-          `${baseUrl}/posts?search=${encodeURIComponent(query)}`
-        );
-        const data = await res.json();
+        const { data } = await api.get("/posts", {
+          params: { search: query },
+        });
         const rows = data?.data?.rows ?? data?.rows ?? [];
         setResults(rows);
         setTotalResults(
@@ -103,8 +100,7 @@ const SearchResultClient = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(`${baseUrl}/posts/blog-category-count`);
-        const data = await response.json();
+        const { data } = await api.get("/posts/blog-category-count");
         setCategories(Array.isArray(data?.data) ? data.data : []);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -119,8 +115,9 @@ const SearchResultClient = () => {
     const fetchYouMayLike = async () => {
       setYouMayLikeLoading(true);
       try {
-        const response = await fetch(`${baseUrl}/posts/blogs/?limit=3&page=1`);
-        const data = await response.json();
+        const { data } = await api.get("/posts/blogs/", {
+          params: { limit: 3, page: 1 },
+        });
         setYouMayLikePosts(Array.isArray(data?.data) ? data.data : []);
       } catch (error) {
         console.error('Error fetching "You may also like" posts:', error);

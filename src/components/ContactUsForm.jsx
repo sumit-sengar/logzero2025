@@ -4,6 +4,7 @@ import Image from "next/image";
 import PropTypes from "prop-types";
 import Recaptcha from "./Recaptcha";
 import logger from "@/lib/logger";
+import api from "@/lib/api";
 // import connectImage from "../../public/assets/img/connectwithus.webp";
 import connectImage from "../../public/assets/img/connectwithus.png";
 // const CONTACT_INQUIRY_ENDPOINT = `${(process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api").replace(/\/$/, "")}/v1/consultation/create-inquiry`;
@@ -130,20 +131,13 @@ export default function ContactSection({
         "Sending contact form submission",
       );
 
-      const res = await fetch(CONTACT_INQUIRY_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const responseData = await res.json();
-      if (res.ok) {
+      const { data: responseData, status } = await api.post(CONTACT_INQUIRY_ENDPOINT, payload);
+      if (status >= 200 && status < 300) {
         logger.info(
           {
             submissionMeta,
             endpoint: CONTACT_INQUIRY_ENDPOINT,
-            status: res.status,
+            status,
             responseMessage: responseData.message,
           },
           "Contact form submission successful",
@@ -165,7 +159,7 @@ export default function ContactSection({
           {
             submissionMeta,
             endpoint: CONTACT_INQUIRY_ENDPOINT,
-            status: res.status,
+            status,
             responseMessage: responseData.message,
           },
           "Contact form submission failed",

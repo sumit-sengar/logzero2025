@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import CaseStudyImage from "./CaseStudyImage";
 import CounterNo from "./CounterNo";
+import api from "@/lib/api";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -94,20 +95,13 @@ export default function SuccessStory({
         }
 
         const url = params.toString()
-          ? `${API_BASE_URL}/posts/case-study?${params.toString()}`
-          : `${API_BASE_URL}/posts/case-study`;
+          ? `/posts/case-study?${params.toString()}`
+          : `/posts/case-study`;
 
         // Case studies API: backend already filters type/status; category is optional for general listings
-        const response = await fetch(url, {
-          cache: "no-store",
+        const { data: payload } = await api.get(url, {
           signal: controller.signal,
         });
-
-        if (!response.ok) {
-          throw new Error(`Failed to load case studies (${response.status})`);
-        }
-
-        const payload = await response.json();
       
         const rows = Array.isArray(payload?.data)
           ? payload.data

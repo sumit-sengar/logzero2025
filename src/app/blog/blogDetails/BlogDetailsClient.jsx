@@ -4,10 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import api from "@/lib/api";
 
-const baseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://webapi.logzerotechnologies.com/api";
 const DEFAULT_DETAILS_IMAGE = "/assets/img/devImage.webp";
 
 const formatIsoDate = (isoValue) => {
@@ -33,6 +31,8 @@ export default function BlogDetailsClient() {
   const [backTarget, setBackTarget] = useState("/blog");
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchPost = async () => {
       setLoading(true);
       setError("");
@@ -43,13 +43,9 @@ export default function BlogDetailsClient() {
           setPost(null);
           return;
         }
-        const res = await fetch(`${baseUrl}/posts/${postId}`, {
-          cache: "no-store",
+        const { data: payload } = await api.get(`/posts/${postId}`, {
+          signal: controller.signal,
         });
-        if (!res.ok) {
-          throw new Error(`Failed to fetch post ${postId}`);
-        }
-        const payload = await res.json();
         const data = payload?.data ?? null;
         if (!data) {
           setError("Post not found");
@@ -58,7 +54,9 @@ export default function BlogDetailsClient() {
         }
         setPost(data);
       } catch (err) {
-        setError(err?.message || "Unable to load post");
+        if (err.name === "CanceledError" || err.name === "AbortError" || err.code === "ERR_CANCELED") return;
+        const apiMessage = err?.response?.data?.message || err?.message;
+        setError(apiMessage || "Unable to load post");
         setPost(null);
       } finally {
         setLoading(false);
@@ -66,6 +64,7 @@ export default function BlogDetailsClient() {
     };
 
     fetchPost();
+    return () => controller.abort();
   }, [searchParams]);
 
   
