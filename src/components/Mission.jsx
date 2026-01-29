@@ -8,6 +8,7 @@ import CardContainer from "@/components/CardContainer";
 import SuccessStory from "@/components/SucessStory";
 import CountUp from "react-countup";
 
+
 import FAQSection from "@/components/FAQSection";
 
 export default function Mission() {
@@ -224,6 +225,9 @@ export default function Mission() {
           />
         </div>
       </section>
+
+
+  
 
       {/* our commitments */}
       <section className="py-16 px-6 ">

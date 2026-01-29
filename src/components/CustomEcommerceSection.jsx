@@ -598,6 +598,7 @@ const CustomEcommercePage = () => {
 
       {/* Tell Us About Your Project */}
 
+<<<<<<< HEAD
       {/* form */}
       <ContactUsForm
         heading="Let's Discuss Your Project"
@@ -641,6 +642,21 @@ const CustomEcommercePage = () => {
               Get answers to common questions about Custom Web App Development.
             </p>
           </div>
+=======
+            {/* Tell Us About Your Project */}
+            <section className="px-4 bg-[#F2F7FC]">
+                <div className="container mx-auto py-4 md:py-16">
+                    <div className="flex flex-col gap-3">
+                        <h2 className="mx-auto text-center">Tell Us About Your Project</h2>
+                        <p className="max-w-[55%] mx-auto text-center text-[18px]">
+                            Use the form below to specify the type of web application services you need,
+                            and our team will get back to you with a tailored solution.
+                        </p>
+                    </div>
+                    <div className="grid grir-cols-1 md:grid-cols-2 lg:grid-cols-2 mt-4 md:mt-8 gap-4">
+                        <div className="bg-white rounded-xl border border-[#E5E7EB] p-4 md:p-6 shadow-lg w-full ">
+                            <form className="flex flex-col gap-5">
+>>>>>>> 17a1430c6edfde50a2659181d206b58b5c1858a6
 
           {/* FAQ LIST */}
           <div className="mt-10 max-w-4xl mx-auto space-y-4">

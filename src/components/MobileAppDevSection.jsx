@@ -7,6 +7,7 @@ import CTA from "@/components/CTA";
 import Trusted from "@/components/Trusted";
 import CardContainer from "@/components/CardContainer";
 import FAQSection from "@/components/FAQSection";
+import ScrollingLogosSection from "./ScrollingLogosSection";
 import {
   FolderSync,
   Box,
@@ -727,9 +728,19 @@ export default function MobileDevelopment() {
           />
         </div>
       </section>
+          
+
+      {/* Scrolling Logos Section */}
+      <ScrollingLogosSection
+        title="Build Smarter Digital Experiences with Expert Web Technologies"
+        description="We build smart, engaging digital experiences using modern web technologies—delivering high-performance websites 
+                  and web apps that drive real results."
+      />
+
+
 
       {/* CTA section */}
-      <section className="px-6">
+      <section className="px-6 mt-8 md:mt-16 ">
         <CTA
           title="Want to Be Our Next Success Story?"
           description="Let’s discuss how we can help you achieve similar results with your mobile app project."

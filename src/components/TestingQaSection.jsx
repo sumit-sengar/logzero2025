@@ -249,7 +249,7 @@ export default function UxServices() {
         <CTA
           title="Ready to Experience These Benefits?"
           description="Join hundreds of companies that trust LogZero for their 
-testing needs"
+          testing needs"
           linkUrl="/contact-us"
           ctabtnType="primary"
           linkText="Start Your Free Consultation"
