@@ -18,6 +18,7 @@ import Recaptcha from "./Recaptcha";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import logger from "@/lib/logger";
+import api from "@/lib/api";
 
 const CONTACT_INQUIRY_ENDPOINT = `${(process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api").replace(/\/$/, "")}/v1/consultation/create`;
 
@@ -233,21 +234,16 @@ export default function LeadFormModal() {
        },
         "Sending lead form data to API"
       )    
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToSend),
+      const { data: responseData, status } = await api.post(API_URL, dataToSend, {
+        signal: controller.signal,
       });
-      const responseData = await response.json();
 
       // console.log(response, responseData);
-      if (response.ok) {
+      if (status >= 200 && status < 300) {
         logger.info({
           submissionMeta,
           endpoint: CONTACT_INQUIRY_ENDPOINT,
-          status: response.status,
+          status,
           responseMessage: responseData.message,
         },
         "Lead form submitted successfully"
@@ -277,7 +273,7 @@ export default function LeadFormModal() {
          logger.error({
           submissionMeta,
           endpoint: CONTACT_INQUIRY_ENDPOINT,
-          status: response.status,
+          status,
           responseMessage: responseData.message,
          },
         "Lead form submission failed"
@@ -294,7 +290,7 @@ export default function LeadFormModal() {
         }
       }
     } catch (err) {
-      if(error.name === 'AbortError'){
+      if(err.name === 'AbortError' || err.code === 'ERR_CANCELED'){
                logger.error({
                 submissionMeta,
                 endpoint: CONTACT_INQUIRY_ENDPOINT,
@@ -305,7 +301,7 @@ export default function LeadFormModal() {
                 {
                   submissionMeta,
                   endpoint: CONTACT_INQUIRY_ENDPOINT,
-                  error: error.message,
+                  error: err.message,
                 },
                 "Network error during contact form submission"
               )

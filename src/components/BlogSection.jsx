@@ -5,14 +5,13 @@ import { Code, Bolt, Server, Diamond, FileText, CalendarDays } from "lucide-reac
 import Image from "next/image";
 import Link from "next/link";
 import { MdOutlineArrowRight } from "react-icons/md";
+import api from "@/lib/api";
 
 const featuredImage = "/assets/img/featuredImage.webp";
 const popularPostImage = "/assets/img/popularPostImg.webp";
 const ladderImg = "/assets/img/ladderImg.webp";
 const dentalImage1 = "https://placehold.co/100x100/C8E6C9/388E3C?text=Dental+Health";
 const dentalImage2 = "https://placehold.co/100x100/A5D6A7/000000?text=Dental+Wellness";
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api";
-
 const SearchOfCategory = [
   { id: 1, title: "Dev", color: "#FFEDEC", iconBg: "#F9E4E3", icon: Code, iconColor: "#7D2F2B" },
   { id: 2, title: "Digital Solutions", color: "#F7EBFF", icon: Bolt, iconBg: "#ECDDF6", iconColor: "#60387A" },
@@ -161,8 +160,7 @@ export default function App() {
     const fetchInitialPosts = async () => {
       setLoadingMain(true);
       try {
-        const res = await fetch(`${baseUrl}/posts?type=blog_post&limit=5&page=1`);
-        const data = await res.json();
+        const { data } = await api.get("/posts", { params: { type: "blog_post", limit: 5, page: 1 } });
         const rows = data?.data?.rows ?? data?.rows ?? [];
         setStaticPosts(rows);
         // console.log('Fetched initial posts rows:', rows);
@@ -179,8 +177,7 @@ export default function App() {
   useEffect(() => {
     const fetchYouMayLikePosts = async () => {
       try {
-        const res = await fetch(`${baseUrl}/posts/blogs?limit=4&page=1`);
-        const data = await res.json();
+        const { data } = await api.get("/posts/blogs", { params: { limit: 4, page: 1 } });
         const rows = data?.data ?? [];
         const initialBatch = Array.isArray(rows) ? rows : [];
         setYouMayLikePosts(initialBatch);
@@ -199,8 +196,7 @@ export default function App() {
     const fetchSidebarPosts = async () => {
       setLoadingSidebar(true);
       try {
-        const res = await fetch(`${baseUrl}/posts?type=blog_post&limit=5&page=${page}`);
-        const data = await res.json();
+        const { data } = await api.get("/posts", { params: { type: "blog_post", limit: 5, page } });
         const rows = data?.data?.rows ?? data?.rows ?? [];
 
         if (!Array.isArray(rows) || rows.length === 0) {
@@ -227,8 +223,7 @@ export default function App() {
   useEffect(() => {
     const fetchPopularPosts = async () => {
       try {
-        const res = await fetch(`${baseUrl}/posts?popular=true&limit=4&page=1`);
-        const data = await res.json();
+        const { data } = await api.get("/posts", { params: { popular: true, limit: 4, page: 1 } });
         const rows = data?.data?.rows ?? data?.rows ?? [];
         const firstBatch = Array.isArray(rows) ? rows : [];
         setPopularPosts(firstBatch);
@@ -309,8 +304,7 @@ export default function App() {
     if (loadingYouMayLike) return;
     setLoadingYouMayLike(true);
     try {
-      const res = await fetch(`${baseUrl}/posts/blogs?limit=12&page=1`);
-      const data = await res.json();
+      const { data } = await api.get("/posts/blogs", { params: { limit: 12, page: 1 } });
       const rows = data?.data ?? [];
       const allRows = Array.isArray(rows) ? rows : [];
       setYouMayLikePosts(allRows);
@@ -327,8 +321,7 @@ export default function App() {
     setLoadingPopular(true);
     try {
       // Fetch a larger window (first 12) and append everything after the initial 4
-      const res = await fetch(`${baseUrl}/posts?popular=true&limit=12&page=1`);
-      const data = await res.json();
+      const { data } = await api.get("/posts", { params: { popular: true, limit: 12, page: 1 } });
       const rows = data?.data?.rows ?? data?.rows ?? [];
       const allRows = Array.isArray(rows) ? rows : [];
       const nextBatch = allRows.slice(4, 12); // take items after the first four

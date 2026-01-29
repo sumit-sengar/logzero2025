@@ -149,7 +149,7 @@ import Collaborative from "../../public/assets/img/Collaborative-Approach.webp";
 import End from "../../public/assets/img/End-To-End.webp";
 
 import Manufacturing from "../../public/assets/img/Manufacturing.jpg";
-
+import api from "@/lib/api";
 export const Lztallcontext = createContext({});
 
 const API_BASE_URL =
@@ -2713,11 +2713,10 @@ const LztProvider = ({ children }) => {
 
     const fetchCaseStudies = async () => {
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/posts?type=case_study`,
-          { signal: controller.signal }
-        );
-        const data = await response.json();
+        const { data } = await api.get(`/posts`, {
+          params: { type: "case_study" },
+          signal: controller.signal,
+        });
         const rows = data?.data?.rows ?? data?.rows ?? [];
         if (!isActive) return;
         if (Array.isArray(rows) && rows.length > 0) {

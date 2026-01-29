@@ -1,25 +1,18 @@
 import React from "react";
 import { notFound } from "next/navigation";
+import api from "@/lib/api";
 
 export const dynamic = "force-dynamic";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // --- Data Fetching ---
 async function getPost(identifier) {
   try {
-    const res = await fetch(`${API_BASE}/posts/${identifier}`, {
-      cache: "no-store",
-    });
-
-    if (res.status === 404) return null;
-    if (!res.ok) throw new Error(`Failed to fetch post ${identifier}`);
-
-    const json = await res.json();
-    if (!json.success || !json.data) throw new Error("Invalid API response");
-    
+    const res = await api.get(`/posts/${identifier}`);
+    const json = res.data;
+    if (!json?.success || !json?.data) throw new Error("Invalid API response");
     return json.data;
   } catch (err) {
+    if (err?.response?.status === 404) return null;
     console.error(err);
     return null;
   }

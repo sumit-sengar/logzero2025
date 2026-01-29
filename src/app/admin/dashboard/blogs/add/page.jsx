@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import BlogEditor from "../../../../admin/components/BlogSimpleEditor";
 import MultiSelect from "../../../../admin/components/MultiSelect";
 import { useRouter } from "next/navigation";
-import api from "../../../../../lib/api";
+import api from "@/lib/api";
 
 const formatCreatedAtValue = (value) => {
   if (!value) return null;
@@ -338,12 +338,9 @@ export default function AddPostPage() {
 
       const payload = buildPayload("draft");
 
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${currentDraftId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-        keepalive: true,
-      }).catch(() => {});
+      api
+        .put(`/posts/${currentDraftId}`, payload, { headers: { "Content-Type": "application/json" } })
+        .catch(() => {});
     };
 
     const onVisibility = () => {

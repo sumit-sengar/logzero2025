@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { InlineGreenButton } from "@/components/InlineGreenButton";
 import CategoryPostsClient from "@/components/CategoryPostsClient";
+import api from "@/lib/api";
 
 const devImg = "/assets/img/devImage.webp";
 
@@ -24,11 +25,10 @@ const SearchOfCategory = [
 
 async function fetchCategoryRows(slug, page = 1) {
     try {
-        const base = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api").replace(/\/$/, "");
-        const url = `${base}/posts?type=blog_post&blogCategory=${encodeURIComponent(slug)}${page && page > 1 ? `&page=${page}` : ""}`;
-        const res = await fetch(url, { cache: "no-store" });
-        const json = await res.json();
-        const rows = json?.data?.rows ?? json?.rows ?? [];
+        const params = { type: "blog_post", blogCategory: slug };
+        if (page && page > 1) params.page = page;
+        const { data } = await api.get("/posts", { params });
+        const rows = data?.data?.rows ?? data?.rows ?? [];
         rows.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         return rows;
     } catch (e) {

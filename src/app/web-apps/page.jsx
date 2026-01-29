@@ -1,5 +1,5 @@
  import React from 'react';
-import CustomEcommerceSection from '../../components/CustomEcommerceSection';
+import WebApps from '../../components/WebApps';
 import api from "@/lib/api";
 export const revalidate = 0;
 
@@ -13,7 +13,7 @@ export async function generateMetadata() {
    try {
     const res = await api.get(apiUrl);
     const aboutMeta = 
-    res?.data?.data?.find((item) => item?.customSlug === "custom-ecommerce") ?? {};
+    res?.data?.data?.find((item) => item?.customSlug === "web-apps") ?? {};
     
     const title =
       aboutMeta.metaTitle || "Custom Ecommerce ";
@@ -31,10 +31,10 @@ export async function generateMetadata() {
   }
    }
 
-    const CustomEcommercePage = () => {
+    const WebAppsPage = () => {
         return (
-            <CustomEcommerceSection />
+            <WebApps />
         );
     }
 
-    export default CustomEcommercePage;
+    export default WebAppsPage;

@@ -1,5 +1,4 @@
- import React from 'react';
-import ContactUsSection from '../../components/ContactUsSection';
+import PrivacyPolicySection from "@/components/PrivacyPolicySection";
 import api from "@/lib/api";
 export const revalidate = 0;
 
@@ -13,28 +12,26 @@ export async function generateMetadata() {
    try {
     const res = await api.get(apiUrl);
     const aboutMeta = 
-    res?.data?.data?.find((item) => item?.customSlug === "contact-us") ?? {};
+    res?.data?.data?.find((item) => item?.customSlug === "privacy-policy") ?? {};
     
     const title =
-      aboutMeta.metaTitle || "Custom Ecommerce ";
+      aboutMeta.metaTitle || "Privacy Policy";
     const description =
       aboutMeta.metaDescription ||
-      "This is our \"Custom Ecommerce\"description here.";
+      "This is our \"Privacy Policy\" description here.";
 
       return { title, description };
 
    } catch (error) {
-         const title = "Custom Ecommerce";
+         const title = "Privacy Policy";
     const description =
-      "This is our \"Custom Ecommerce\"description here..";
+      "This is our \"Privacy Policy\" description here..";
     return { title, description };
   }
    }
 
-    const ContactUsPage = () => {
-        return (
-            <ContactUsSection />
-        );
-    }
 
-    export default ContactUsPage;
+
+export default async function PrivacyPolicyPage() {
+  return <PrivacyPolicySection />;
+}

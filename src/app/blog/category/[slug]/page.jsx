@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { InlineGreenButton } from "@/components/InlineGreenButton";
 import CategoryPostsClient from "@/components/CategoryPostsClient";
+import api from "@/lib/api";
 
 export const revalidate = 0;
 
@@ -20,14 +21,9 @@ const formatDisplaySlug = (value = "") =>
 		.replace(/\b\w/g, (c) => c.toUpperCase()) || "This Category";
 
 async function fetchCategoryMeta(slug) {
-	const base = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api").replace(/\/$/, "");
-	const url = `${base}/categories/categoriesDetail`;
-
 	try {
-		const res = await fetch(url, { cache: "no-store" });
-		if (!res.ok) throw new Error("meta fetch failed");
-		const json = await res.json();
-		const match = json?.data?.find((item) => normalizeSlug(item?.customSlug) === slug) ?? {};
+		const { data } = await api.get("/categories/categoriesDetail");
+		const match = data?.data?.find((item) => normalizeSlug(item?.customSlug) === slug) ?? {};
 		return {
 			title: match.metaTitle || `Blog | ${formatDisplaySlug(slug)}`,
 			description: match.metaDescription || "Explore our latest insights and updates.",
@@ -59,11 +55,10 @@ export async function generateMetadata({ params }) {
 
 async function fetchCategoryRows(slug, page = 1) {
 	try {
-		const base = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://webapi.logzerotechnologies.com/api").replace(/\/$/, "");
-		const url = `${base}/posts?type=blog_post&blogCategory=${encodeURIComponent(slug)}${page && page > 1 ? `&page=${page}` : ""}`;
-		const res = await fetch(url, { cache: "no-store" });
-		const json = await res.json();
-		const rows = json?.data?.rows ?? json?.rows ?? [];
+		const params = { type: "blog_post", blogCategory: slug };
+		if (page && page > 1) params.page = page;
+		const { data } = await api.get("/posts", { params });
+		const rows = data?.data?.rows ?? data?.rows ?? [];
 		rows.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 		return rows;
 	} catch (e) {

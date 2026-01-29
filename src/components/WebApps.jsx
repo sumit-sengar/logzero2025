@@ -801,7 +801,7 @@ export default function CustomWebDevelopment() {
                  <ContactUsForm
                    heading="Let's Discuss Your Project"
                    subheading="Fill out the form below and we'll get back to you within 24 hours with a customized solution for your development needs."
-                   contactCardTitle="Why choose LogZerotechnologies?"
+                   contactCardTitle="Why Choose LogZero Technologies?"
                    contactText=""
                     phone={{
                      label: "Expert Developer",
