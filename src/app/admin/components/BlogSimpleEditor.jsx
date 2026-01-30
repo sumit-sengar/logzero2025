@@ -30,6 +30,7 @@ const BlogEditor = ({
   onChange,
 }) => {
   // --- State ---
+  const imageRef = useRef(0);
   const [content, setContent] = useState(initialContent);
   const [showHtmlMode, setShowHtmlMode] = useState(false);
   const [htmlContent, setHtmlContent] = useState(initialContent);
@@ -346,7 +347,7 @@ const BlogEditor = ({
   };
 
   const insertBlogImageBlock = (base64) => {
-    const blockId = `blogimg_${Date.now()}`;
+    const blockId = `blogimg_${++imageRef.current}`;
     const html = `
       <div id="${blockId}" style="width:100%;">
         <img src="${base64}" alt="" style="float:left; max-width:45%; height:auto; margin:0 16px 12px 0; display:block; border-radius:6px;" />

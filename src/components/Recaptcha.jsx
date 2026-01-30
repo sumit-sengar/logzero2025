@@ -1,5 +1,5 @@
+"use client";
 import React, { useEffect, useRef } from "react";
-
 // Host-aware site key selection with env overrides
 const DEFAULT_PROD_KEY = "6LdcgIcrAAAAAJV0b6w8_r1-5SivcsvljIvtlQr3"; // real v2 checkbox key
 const DEFAULT_LOCAL_TEST_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"; // Google test key

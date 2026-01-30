@@ -49,7 +49,7 @@ const normalizeCaseStudy = (study = {}, fallbackImage) => {
     : "#";
 
   return {
-    id: study.id ?? study.slug ?? study.title ?? Math.random(),
+    id: study.id ?? study.slug ?? study.title,
     title: study.metaTitle || study.title || "Case Study",
     subtitle: study.metaDescription || study.subtitle || study.blogCategory || "",
     challenge: study.challenges || study.challenge || "",
