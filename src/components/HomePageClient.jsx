@@ -631,7 +631,7 @@ export default function HomePageClient() {
       <ContactUsForm
         heading="Get In Touch"
         subheading="Ready to transform your  idea into reality? Let’s discuss your project and see how we can help you achieve your goals."
-        contactCardTitle="Why choose LogZerotechnologies?"
+        contactCardTitle="Why choose LogZero Technologies?"
         contactText=""
         phone={{
           label: "Expert Developer",

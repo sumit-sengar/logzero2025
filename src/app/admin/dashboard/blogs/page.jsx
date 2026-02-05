@@ -411,14 +411,14 @@ export default function BlogDashboard() {
               onClick={() => router.push("/admin/dashboard/createMeta")}
               className="flex-1 md:flex-none cursor-pointer flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-3 md:px-4 py-2 text-sm md:text-base rounded-md transition-colors whitespace-nowrap"
             >
-              <Plus size={16} /> Create Meta
+              <Plus size={16} /> Create Page
             </button>
 
             <button
               onClick={() => router.push("/admin/dashboard/blogs/add")}
               className="flex-1 md:flex-none cursor-pointer flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-3 md:px-4 py-2 text-sm md:text-base rounded-md transition-colors whitespace-nowrap"
             >
-              <Plus size={16} /> Create New
+              <Plus size={16} /> Create Blog
             </button>
 
             <button

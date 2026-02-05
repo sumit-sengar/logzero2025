@@ -55,6 +55,7 @@ export default function AddPostPage() {
     challenges: "",
     solution: "",
     result: "",
+    indexValue: true,
     editorHtml: "<p></p>",
     featuredImageFile: null,
     featuredImageBase64: "",
@@ -215,6 +216,11 @@ export default function AddPostPage() {
     setDirty(true);
   };
 
+  const handleToggleIndexValue = () => {
+    setForm((prev) => ({ ...prev, indexValue: !(prev.indexValue !== false) }));
+    setDirty(true);
+  };
+
   const handleSetCreatedAtNow = () => {
     const nowValue = getLocalDatetimeNow();
     setForm((prev) => ({ ...prev, created_at: nowValue }));
@@ -260,6 +266,7 @@ export default function AddPostPage() {
       content: contentBlocks,
       solutionIds: currentForm.solutionIds,
       popular: currentForm.popular,
+      indexValue: currentForm.indexValue ?? true,
       featuredImageBase64: currentForm.featuredImageBase64 || undefined,
     };
 
@@ -393,6 +400,8 @@ export default function AddPostPage() {
     }
   };
 
+  const indexValueOn = form.indexValue !== false;
+
   if (!filters) return <div className="p-8 text-white">Loading...</div>;
 
   return (
@@ -452,8 +461,26 @@ export default function AddPostPage() {
                     {form.popular ? "Popular" : "Mark popular"}
                   </button>
                 </div>
-              </div>
 
+                <div>
+                  <label className="block text-sm mb-1">Allow indexing</label>
+                  <button
+                    type="button"
+                    onClick={handleToggleIndexValue}
+                    aria-pressed={form.indexValue}
+                    className={`px-4 py-2 text-sm font-semibold rounded-full transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 cursor-pointer ${
+                      form.indexValue
+                        ? "bg-emerald-500 text-black"
+                        : "bg-zinc-800 text-gray-200"
+                    }`}
+                  >
+                    {indexValueOn ? "Indexing on" : "Indexing off"}
+                  </button>
+                     
+                   
+                </div>
+              </div>
+                    
               <div className="space-y-1 text-sm">
                 <label className="block text-sm mb-1">Created at (optional)</label>
                 <div className="flex flex-wrap gap-3">

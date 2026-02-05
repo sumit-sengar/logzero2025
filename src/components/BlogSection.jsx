@@ -687,12 +687,13 @@ export default function App() {
 
         {/* Ads */}
 
-        <section className="mt-16">
+        {/* <section className="mt-16">
             <div className="flex justify-center items-center bg-[#C4C4C4] py-[110px] rounder rounded-[10px]">
                 <h1 className="lg:!text-[96px] !text-[#FFFFFF]">Ads</h1>
 
             </div>
-        </section>
+        </section> */}
+
         {/* Popular posts */}
         <section className="mt-16">
           <h2 className="text-2xl font-semibold mb-4 text-[#2B2D2F]">
