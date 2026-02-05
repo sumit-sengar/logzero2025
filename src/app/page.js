@@ -18,8 +18,10 @@ export async function generateMetadata() {
     const description =
       homeMeta.metaDescription ||
       "Welcome to LogZero – delivering scalable digital solutions.";
+    const indexValue = homeMeta.indexValue ?? true;
+    const robots = indexValue ? undefined : { index: false, follow: false };
 
-    return { title, description };
+    return robots ? { title, description, robots } : { title, description };
   } catch (error) {
     const title = "Home | LogZero Technologies";
     const description =

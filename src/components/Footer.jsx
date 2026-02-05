@@ -176,7 +176,7 @@ export default function Footer() {
 
           <div className="mt-8 pt-4 border-t border-gray-700/70">
             <p className="subtext ">
-              © 2025 LogZero Technologies All Rights Reserved.
+              © LogZero Technologies 2026 - All Rights Reserved. 
             </p>
           </div>
         </div>

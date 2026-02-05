@@ -18,7 +18,10 @@ export async function generateMetadata({ searchParams }) {
     const description =
       data.metaDescription ||
       "Discover insights, updates, and stories from LogZero Technologies.";
-    return { title, description };
+    const indexValue = data.indexValue ?? true;
+    const robots = indexValue ? undefined : { index: false, follow: false };
+
+    return robots ? { title, description, robots } : { title, description };
   } catch (error) {
     const title = "Blog Details | LogZero Technologies";
     const description =

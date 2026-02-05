@@ -50,6 +50,7 @@ export default function EditPostPage() {
   const [filters, setFilters] = useState(null);
   const [loading, setLoading] = useState(true);
   const [initialPost, setInitialPost] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   const createdAtInputRef = useRef(null);
 
   const [form, setForm] = useState({
@@ -67,6 +68,7 @@ export default function EditPostPage() {
     challenges: "",
     solution: "",
     result: "",
+    indexValue: true,
     editorHtml: "",
     featuredImageFile: null,
     featuredImageBase64: "",
@@ -209,6 +211,7 @@ export default function EditPostPage() {
           challenges: p.challenges ?? "",
           solution: p.solution ?? "",
           result: p.result ?? "",
+          indexValue: p.indexValue ?? true,
           editorHtml: htmlContent,
           featuredImageFile: null,
           featuredImageBase64: p.featuredImageBase64 || "",
@@ -249,6 +252,10 @@ export default function EditPostPage() {
     setForm((prev) => ({ ...prev, popular: !prev.popular }));
   };
 
+  const handleToggleIndexValue = () => {
+    setForm((prev) => ({ ...prev, indexValue: !(prev.indexValue !== false) }));
+  };
+
   const handleSetCreatedAtNow = () => {
     const nowValue = getLocalDatetimeNow();
     setForm((prev) => ({ ...prev, created_at: nowValue }));
@@ -281,6 +288,9 @@ export default function EditPostPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
+
+    setSubmitting(true);
 
     const contentBlocks = {
       blocks: [
@@ -300,6 +310,7 @@ export default function EditPostPage() {
       status: form.status,
       content: contentBlocks,
       solutionIds: form.solutionIds,
+      indexValue: form.indexValue ?? true,
       featuredImageBase64: form.featuredImageBase64 || null,
     };
 
@@ -328,8 +339,6 @@ export default function EditPostPage() {
       payload.industryIds = form.industryIds;
     }
 
- 
-
     try {
       const res = await api.put(`/posts/${id}`, payload);
       if (res.status >= 200 && res.status < 300) {
@@ -338,10 +347,14 @@ export default function EditPostPage() {
     } catch (error) {
       console.error("Update failed:", error);
       alert("Failed to update post.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   if (loading || !filters || !initialPost) return <div className="p-8 text-white">Loading...</div>;
+
+  const indexValueOn = form.indexValue !== false;
 
   return (
     <div className="min-h-screen bg-black text-gray-100 flex justify-center">
@@ -397,6 +410,22 @@ export default function EditPostPage() {
                     }`}
                   >
                     {form.popular ? "Popular" : "Mark popular"}
+                  </button>
+                </div>
+
+                <div>
+                  <label className="block text-sm mb-1">Allow indexing</label>
+                  <button
+                    type="button"
+                    onClick={handleToggleIndexValue}
+                    aria-pressed={indexValueOn}
+                    className={`px-4 py-2 text-sm cursor-pointer font-semibold rounded-full transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                      indexValueOn
+                        ? "bg-emerald-500 text-black"
+                        : "bg-zinc-800 text-gray-200"
+                    }`}
+                  >
+                    {indexValueOn ? "Indexing on" : "Indexing off"}
                   </button>
                 </div>
               </div>
@@ -597,12 +626,20 @@ export default function EditPostPage() {
             </div>
           )}
 
-          <div className="flex justify-end pt-4">
+          <div className="flex justify-end pt-4 gap-4">
+            <button
+               type="button"
+              onClick={() => router.push("/admin/dashboard/blogs")}
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 border border-blue-500/60 bg-blue-500/10 hover:bg-blue-500/20 text-blue-100 px-3 md:px-4 py-2 text-sm md:text-base rounded-md transition-colors hover:bg-zinc-800 whitespace-nowrap cursor-pointer"
+            >
+              Back
+            </button>
             <button
               type="submit"
-              className="rounded cursor-pointer bg-blue-600 px-8 py-3 text-sm font-medium text-white hover:bg-blue-500"
+              disabled={submitting}
+              className="rounded cursor-pointer bg-blue-600 px-8 py-3 text-sm font-medium text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Update
+              {submitting ? "Updating..." : "Update"}
             </button>
           </div>
         </form>

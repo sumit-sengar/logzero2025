@@ -20,7 +20,10 @@ export async function generateMetadata() {
       aboutMeta.metaDescription ||
       "Services here.";
 
-      return { title, description };
+    const indexValue = aboutMeta.indexValue ?? true;
+    const robots = indexValue ? undefined : { index: false, follow: false };
+
+    return robots ? { title, description, robots } : { title, description };
 
    } catch (error) {
          const title = "Services";

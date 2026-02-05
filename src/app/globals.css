@@ -8,6 +8,7 @@
     --font-opensans: "Open_Sans", sans-serif;
     --font-sumana: "Sumana", sans-serif;
 
+    --primary-color: #1E8767;
     --link-color: #5BC2A7;
     --bg-primary: #1F1F1F;
     --bg-secondary: #042C21;
@@ -117,11 +118,11 @@ h1 {
 }
 
 h2 {
-  @apply text-[32px] font-semibold leading-[40px] text-[#1F1F1F] capitalize;
+  @apply text-[30px] font-semibold leading-[32px] text-[#1F1F1F] capitalize;
 }
 
 h3 {
-  @apply text-[20px] font-semibold leading-[24px] text-[#1F1F1F];
+  @apply text-[24px] font-semibold leading-[24px] text-[#1F1F1F];
 }
 
 h4 {
@@ -153,6 +154,7 @@ p, .finter, h4, h5, h6, span, li {
 
 a{
   font-family: var(--font-inter);
+  /* color: var(--bg-primary); */
 }
 
 .ptextcolor{color: var(--bg-primary)}
@@ -461,7 +463,7 @@ html, body {
  @media screen and (max-width: 1199px) {
   /*  */
   h1 {@apply text-[40px] font-semibold leading-[48px];}
-  h2 {@apply text-[30px] font-semibold leading-[30px];}
+  h2 {@apply text-[24px] font-semibold leading-[32px];}
   h3 {@apply text-[20px] font-semibold leading-[22px];}
   h4 {@apply text-[18px] font-semibold leading-[22px];}
   h5 {@apply text-[16px] font-bold leading-[24px];}
@@ -487,7 +489,7 @@ html, body {
   @media screen and (max-width: 991px) {
   /*  */
   h1 {@apply text-[36px] font-semibold leading-[48px];}
-  h2 {@apply text-[24px] font-semibold leading-[30px];}
+  h2 {@apply text-[24px] font-semibold leading-[32px];}
   h3 {@apply text-[18px] font-semibold leading-[22px];}
   h4 {@apply text-[18px] font-semibold leading-[22px];}
   h5 {@apply text-[15px] font-bold leading-[24px];}

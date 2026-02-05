@@ -15,6 +15,7 @@ export default function Page() {
     metaDescription: "",
     customSlug: "",
     categoryId: "",
+    indexValue: true,
   });
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -40,6 +41,10 @@ export default function Page() {
     setQuery("");
   };
 
+  const handleToggleIndexValue = () => {
+    setForm((prev) => ({ ...prev, indexValue: !(prev.indexValue !== false) }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.metaTitle || !form.metaDescription || !form.categoryId) {
@@ -58,6 +63,7 @@ export default function Page() {
         metaDescription: form.metaDescription,
         customSlug: form.customSlug,
         categoryId: Number(form.categoryId),
+        indexValue: form.indexValue ?? true,
       };
 
       try {
@@ -70,6 +76,7 @@ export default function Page() {
           metaDescription: "",
           customSlug: "",
           categoryId: "",
+          indexValue: true,
         });
         setQuery("");
         setIsOpen(false);
@@ -121,6 +128,8 @@ export default function Page() {
     fetchCategories();
   }, []);
 
+  const indexValueOn = form.indexValue !== false;
+
   useEffect(() => {
     if (!id) return;
 
@@ -135,6 +144,7 @@ export default function Page() {
           metaDescription: row.metaDescription || "",
           customSlug: row.customSlug || "",
           categoryId: row.categoryId ? String(row.categoryId) : "",
+          indexValue: row.indexValue ?? true,
         });
       } catch (error) {
         console.error("Error fetching category detail", error);
@@ -248,6 +258,20 @@ export default function Page() {
                     </div>
                   )}
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm text-gray-200">Allow indexing</label>
+                <button
+                  type="button"
+                  onClick={handleToggleIndexValue}
+                  aria-pressed={indexValueOn}
+                  className={`px-4 py-2 text-sm cursor-pointer font-semibold rounded-full transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                    indexValueOn ? "bg-emerald-500 text-black" : "bg-zinc-800 text-gray-200"
+                  }`}
+                >
+                  {indexValueOn ? "Indexing on" : "Indexing off"}
+                </button>
               </div>
             </div>
 
