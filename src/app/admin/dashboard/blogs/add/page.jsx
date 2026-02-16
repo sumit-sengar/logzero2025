@@ -35,6 +35,7 @@ export default function AddPostPage() {
   const [draftId, setDraftId] = useState(null);
   const [dirty, setDirty] = useState(false);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const [autosaveError, setAutosaveError] = useState(null);
   const autosaveTimerRef = useRef(null);
   const createdAtInputRef = useRef(null);
 
@@ -241,7 +242,7 @@ export default function AddPostPage() {
     createdAtInputRef.current?.focus?.();
   };
 
-  const buildPayload = useCallback((statusOverride) => {
+  const buildPayload = useCallback((statusOverride, isAutosave = false) => {
     const currentForm = formRef.current;
 
     const contentBlocks = {
@@ -258,17 +259,21 @@ export default function AddPostPage() {
     };
 
     const payload = {
-      metaTitle: currentForm.metaTitle,
-      metaDescription: currentForm.metaDescription,
-      author: currentForm.author,
+      metaTitle: currentForm.metaTitle || "Untitled Draft", // ✅ Provide default for autosave
+      metaDescription: currentForm.metaDescription || "",
+      author: currentForm.author || "System", // ✅ Provide default for autosave
       type: currentForm.type,
       status: statusOverride ?? currentForm.status,
       content: contentBlocks,
-      solutionIds: currentForm.solutionIds,
-      popular: currentForm.popular,
+      solutionIds: currentForm.solutionIds || [],
+      popular: currentForm.popular || false,
       indexValue: currentForm.indexValue ?? true,
-      featuredImageBase64: currentForm.featuredImageBase64 || undefined,
     };
+
+    // ✅ Only include featuredImageBase64 if it exists
+    if (currentForm.featuredImageBase64) {
+      payload.featuredImageBase64 = currentForm.featuredImageBase64;
+    }
 
     const formattedCreatedAt = formatCreatedAtValue(currentForm.created_at);
     if (formattedCreatedAt) {
@@ -276,43 +281,81 @@ export default function AddPostPage() {
     }
 
     if (currentForm.type === "blog_post") {
-      payload.blogCategory = currentForm.blogCategory;
+      // ✅ For autosave, use first available category if none selected
+      if (currentForm.blogCategory) {
+        payload.blogCategory = currentForm.blogCategory;
+      } else if (isAutosave && filters?.blogCategories?.[0]?.value) {
+        payload.blogCategory = filters.blogCategories[0].value;
+      } else {
+        payload.blogCategory = "";
+      }
     }
 
     if (currentForm.type === "case_study") {
-      payload.portfolioCategoryIds = currentForm.portfolioCategoryIds;
-      payload.challenges = currentForm.challenges;
-      payload.solution = currentForm.solution;
-      payload.result = currentForm.result;
-      payload.technologyIds = currentForm.technologyIds;
-      payload.industryIds = currentForm.industryIds;
+      payload.portfolioCategoryIds = currentForm.portfolioCategoryIds || [];
+      payload.challenges = currentForm.challenges || "";
+      payload.solution = currentForm.solution || "";
+      payload.result = currentForm.result || "";
+      payload.technologyIds = currentForm.technologyIds || [];
+      payload.industryIds = currentForm.industryIds || [];
     }
 
     return payload;
-  }, []);
+  }, [filters]);
 
   const autosave = useCallback(async () => {
     if (isSubmitting) return;
 
+    // ✅ Don't autosave if no meaningful content yet
+    const currentForm = formRef.current;
+    if (!currentForm.metaTitle && !currentForm.editorHtml && !currentForm.author) {
+      console.log("⏭️ Skipping autosave - no content yet");
+      return;
+    }
+
     setIsAutoSaving(true);
+    setAutosaveError(null);
+
     try {
-      const payload = buildPayload("draft");
+      const payload = buildPayload("draft", true); // ✅ Pass isAutosave = true
 
       if (!draftId) {
+        // ✅ Create new draft
+        console.log("📝 Creating new draft...");
         const res = await api.post("/posts", payload);
-        const createdId = res.data?.data?.id;
+        
+        // ✅ Handle different response structures
+        const createdId = res.data?.data?.id || res.data?.id;
+        
         if (createdId) {
           setDraftId(createdId);
-          // console.log("✅ Draft created:", createdId);
+          console.log("✅ Draft created with ID:", createdId);
+        } else {
+          console.error("⚠️ Draft created but no ID returned:", res.data);
         }
       } else {
+        // ✅ Update existing draft
+        console.log("💾 Updating draft ID:", draftId);
         await api.put(`/posts/${draftId}`, payload);
-        // console.log("✅ Draft updated:", draftId);
+        console.log("✅ Draft updated successfully");
       }
 
       setDirty(false);
     } catch (err) {
       console.error("❌ Autosave failed:", err);
+      
+      // ✅ Better error handling
+      const errorMessage = err.response?.data?.message || err.message || "Unknown error";
+      setAutosaveError(errorMessage);
+      
+      // ✅ Log detailed error for debugging
+      if (err.response) {
+        console.error("Error response:", {
+          status: err.response.status,
+          data: err.response.data,
+          headers: err.response.headers,
+        });
+      }
     } finally {
       setIsAutoSaving(false);
     }
@@ -327,7 +370,7 @@ export default function AddPostPage() {
 
     autosaveTimerRef.current = window.setTimeout(() => {
       autosave();
-    }, 15000);
+    }, 15000); // 15 seconds
 
     return () => {
       if (autosaveTimerRef.current) {
@@ -338,16 +381,21 @@ export default function AddPostPage() {
 
   useEffect(() => {
     const flushOnExit = () => {
-      const currentDirty = dirty;
-      const currentDraftId = draftId;
+      if (!dirty || !draftId) return;
 
-      if (!currentDirty || !currentDraftId) return;
+      const payload = buildPayload("draft", true); // ✅ Pass isAutosave = true
 
-      const payload = buildPayload("draft");
-
-      api
-        .put(`/posts/${currentDraftId}`, payload, { headers: { "Content-Type": "application/json" } })
-        .catch(() => {});
+      // ✅ Use sendBeacon for more reliable exit saves
+      const blob = new Blob([JSON.stringify(payload)], {
+        type: "application/json",
+      });
+      
+      try {
+        navigator.sendBeacon(`/api/posts/${draftId}`, blob);
+      } catch (err) {
+        // Fallback to regular API call
+        api.put(`/posts/${draftId}`, payload).catch(() => {});
+      }
     };
 
     const onVisibility = () => {
@@ -374,15 +422,40 @@ export default function AddPostPage() {
     }
 
     try {
-      const payload = buildPayload();
-       
+      const payload = buildPayload(undefined, false); // ✅ Pass isAutosave = false for final submit
+
+      // ✅ Validate required fields before submission
+      if (!payload.metaTitle || payload.metaTitle === "Untitled Draft") {
+        alert("Please enter a meta title before publishing");
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!payload.author || payload.author === "System") {
+        alert("Please enter an author name before publishing");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // ✅ Validate blog category for blog posts
+      if (form.type === "blog_post" && !form.blogCategory) {
+        alert("Please select a blog category before publishing");
+        setIsSubmitting(false);
+        return;
+      }
+
       let res;
       if (draftId) {
+        console.log("📤 Updating post ID:", draftId);
         res = await api.put(`/posts/${draftId}`, payload);
       } else {
+        console.log("📤 Creating new post...");
         res = await api.post("/posts", payload);
-        const createdId = res.data?.data?.id;
-        if (createdId) setDraftId(createdId);
+        const createdId = res.data?.data?.id || res.data?.id;
+        if (createdId) {
+          setDraftId(createdId);
+          console.log("✅ Post created with ID:", createdId);
+        }
       }
 
       if (res.status >= 200 && res.status < 300) {
@@ -394,7 +467,17 @@ export default function AddPostPage() {
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Error saving post");
+      
+      const errorMessage = error.response?.data?.message || error.message || "Unknown error";
+      alert(`Error saving post: ${errorMessage}`);
+      
+      // ✅ Log detailed error
+      if (error.response) {
+        console.error("Submit error details:", {
+          status: error.response.status,
+          data: error.response.data,
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -419,6 +502,7 @@ export default function AddPostPage() {
                 onChange={handleBasicChange}
                 required
                 className="w-full rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
+                placeholder="Enter a title for your post"
               />
             </div>
 
@@ -430,6 +514,7 @@ export default function AddPostPage() {
                 onChange={handleBasicChange}
                 rows={2}
                 className="w-full rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
+                placeholder="Brief description for SEO"
               />
             </div>
 
@@ -443,6 +528,7 @@ export default function AddPostPage() {
                     onChange={handleBasicChange}
                     required
                     className="w-full rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
+                    placeholder="Author name"
                   />
                 </div>
 
@@ -476,11 +562,9 @@ export default function AddPostPage() {
                   >
                     {indexValueOn ? "Indexing on" : "Indexing off"}
                   </button>
-                     
-                   
                 </div>
               </div>
-                    
+
               <div className="space-y-1 text-sm">
                 <label className="block text-sm mb-1">Created at (optional)</label>
                 <div className="flex flex-wrap gap-3">
@@ -626,17 +710,35 @@ export default function AddPostPage() {
                   Saved as 1200×700 (JPEG) with 2MB max.
                 </p>
               )}
-              {(isAutoSaving || dirty || draftId) && (
-                <p className="text-xs text-gray-500 mt-2">
-                  {isAutoSaving
-                    ? "Autosaving draft..."
-                    : dirty
-                    ? "Unsaved changes (will autosave in 15s)"
-                    : draftId
-                    ? `Draft saved (ID: ${draftId})`
-                    : null}
-                </p>
-              )}
+              
+              {/* ✅ Enhanced autosave status with error display */}
+              <div className="mt-2 space-y-1">
+                {isAutoSaving && (
+                  <p className="text-xs text-blue-400 flex items-center gap-2">
+                    <span className="inline-block w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
+                    Autosaving draft...
+                  </p>
+                )}
+                
+                {!isAutoSaving && dirty && (
+                  <p className="text-xs text-yellow-400">
+                    ⚠️ Unsaved changes (will autosave in 15s)
+                  </p>
+                )}
+                
+                {!isAutoSaving && !dirty && draftId && (
+                  <p className="text-xs text-emerald-400 flex items-center gap-2">
+                    <span className="inline-block w-2 h-2 bg-emerald-400 rounded-full"></span>
+                    Draft saved (ID: {draftId})
+                  </p>
+                )}
+                
+                {autosaveError && (
+                  <p className="text-xs text-red-400 bg-red-900/20 border border-red-800 rounded px-2 py-1">
+                    ❌ Autosave failed: {autosaveError}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 
@@ -663,6 +765,7 @@ export default function AddPostPage() {
                   onChange={handleBasicChange}
                   rows={4}
                   className="w-full rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
+                  placeholder="Describe the challenges..."
                 />
               </div>
               <div>
@@ -673,6 +776,7 @@ export default function AddPostPage() {
                   onChange={handleBasicChange}
                   rows={4}
                   className="w-full rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
+                  placeholder="Describe the solution..."
                 />
               </div>
               <div>
@@ -683,14 +787,15 @@ export default function AddPostPage() {
                   onChange={handleBasicChange}
                   rows={4}
                   className="w-full rounded border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm"
+                  placeholder="Describe the results..."
                 />
               </div>
             </div>
           )}
 
           <div className="flex justify-end pt-4 gap-4">
-              <button
-               type="button"
+            <button
+              type="button"
               onClick={() => router.push("/admin/dashboard/blogs")}
               className="flex-1 md:flex-none flex items-center justify-center gap-2 border border-blue-500/60 bg-blue-500/10 hover:bg-blue-500/20 text-blue-100 px-3 md:px-4 py-2 text-sm md:text-base rounded-md transition-colors hover:bg-zinc-800 whitespace-nowrap cursor-pointer"
             >
@@ -699,7 +804,7 @@ export default function AddPostPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded bg-blue-600 px-8 py-3 text-sm font-medium text-white hover:bg-blue-500 disabled:bg-gray-600"
+              className="rounded bg-blue-600 px-8 py-3 text-sm font-medium text-white hover:bg-blue-500 disabled:bg-gray-600 disabled:cursor-not-allowed"
             >
               {isSubmitting
                 ? "Saving..."

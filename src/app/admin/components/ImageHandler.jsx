@@ -45,6 +45,11 @@ async function cropToBlob(img, crop, outputSize) {
   canvas.height = outputSize?.height ?? pixelHeight;
 
   const ctx = canvas.getContext("2d");
+  
+  // Enable image smoothing for better quality
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+
   ctx.drawImage(
     img,
     crop.x * scaleX,
@@ -57,9 +62,20 @@ async function cropToBlob(img, crop, outputSize) {
     canvas.height
   );
 
-  return new Promise((resolve) =>
-    canvas.toBlob((b) => resolve(b), "image/jpeg", 0.9)
-  );
+  return new Promise((resolve, reject) => {
+    // Use 0.85 quality for better compression (targeting 2MB limit)
+    canvas.toBlob(
+      (blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error("Canvas to Blob conversion failed"));
+        }
+      },
+      "image/jpeg",
+      0.85
+    );
+  });
 }
 
 export default function ImageUploader({
@@ -75,53 +91,181 @@ export default function ImageUploader({
   const [crop, setCrop] = useState();
   const [completedCrop, setCompletedCrop] = useState(null);
   const [ratioKey, setRatioKey] = useState(defaultRatio);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const aspect = RATIO_PRESETS[ratioKey];
 
+  // Update crop when ratio changes
   useEffect(() => {
     if (!imgRef.current) return;
     const { width, height } = imgRef.current;
-    setCrop(getCenteredCrop(width, height, aspect));
+    const newCrop = getCenteredCrop(width, height, aspect);
+    setCrop(newCrop);
   }, [ratioKey, aspect]);
+
+  // Cleanup object URL on unmount
+  useEffect(() => {
+    return () => {
+      if (src && src.startsWith("blob:")) {
+        URL.revokeObjectURL(src);
+      }
+    };
+  }, [src]);
 
   const onSelectFile = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      setError("Please select a valid image file");
+      return;
+    }
+
+    // Validate file size (max 2MB for database storage)
+    const maxSize = 2 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setError("Image size must be less than 2MB");
+      return;
+    }
+
+    setError(null);
+    setIsLoading(true);
+
     const reader = new FileReader();
-    reader.onload = () => setSrc(reader.result);
+    
+    reader.onload = () => {
+      setSrc(reader.result);
+      setIsLoading(false);
+    };
+
+    reader.onerror = () => {
+      setError("Failed to read image file");
+      setIsLoading(false);
+    };
+
     reader.readAsDataURL(file);
   };
 
   const onImageLoad = (e) => {
     const { width, height } = e.currentTarget;
-    setCrop(getCenteredCrop(width, height, aspect));
+    const newCrop = getCenteredCrop(width, height, aspect);
+    setCrop(newCrop);
   };
 
   const handleSave = async () => {
-    if (!imgRef.current || !completedCrop) return;
+    if (!imgRef.current || !completedCrop) {
+      setError("Please select a crop area");
+      return;
+    }
 
-    const blob = await cropToBlob(imgRef.current, completedCrop, outputSize);
-    const file = new File([blob], "image.jpg", { type: "image/jpeg" });
+    try {
+      setIsLoading(true);
+      setError(null);
 
-    onChange?.(file);
+      const blob = await cropToBlob(imgRef.current, completedCrop, outputSize);
+      
+      // Generate filename with timestamp
+      const timestamp = Date.now();
+      const file = new File([blob], `image-${timestamp}.jpg`, { 
+        type: "image/jpeg",
+        lastModified: timestamp
+      });
+
+      onChange?.(file);
+      
+      // Reset state
+      setSrc(null);
+      setCrop(undefined);
+      setCompletedCrop(null);
+      setRatioKey(defaultRatio);
+      
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (err) {
+      console.error("Error saving image:", err);
+      setError("Failed to save image. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    // Cleanup
+    if (src && src.startsWith("blob:")) {
+      URL.revokeObjectURL(src);
+    }
+    
     setSrc(null);
+    setCrop(undefined);
+    setCompletedCrop(null);
+    setRatioKey(defaultRatio);
+    setError(null);
+    
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    
+    onCancel?.();
   };
 
   return (
     <div style={{ width: "100%" }}>
+      {error && (
+        <div
+          style={{
+            padding: "12px",
+            marginBottom: "12px",
+            backgroundColor: "#fef2f2",
+            border: "1px solid #fecaca",
+            borderRadius: "8px",
+            color: "#991b1b",
+          }}
+        >
+          {error}
+        </div>
+      )}
+
       {!src && (
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={onSelectFile}
-        />
+        <div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/jpg,image/webp"
+            onChange={onSelectFile}
+            disabled={isLoading}
+            style={{ width: "100%" }}
+          />
+          <div
+            style={{
+              marginTop: "8px",
+              fontSize: "14px",
+              color: "#6b7280",
+            }}
+          >
+            {isLoading ? (
+              "Loading image..."
+            ) : (
+              "Maximum file size: 2MB (JPEG, PNG, WebP)"
+            )}
+          </div>
+        </div>
       )}
 
       {src && (
         <>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              flexWrap: "wrap",
+              marginBottom: 12,
+            }}
+          >
             {Object.keys(RATIO_PRESETS).map((key) => (
               <Button
                 key={key}
@@ -133,6 +277,7 @@ export default function ImageUploader({
                   e?.stopPropagation?.();
                   setRatioKey(key);
                 }}
+                disabled={isLoading}
               >
                 {key}
               </Button>
@@ -141,10 +286,11 @@ export default function ImageUploader({
 
           <div
             style={{
-              maxHeight: 400,
+              maxHeight: 500,
               overflow: "auto",
               border: "1px solid #e5e7eb",
               borderRadius: 8,
+              backgroundColor: "#f9fafb",
             }}
           >
             <ReactCrop
@@ -160,13 +306,38 @@ export default function ImageUploader({
                 ref={imgRef}
                 src={src}
                 onLoad={onImageLoad}
-                alt="Crop"
-                style={{ maxHeight: 400, display: "block" }}
+                alt="Crop preview"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: 500,
+                  display: "block",
+                }}
               />
             </ReactCrop>
           </div>
 
-          <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+          {completedCrop && (
+            <div
+              style={{
+                marginTop: 8,
+                padding: 8,
+                backgroundColor: "#f3f4f6",
+                borderRadius: 4,
+                fontSize: "14px",
+                color: "#6b7280",
+              }}
+            >
+              Crop size: {Math.round(completedCrop.width)} × {Math.round(completedCrop.height)} px
+              {outputSize && (
+                <span>
+                  {" "}
+                  → Output: {outputSize.width} × {outputSize.height} px
+                </span>
+              )}
+            </div>
+          )}
+
+          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
             <Button
               type="button"
               onClick={(e) => {
@@ -174,9 +345,9 @@ export default function ImageUploader({
                 e?.stopPropagation?.();
                 handleSave();
               }}
-              disabled={!completedCrop}
+              disabled={!completedCrop || isLoading}
             >
-              Save Image
+              {isLoading ? "Saving..." : "Save Image"}
             </Button>
 
             <Button
@@ -185,9 +356,9 @@ export default function ImageUploader({
               onClick={(e) => {
                 e?.preventDefault?.();
                 e?.stopPropagation?.();
-                setSrc(null);
-                onCancel?.();
+                handleCancel();
               }}
+              disabled={isLoading}
             >
               Cancel
             </Button>
