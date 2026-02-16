@@ -346,11 +346,20 @@ const BlogEditor = ({
     setTimeout(() => handleContentChange(), 10);
   };
 
-  const insertBlogImageBlock = (base64) => {
+  const insertBlogImageBlock = (base64, imgWidth, imgHeight) => {
     const blockId = `blogimg_${++imageRef.current}`;
+    
+    // Use provided dimensions or defaults
+    const width = imgWidth || '';
+    const height = imgHeight || '';
+    const widthAttr = width ? `width="${width}"` : '';
+    const heightAttr = height ? `height="${height}"` : '';
+    const widthStyle = width ? `width:${width}px;` : '';
+    const heightStyle = height ? `height:${height}px;` : 'height:auto;';
+    
     const html = `
       <div id="${blockId}" style="width:100%;">
-        <img src="${base64}" alt="" style="float:left; max-width:45%; height:auto; margin:0 16px 12px 0; display:block; border-radius:6px;" />
+        <img src="${base64}" alt="" ${widthAttr} ${heightAttr} style="float:left; max-width:45%; ${widthStyle}${heightStyle} margin:0 16px 12px 0; display:block; border-radius:6px; object-fit:cover;" />
         <div style="min-height: 1px;"><p><br/></p></div>
         <div style="clear: both;"></div>
       </div>
@@ -619,14 +628,20 @@ const BlogEditor = ({
             <ImageHandler
               outputSize={null}
               defaultRatio="Free"
-              onChange={async (croppedFile) => {
+              onChange={async (croppedFile, dimensions) => {
                 if (croppedFile.size > MAX_IMAGE_BYTES) {
                   alert("Image size must be less than 2MB");
                   return;
                 }
                 const base64 = await fileToBase64(croppedFile);
                 setShowCropper(false);
-                insertBlogImageBlock(base64);
+                
+                // Get image dimensions from the cropped file
+                const img = new Image();
+                img.onload = () => {
+                  insertBlogImageBlock(base64, img.width, img.height);
+                };
+                img.src = base64;
               }}
               onCancel={() => setShowCropper(false)}
             />
