@@ -10,7 +10,7 @@ import CardContainer from "@/components/CardContainer";
 import CTA from "@/components/CTA";
 import CounterNo from "@/components/CounterNo";
 import FAQSection from "@/components/FAQSection";
-
+import SuccessStory from "@/components/SucessStory";
 import ContactUsForm from "@/components/ContactUsForm";
 import {
   Search,
@@ -32,7 +32,7 @@ export default function UI() {
     window.scrollTo(0, 0);
   }, []);
 
-  const { UiServices, testimonialsOne, Banner5, ComprehensiveUi } =
+  const { UiServices, testimonialsOne, Banner5, ComprehensiveUi, SuccessStoryData } =
     useContext(Lztallcontext);
   // console.log(UiServices, testimonialsOne, Banner5, ComprehensiveUi);
 
@@ -653,6 +653,26 @@ to create exceptional user experiences."
           />
         </div>
       </section>
+
+      {/* Case Studies */}
+      <section className="px-6 bgblue1 py-16">
+              <div className="container mx-auto">
+                <SuccessStory
+                  title="Case Studies"
+                  subtitle="Real projects, real results. See how we’ve helped businesses transform their ideas into successful mobile applications that drive growth and user engagement."
+                    caseStudies={SuccessStoryData}
+                    portfolioCategorySlug="ui"
+                />
+                {/* <div className="flex justify-center mt-10">
+                  <GreenButton
+                    text="Explore Our Latest Case Studies"
+                    linkurl="/"
+                    linktarget=""
+                    MoveRighticon={false}
+                  />
+                </div> */}
+              </div>
+            </section>
 
       {/* Our Achievements & Milestones */}
       <section className="bgsecondary py-16 px-6">

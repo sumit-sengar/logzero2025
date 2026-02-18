@@ -12,6 +12,7 @@ import {
   Layers,
   ChevronLeft,
   ChevronRight,
+  Loader2,
   RefreshCw,
 } from "lucide-react";
 
@@ -67,6 +68,13 @@ export default function BlogDashboard() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 9;
+
+  // Search (UI only for now; API wiring can be added later)
+  const [searchInput, setSearchInput] = useState("");
+  const [submittedSearch, setSubmittedSearch] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState("");
+  const isSearching = !!submittedSearch;
 
   // Filters
   const [filters, setFilters] = useState({
@@ -158,8 +166,9 @@ export default function BlogDashboard() {
   }, [page, limit, filters, isBlogPostType, isCaseStudyType]);
 
   useEffect(() => {
+    if (isSearching) return;
     fetchPosts();
-  }, [fetchPosts]);
+  }, [fetchPosts, isSearching]);
 
   // ---------------- Handlers ----------------
   const handleSelectChange = (e) => {
@@ -273,6 +282,69 @@ export default function BlogDashboard() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     router.push("/admin/login");
+  };
+
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+    const next = searchInput.trim();
+    if (!next) return;
+
+    setPage(1);
+    setSubmittedSearch(next);
+    setSearchLoading(true);
+    setSearchError("");
+
+    try {
+      const res = await api.post("/posts/meta-title", { metaTitle: next });
+      const data = res.data;
+
+      if (!data?.success) {
+        setPosts([]);
+        setTotalPages(1);
+        setSearchError(data?.message || "No posts found");
+        return;
+      }
+
+      const payload = data?.data;
+
+      const rows = Array.isArray(payload?.rows)
+        ? payload.rows
+        : Array.isArray(payload)
+        ? payload
+        : payload && typeof payload === "object" && ("id" in payload || "metaTitle" in payload)
+        ? [payload]
+        : Array.isArray(data?.rows)
+        ? data.rows
+        : [];
+
+      setPosts(rows);
+
+      const tp =
+        typeof data?.pagination?.totalPages === "number"
+          ? data.pagination.totalPages
+          : 1;
+      setTotalPages(tp);
+      setSearchError("");
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Unable to search posts";
+      setPosts([]);
+      setTotalPages(1);
+      setSearchError(message);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  const handleSearchReset = () => {
+    setSearchInput("");
+    setSubmittedSearch("");
+    setSearchError("");
+    setSearchLoading(false);
+    setPage(1);
+    fetchPosts();
   };
 
   // ---------------- UI ----------------
@@ -432,7 +504,56 @@ export default function BlogDashboard() {
 
         <div className="flex-1 overflow-y-auto">
 
-        {loading ? (
+        {/* Search (right side above table) */}
+        <div className="flex items-center justify-end mb-4">
+          <form onSubmit={handleSearchSubmit} className="w-full md:w-[420px]">
+            <div className="flex items-center gap-2">
+              <label htmlFor="post-search" className="sr-only">
+                Search posts
+              </label>
+              <input
+                id="post-search"
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Search by meta title…"
+                className="flex-1 bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm text-gray-100 placeholder:text-zinc-500 focus:border-blue-500 focus:outline-none"
+              />
+              <button
+                type="submit"
+                aria-label="Submit search"
+                title="Search"
+                disabled={searchLoading}
+                className="shrink-0 inline-flex items-center justify-center h-10 w-10 rounded-md border border-zinc-800 bg-zinc-950 hover:bg-zinc-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {searchLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <ChevronRight size={18} />
+                )}
+              </button>
+              {(submittedSearch || searchError) && (
+                <button
+                  type="button"
+                  onClick={handleSearchReset}
+                  className="shrink-0 inline-flex items-center justify-center h-10 px-3 rounded-md border border-zinc-800 bg-zinc-950 hover:bg-zinc-800 transition-colors text-sm"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+            {searchError ? (
+              <div className="mt-1 text-xs text-red-300">{searchError}</div>
+            ) : submittedSearch ? (
+              <div className="mt-1 text-xs text-zinc-500">
+                Query: <span className="text-zinc-300">{submittedSearch}</span>
+                {searchLoading ? <span className="ml-2">Searching…</span> : null}
+              </div>
+            ) : null}
+          </form>
+        </div>
+        
+        {loading && !isSearching ? (
           <div className="space-y-3">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
@@ -442,15 +563,56 @@ export default function BlogDashboard() {
             ))}
           </div>
         ) : posts.length === 0 ? (
-          <div className="text-center py-20 bg-zinc-900 rounded-lg border border-zinc-800 border-dashed">
-            <Layers size={48} className="mx-auto text-zinc-700 mb-4" />
-            <h3 className="text-lg font-medium text-gray-300">
-              No posts found
-            </h3>
-            <p className="text-gray-500">
-              Try adjusting your filters or create a new post.
-            </p>
-          </div>
+          isSearching ? (
+            <div className="flex-1">
+              <div className="scrollable-table border border-zinc-800 rounded-lg bg-zinc-900">
+                <table className="w-full table-auto text-xs md:text-sm">
+                  <thead className="bg-zinc-950 border-b border-zinc-800">
+                    <tr className="text-left text-xs uppercase tracking-wider text-zinc-400">
+                      <th className="px-2 md:px-4 py-2 md:py-3">Post</th>
+                      <th className="px-2 md:px-4 py-2 md:py-3">Type</th>
+                      <th className="px-2 md:px-4 py-2 md:py-3">Category</th>
+                      <th className="px-2 md:px-4 py-2 md:py-3 hidden sm:table-cell">Status</th>
+                      <th className="px-2 md:px-4 py-2 md:py-3 hidden md:table-cell">Created</th>
+                      <th className="px-2 md:px-4 py-2 md:py-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-800">
+                    {searchLoading ? (
+                      <tr>
+                        <td colSpan={6} className="px-4 py-10 text-center text-gray-300">
+                          <div className="flex items-center justify-center gap-3">
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                            <span>Searching posts...</span>
+                          </div>
+                        </td>
+                      </tr>
+                    ) : searchError ? (
+                      <tr>
+                        <td colSpan={6} className="px-4 py-6 text-center text-red-300">
+                          {searchError}
+                        </td>
+                      </tr>
+                    ) : (
+                      <tr>
+                        <td colSpan={6} className="px-4 py-10 text-center text-gray-400">
+                          No search results. Try a different meta title or reset search.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-20 bg-zinc-900 rounded-lg border border-zinc-800 border-dashed">
+              <Layers size={48} className="mx-auto text-zinc-700 mb-4" />
+              <h3 className="text-lg font-medium text-gray-300">No posts found</h3>
+              <p className="text-gray-500">
+                Try adjusting your filters or create a new post.
+              </p>
+            </div>
+          )
         ) : (
           <div className="flex-1">
             <div className="scrollable-table border border-zinc-800 rounded-lg bg-zinc-900">
@@ -577,8 +739,8 @@ export default function BlogDashboard() {
               </table>
             </div>
 
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 md:gap-4 py-4 border-t border-zinc-800 flex-wrap\">
+            {!isSearching && totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2 md:gap-4 py-4 border-t border-zinc-800 flex-wrap">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}

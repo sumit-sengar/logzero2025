@@ -698,7 +698,7 @@ export default function AddPostPage() {
                 type="file"
                 accept="image/*"
                 onChange={handleFeaturedImageChange}
-                className="text-sm text-gray-400"
+                className="text-sm text-gray-400 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2"
               />
               {form.featuredImageFile && (
                 <p className="text-xs text-gray-400 mt-1">

@@ -68,7 +68,7 @@ export default function FeaturableEmbed({
         <span className="inline-block bluenew text-white px-[15px] py-[4px] rounded-full text-[14px] tracking-[2px] mb-4 bg-blue-600">
           TESTIMONIAL
         </span>
-        <h2 className="mb-4 !text-[40px] !font-normal !leading-[117%]">
+        <h2 className="mb-4 !text-[30px] !font-semibold !leading-[117%]">
           {title}
         </h2>
         {subtitle && (

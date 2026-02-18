@@ -21,7 +21,7 @@ const bottomLogos = [
     { src: "/assets/icons/python.png", alt: "Python" },
     { src: "/assets/icons/mongodb.png", alt: "MongoDB" },
     { src: "/assets/icons/mysql.png", alt: "MySQL" },
-    { src: "/assets/icons/postgresql.png", alt: "PostgreSQL" },
+    { src: "/assets/icons/postgreSQL.png", alt: "PostgreSQL" },
     { src: "/assets/icons/microsoftsqlserver.png", alt: "SQL Server" },
     { src: "/assets/icons/oracle.png", alt: "Oracle" },
     { src: "/assets/icons/aws.png", alt: "AWS" },

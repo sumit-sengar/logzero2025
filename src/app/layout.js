@@ -42,6 +42,47 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.svg" sizes="any" />
+
+        <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://www.logzerotechnologies.com/#organization",
+      name: "LogZero Technologies",
+      url: "https://www.logzerotechnologies.com/",
+      logo: "https://www.logzerotechnologies.com/assets/img/logzero.svg",
+      image: "https://www.logzerotechnologies.com/assets/hero-image.jpg",
+      description:
+        "LogZero Technologies is a leading digital transformation and IT services company delivering custom web development, mobile app development, cloud and DevOps solutions, data engineering, and user-centric UI/UX design for startups and enterprises worldwide.",
+      foundingDate: "2011",
+      telephone: "+91 11 40789940",
+      email: "sales@logzerotechnologies.com",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Pegasus Tower, A-10, 8th Floor, Sector-68",
+        addressLocality: "Gautam Buddha Nagar, Noida",
+        addressRegion: "Uttar Pradesh",
+        postalCode: "201301",
+        addressCountry: "IN",
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: "+91 11 40789940",
+        contactType: "customer support",
+        email: "sales@logzerotechnologies.com",
+        availableLanguage: ["English", "Hindi"],
+      },
+      sameAs: [
+        "https://www.facebook.com/logzerotechnologies",
+        "https://twitter.com/logzerotechnologies",
+        "https://www.instagram.com/logzerotechnologies",
+      ],
+    }),
+  }}
+/>
+
        <Script
           id="gtm-script"
           strategy="afterInteractive"
