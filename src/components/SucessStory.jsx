@@ -35,7 +35,19 @@ const normalizeCaseStudy = (study = {}, fallbackImage) => {
     ? study.technologies
         .map((t) => {
           if (typeof t === "string") return t.trim();
-          if (t && typeof t === "object") return String(t.name || t.slug || "").trim();
+          if (t && typeof t === "object")
+            return String(t.name || t.slug || "").trim();
+          return "";
+        })
+        .filter(Boolean)
+    : [];
+
+  const industries = Array.isArray(study.industries)
+    ? study.industries
+        .map((ind) => {
+          if (typeof ind === "string") return ind.trim();
+          if (ind && typeof ind === "object")
+            return String(ind.name || ind.slug || "").trim();
           return "";
         })
         .filter(Boolean)
@@ -45,16 +57,18 @@ const normalizeCaseStudy = (study = {}, fallbackImage) => {
   const linkFromSlugOrId = study.id
     ? `/blog/blogDetails?id=${encodeURIComponent(study.id)}`
     : study.slug
-    ? `/blog/blogDetails?id=${encodeURIComponent(study.slug)}`
-    : "#";
+      ? `/blog/blogDetails?id=${encodeURIComponent(study.slug)}`
+      : "#";
 
   return {
     id: study.id ?? study.slug ?? study.title,
     title: study.metaTitle || study.title || "Case Study",
-    subtitle: study.metaDescription || study.subtitle || study.blogCategory || "",
+    subtitle:
+      study.metaDescription || study.subtitle || study.blogCategory || "",
     challenge: study.challenges || study.challenge || "",
     solution: study.solution || "",
     Resultstext: study.result || study.results || study.Resultstext || "",
+    industries,
     technologies,
     image: study.image || study.featuredImage || fallbackImage,
     featuredImageBase64: study.featuredImageBase64,
@@ -102,14 +116,14 @@ export default function SuccessStory({
         const { data: payload } = await api.get(url, {
           signal: controller.signal,
         });
-      
+
         const rows = Array.isArray(payload?.data)
           ? payload.data
           : Array.isArray(payload?.data?.rows)
-          ? payload.data.rows
-          : Array.isArray(payload?.rows)
-          ? payload.rows
-          : [];
+            ? payload.data.rows
+            : Array.isArray(payload?.rows)
+              ? payload.rows
+              : [];
 
         const firstTwo = rows.slice(0, 2);
 
@@ -118,8 +132,10 @@ export default function SuccessStory({
           return;
         }
 
-        const normalized = firstTwo.map((item) => normalizeCaseStudy(item, fallbackImage));
-        
+        const normalized = firstTwo.map((item) =>
+          normalizeCaseStudy(item, fallbackImage),
+        );
+
         setFetchedStudies(normalized);
       } catch (err) {
         if (err.name !== "AbortError") {
@@ -164,55 +180,68 @@ export default function SuccessStory({
       {isEmpty && (
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center text-gray-700 bg-gray-50">
           <p className="subheading-2 mb-1">Case studies are on the way</p>
-          <p className="subtext">We’re preparing fresh success stories for this service. Check back soon.</p>
+          <p className="subtext">
+            We’re preparing fresh success stories for this service. Check back
+            soon.
+          </p>
         </div>
       )}
 
       {/* Case Studies */}
-      {!isEmpty && displayStudies.map((study, index) => (
-        <div
-          key={study.id || index}
-          className={`flex flex-col-reverse md:flex-row items-center gap-10 ${
-            index === displayStudies.length - 1 ? "mb-0" : "mb-16"
-          } ${index % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
-        >
-          {/* Image */}
-          <div className="w-full md:w-[50%] max-w-[564px]">
-            <CaseStudyImage
-              src={study.image}
-              base64={study.featuredImageBase64}
-              alt={study.title}
-              width={study.width}
-              height={study.height}
-              className="rounded-[10px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] w-full h-auto object-cover transition-transform duration-300 ease-in-out hover:translate-y-[-5px]"
-              fallback={fallbackImage}
-            />
-          </div>
-
-          {/* Text */}
-          <div className="w-full md:w-[50%]">
-            <div className="mb-3 text-[24px] leading-[30px] font-semibold text-gray-900 foutfit">
-              {study.title}
-            </div>
-            <p className="md:text-base subheading-2 textbluenew">
-              {study.subtitle}
-            </p>
-
-            {/* Challenge & Solution */}
-            <div className="space-y-4 text-sm mt-9">
-              <div className="subheading-2 text-gray-800">Challenge</div>
-              <p className="subtext subtextcolor">{study.challenge}</p>
-
-              <div className="subheading-2 mt-5 text-gray-800">Solution</div>
-              <p className="subtext subtextcolor">{study.solution}</p>
+      {!isEmpty &&
+        displayStudies.map((study, index) => (
+          <div
+            key={study.id || index}
+            className={`flex flex-col-reverse md:flex-row items-center gap-10 ${
+              index === displayStudies.length - 1 ? "mb-0" : "mb-16"
+            } ${index % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
+          >
+            {/* Image */}
+            <div className="w-full md:w-[50%] max-w-[564px]">
+              <CaseStudyImage
+                src={study.image}
+                base64={study.featuredImageBase64}
+                alt={study.title}
+                width={study.width}
+                height={study.height}
+                className="rounded-[10px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] w-full h-auto object-cover transition-transform duration-300 ease-in-out hover:translate-y-[-5px]"
+                fallback={fallbackImage}
+              />
             </div>
 
-            {/* Results */}
-            <div className="my-6">
-              <p className="mb-3 subheading-2 text-gray-800">Results</p>
-              <p className="subtext subtextcolor">{study.Resultstext}</p>
+            {/* Text */}
+            <div className="w-full md:w-[50%]">
+              <div className="mb-3 text-[24px] leading-[30px] font-semibold text-gray-900 foutfit">
+                {study.title}
+              </div>
+              {study.industries?.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {study.industries.map((name) => (
+                    <span
+                      key={name}
+                      className="py-[6px] px-[14px] border rounded-md text-[13px] whitespace-nowrap"
+                    >
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              )}
 
-              {/* <div className="flex flex-wrap sm:flex-nowrap gap-y-6 gap-x-10 mt-5 justify-between sm:justify-start"> 
+              {/* Challenge & Solution */}
+              <div className="space-y-4 text-sm mt-9">
+                <div className="subheading-2 text-gray-800">Challenge</div>
+                <p className="subtext subtextcolor">{study.challenge}</p>
+
+                <div className="subheading-2 mt-5 text-gray-800">Solution</div>
+                <p className="subtext subtextcolor">{study.solution}</p>
+              </div>
+
+              {/* Results */}
+              <div className="my-6">
+                <p className="mb-3 subheading-2 text-gray-800">Results</p>
+                <p className="subtext subtextcolor">{study.Resultstext}</p>
+
+                {/* <div className="flex flex-wrap sm:flex-nowrap gap-y-6 gap-x-10 mt-5 justify-between sm:justify-start"> 
 
                    <CounterNo
                     nostats={[
@@ -238,7 +267,7 @@ export default function SuccessStory({
                     ]}
                   />  */}
 
-              {/* {study.results.map((res, i) => (
+                {/* {study.results.map((res, i) => (
                     <div
                       key={i}
                       className="flex flex-col items-center text-center gap-2 sm:w-auto"
@@ -257,43 +286,47 @@ export default function SuccessStory({
                     </div>
                   ))}  */}
 
-              {/* </div>  */}
-            </div>
+                {/* </div>  */}
+              </div>
 
-            {/* Technologies */}
-            <div className="mt-8">
-              <p className="subheading-2 text-gray-800">Technologies Used</p>
-              {study.technologies.length > 0 ? (
-                <div className="flex flex-wrap gap-2 mt-5">
-                  {study.technologies.map((tech, i) => (
-                    <span
-                      key={i}
-                      className="py-[6px] px-[14px] border rounded-full text-[13px] whitespace-nowrap"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-2 text-sm text-gray-600">
-                  <span aria-hidden>•</span>
-                  <span>Technologies will be added soon</span>
-                </div>
-              )}
-            </div>
+              {/* Technologies */}
+              <div className="mt-8">
+                <p className="subheading-2 text-gray-800">Technologies Used</p>
+                {study.technologies.length > 0 ? (
+                  <div className="flex flex-wrap gap-2 mt-5">
+                    {study.technologies.map((tech, i) => (
+                      <span
+                        key={i}
+                        className="py-[6px] px-[14px] border rounded-full text-[13px] whitespace-nowrap"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-2 text-sm text-gray-600">
+                    <span aria-hidden>•</span>
+                    <span>Technologies will be added soon</span>
+                  </div>
+                )}
+              </div>
 
-            {/* Link */}
-            <div className="mt-8">
-              <Link
-                href={study.id || study.slug ? `/blog/blogDetails?id=${encodeURIComponent(study.id || study.slug)}` : study.link || "#"}
-                className="subheading-3 textbluenew inline-flex items-center gap-1 transition-transform duration-300 ease-in-out hover:translate-x-[5px] hover:!text-[#1F1F1F]"
-              >
-                Read Full Case Study <ChevronRight size={18} />
-              </Link>
+              {/* Link */}
+              <div className="mt-8">
+                <Link
+                  href={
+                    study.id || study.slug
+                      ? `/blog/blogDetails?id=${encodeURIComponent(study.id || study.slug)}`
+                      : study.link || "#"
+                  }
+                  className="subheading-3 textbluenew inline-flex items-center gap-1 transition-transform duration-300 ease-in-out hover:translate-x-[5px] hover:!text-[#1F1F1F]"
+                >
+                  Read Full Case Study <ChevronRight size={18} />
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
     </>
   );
 }

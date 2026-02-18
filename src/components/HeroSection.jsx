@@ -94,13 +94,13 @@ export default function HeroSection({
             <div className="flex gap-8 mt-6 font-semibold text-center">
               <Image
                 src="/assets/img/iso-img2.png"
-                alt=""
+                alt="ISO certification badge"
                 width={100}
                 height={100}
               />
               <Image
                 src="/assets/img/iso-img.png"
-                alt=""
+                alt="ISO certification badge"
                 width={100}
                 height={100}
               />

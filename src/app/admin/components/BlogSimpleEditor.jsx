@@ -50,6 +50,7 @@ const BlogEditor = ({
   // Freeform resize inputs
   const [imgW, setImgW] = useState("");
   const [imgH, setImgH] = useState("");
+  const [imgAlt, setImgAlt] = useState("");
 
   // Cropper modal
   const [showCropper, setShowCropper] = useState(false);
@@ -102,6 +103,7 @@ const BlogEditor = ({
     setSelectedImage(null);
     setImgW("");
     setImgH("");
+    setImgAlt("");
   };
 
   // --- Selection Management ---
@@ -254,6 +256,7 @@ const BlogEditor = ({
       img.style.outline = "3px solid #3b82f6";
       setImgW(img.getAttribute("width") ?? "");
       setImgH(img.getAttribute("height") ?? "");
+      setImgAlt(img.getAttribute("alt") ?? "");
     }
   };
 
@@ -334,6 +337,12 @@ const BlogEditor = ({
     setTimeout(() => handleContentChange(), 10);
   };
 
+  const applyImageAlt = () => {
+    if (!selectedImage) return;
+    selectedImage.setAttribute("alt", imgAlt.trim());
+    setTimeout(() => handleContentChange(), 10);
+  };
+
   const resetImageSize = () => {
     if (!selectedImage) return;
     selectedImage.removeAttribute("width");
@@ -377,6 +386,7 @@ const BlogEditor = ({
         img.style.outline = "3px solid #3b82f6";
         setImgW(img.getAttribute("width") ?? "");
         setImgH(img.getAttribute("height") ?? "");
+        setImgAlt(img.getAttribute("alt") ?? "");
       }
       handleContentChange();
     }, 10);
@@ -532,6 +542,9 @@ const BlogEditor = ({
             <input type="number" min={1} value={imgH} onChange={(e) => setImgH(e.target.value)} className="w-20 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="H" />
             <button type="button" onClick={applyImageSize} className="px-2 py-1 text-sm rounded bg-blue-600 text-white hover:bg-blue-700">Apply</button>
             <button type="button" onClick={resetImageSize} className="px-2 py-1 text-sm rounded bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-500">Reset</button>
+            <span className="text-xs text-gray-600 dark:text-gray-300 ml-2">Alt</span>
+            <input type="text" value={imgAlt} onChange={(e) => setImgAlt(e.target.value)} className="w-48 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="Describe the image" />
+            <button type="button" onClick={applyImageAlt} className="px-2 py-1 text-sm rounded bg-blue-600 text-white hover:bg-blue-700">Set</button>
           </div>
         )}
 

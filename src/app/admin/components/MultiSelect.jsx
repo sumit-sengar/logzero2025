@@ -78,7 +78,7 @@ export default function MultiSelect({
                   <span className="flex items-center gap-2">
                     {/* Optional: Render icon if available */}
                     {opt.icon && (
-                      <img src={opt.icon} alt="" className="w-4 h-4 object-contain" />
+                      <img src={opt.icon} alt={`${opt.name} icon`} className="w-4 h-4 object-contain" />
                     )}
                     {opt.name}
                   </span>

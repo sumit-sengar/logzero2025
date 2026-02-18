@@ -231,7 +231,7 @@ export default function DataManagementPage() {
                       <div className="w-[48px] h-[48px]  text-[#0A77FF] rounded-full hover:scale-105 transition-transform duration-200 flex items-center justify-center">
                         <Icon size={24} />
                       </div>
-                      <h3 className="">{title}</h3>
+                      <h3 className="!text-[22px]">{title}</h3>
                     </div>
                     <div className=" pl-12">
                       <p className=" subtext subtextcolor ">{desc}</p>
